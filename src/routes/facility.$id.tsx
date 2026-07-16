@@ -19,7 +19,7 @@ import { getFacility, formatINR } from "@/lib/mock-data";
 import { useShortlist } from "@/lib/prefs";
 
 export const Route = createFileRoute("/facility/$id")({
-  loader: ({ params }) => {
+  loader: ({ params }: { params: { id: string } }) => {
     const facility = getFacility(params.id);
     if (!facility) throw notFound();
     return { facility };
