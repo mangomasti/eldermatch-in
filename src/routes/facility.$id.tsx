@@ -64,6 +64,7 @@ export const Route = createFileRoute("/facility/$id")({
 function FacilityProfile() {
   const data = Route.useLoaderData() as { facility: import("@/lib/mock-data").Facility };
   const f = data.facility;
+  const { has, toggle } = useShortlist();
   const saved = has(f.id);
   const [contactOpen, setContactOpen] = useState(false);
 
