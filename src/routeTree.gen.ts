@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as RegisterFacilityRouteImport } from './routes/register-facility'
 import { Route as QuestionnaireRouteImport } from './routes/questionnaire'
@@ -17,6 +18,11 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FacilityIdRouteImport } from './routes/facility.$id'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/questionnaire': typeof QuestionnaireRoute
   '/register-facility': typeof RegisterFacilityRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/facility/$id': typeof FacilityIdRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/questionnaire': typeof QuestionnaireRoute
   '/register-facility': typeof RegisterFacilityRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/facility/$id': typeof FacilityIdRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/questionnaire': typeof QuestionnaireRoute
   '/register-facility': typeof RegisterFacilityRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/facility/$id': typeof FacilityIdRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/questionnaire'
     | '/register-facility'
     | '/search'
+    | '/sitemap.xml'
     | '/facility/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/questionnaire'
     | '/register-facility'
     | '/search'
+    | '/sitemap.xml'
     | '/facility/$id'
   id:
     | '__root__'
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/questionnaire'
     | '/register-facility'
     | '/search'
+    | '/sitemap.xml'
     | '/facility/$id'
   fileRoutesById: FileRoutesById
 }
@@ -118,11 +130,19 @@ export interface RootRouteChildren {
   QuestionnaireRoute: typeof QuestionnaireRoute
   RegisterFacilityRoute: typeof RegisterFacilityRoute
   SearchRoute: typeof SearchRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   FacilityIdRoute: typeof FacilityIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/search': {
       id: '/search'
       path: '/search'
@@ -182,6 +202,7 @@ const rootRouteChildren: RootRouteChildren = {
   QuestionnaireRoute: QuestionnaireRoute,
   RegisterFacilityRoute: RegisterFacilityRoute,
   SearchRoute: SearchRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   FacilityIdRoute: FacilityIdRoute,
 }
 export const routeTree = rootRouteImport
