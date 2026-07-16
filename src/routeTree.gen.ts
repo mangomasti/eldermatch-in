@@ -13,6 +13,7 @@ import { Route as SearchRouteImport } from './routes/search'
 import { Route as RegisterFacilityRouteImport } from './routes/register-facility'
 import { Route as QuestionnaireRouteImport } from './routes/questionnaire'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FacilityIdRouteImport } from './routes/facility.$id'
 
@@ -36,6 +37,11 @@ const HomeRoute = HomeRouteImport.update({
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -49,6 +55,7 @@ const FacilityIdRoute = FacilityIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/home': typeof HomeRoute
   '/questionnaire': typeof QuestionnaireRoute
   '/register-facility': typeof RegisterFacilityRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/home': typeof HomeRoute
   '/questionnaire': typeof QuestionnaireRoute
   '/register-facility': typeof RegisterFacilityRoute
@@ -66,6 +74,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/home': typeof HomeRoute
   '/questionnaire': typeof QuestionnaireRoute
   '/register-facility': typeof RegisterFacilityRoute
@@ -76,6 +85,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/home'
     | '/questionnaire'
     | '/register-facility'
@@ -84,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/home'
     | '/questionnaire'
     | '/register-facility'
@@ -92,6 +103,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/home'
     | '/questionnaire'
     | '/register-facility'
@@ -101,6 +113,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   HomeRoute: typeof HomeRoute
   QuestionnaireRoute: typeof QuestionnaireRoute
   RegisterFacilityRoute: typeof RegisterFacilityRoute
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -157,6 +177,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   HomeRoute: HomeRoute,
   QuestionnaireRoute: QuestionnaireRoute,
   RegisterFacilityRoute: RegisterFacilityRoute,
