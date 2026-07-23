@@ -1,53 +1,71 @@
-## 1. Rename Kinstead → ElderMatch
+## Overview
 
-Global find/replace of the brand name in user-facing copy only. Keep the `kinstead.*` localStorage keys unchanged to avoid wiping saved prefs.
+Add a mock user profile stored in `localStorage` alongside existing prefs/shortlist. Profile is accessed via a header avatar and rendered on a dedicated `/profile` route with four sections. Care preferences reuse the existing questionnaire data — no duplication.
 
-Files with visible "Kinstead" strings to update:
-- `src/components/logo.tsx` — wordmark text
-- `src/components/site-chrome.tsx` — footer tagline + copyright
-- `src/routes/__root.tsx` — default title/OG
-- `src/routes/index.tsx`, `home.tsx`, `about.tsx`, `search.tsx`, `facility.$id.tsx`, `questionnaire.tsx`, `register-facility.tsx` — any `title`/`og:*`/description meta and body copy mentioning Kinstead
-- `public/robots.txt`, `README` files if they reference the name in copy
+## 1. Data layer
 
-No changes to storage keys, mock data IDs, or routes.
+Extend `src/lib/prefs.ts` with a new `useProfile` hook mirroring `usePreferences`:
 
-## 2. Global floating "Build Your Profile" CTA
+- Storage key: `eldermatch.profile` (new; `kinstead.*` keys stay untouched so existing saved prefs/shortlist survive).
+- Type `Profile` with:
+  - `basic`: `{ name, email, phone, relationship }` where relationship is a union of the six dropdown values.
+  - `recipient`: `{ name, notReadyToShareName: boolean, age, livingSituation, urgency }`.
+- Returns `{ profile, save, hydrated }`. `save` merges partial updates.
 
-New component `src/components/floating-profile-cta.tsx`:
-- Fixed position: `right-4 md:right-6`, vertically centered (`top-1/2 -translate-y-1/2`), `z-40`.
-- Pill button, primary color, soft shadow, rounded-full, icon (`ClipboardCheck` from lucide) + label.
-- Label logic via `usePreferences()`:
-  - `prefs == null` → "Build Your Profile"
-  - `prefs` exists → "Update Your Preferences"
-  - While `!hydrated`, render nothing (avoid SSR/hydration mismatch since prefs live in localStorage).
-- Hover: subtle scale + shadow lift transition.
-- Click opens a right-side slide-in panel (built in-component using a fixed overlay + translate-x panel, no new deps) containing the existing questionnaire flow.
+No changes to the existing `usePreferences` / `useShortlist` hooks or their storage keys.
 
-### Reusing the questionnaire
+## 2. Header avatar (access point)
 
-The current `/questionnaire` route owns the multi-step form. To avoid duplicating logic:
-- Extract the form body from `src/routes/questionnaire.tsx` into `src/components/questionnaire-form.tsx` (pure component, accepts an optional `onComplete` callback).
-- The route re-renders the extracted form inside its existing page layout, navigating to `/search` on completion (unchanged behavior).
-- The floating CTA panel renders the same component; on completion it closes the panel and navigates to `/search`.
+Update `src/components/site-chrome.tsx`:
 
-### Hiding on the questionnaire page
+- Add a `ProfileAvatar` button rendered inside `SiteHeader`, right-aligned next to the existing nav actions on desktop and inside the mobile menu on small screens.
+- Circular button: shows the user's initials if `profile?.basic.name` is set, otherwise a `User` lucide icon. Uses `bg-primary/10 text-primary`, `ring-1 ring-border`, and a hover state.
+- Wraps `<Link to="/profile">` with `aria-label="My profile"`. No dropdown — click navigates to the page.
+- Suppress rendering until `useProfile().hydrated` to avoid SSR mismatch (returns a neutral placeholder circle so header layout doesn't shift).
 
-Suppress the floating button on `/questionnaire` (redundant there) using `useRouterState({ select: s => s.location.pathname })`.
+## 3. `/profile` route
 
-### Avoiding overlap with facility contact panel
+New file `src/routes/profile.tsx` with:
 
-On `/facility/$id` there is a sticky "Contact this facility" panel. To keep both usable:
-- Detect the facility route via pathname.
-- On that route, on `md+` screens, shift the floating button up: `top-[35%]` instead of `top-1/2` so it clears the contact card.
-- On mobile (`<md`), the facility page shows a bottom sticky bar; the floating button stays vertically centered on the right edge and does not conflict.
+- `head()` metadata: title "My profile — ElderMatch", matching description + og:title/og:description; no og:image.
+- Wrapped in `SiteHeader` + `SiteFooter`.
+- Page hero: name + relationship subline + "Edit basic info" button.
+- Four cards in a single-column layout on mobile, two-column on `md+`:
 
-No changes to the contact panel itself.
+### A) Basic Info card
 
-### Mounting
+Inline form (always editable, autosaves on blur via `save`) with fields: Name, Email (type=email), Phone (type=tel), Relationship (native `<select>` with the six options). Uses the same `inputCls` styling pattern already used in `facility.$id.tsx`. Small "Saved" toast on blur when a field changes.
 
-Add `<FloatingProfileCta />` once in `src/routes/__root.tsx`, rendered as a sibling of `<Outlet />` inside the body so it appears on every page automatically.
+### B) Care Recipient Details card
+
+Same inline-edit pattern:
+
+- Name text input + a checkbox "Not ready to share yet" that disables the name field and stores `notReadyToShareName: true`.
+- Age (number input, 40–110 range).
+- Current living situation `<select>`: Living alone / Living with family / Currently in a facility / Currently hospitalized.
+- Urgency `<select>`: Just researching / Planning within a few months / Need placement urgently. When "urgent" is chosen, show a subtle amber note "We'll prioritise homes with immediate availability."
+
+### C) Care Preferences card (reuses questionnaire)
+
+Read-only summary sourced from `usePreferences()`:
+
+- If `prefs` is null: empty state with a "Build your preferences" button that opens the existing floating-CTA slide-in panel (see integration note below), or falls back to a link to `/questionnaire`.
+- If `prefs` exists: render care needs as chips, budget as "Up to ₹X,XXX/mo", location, priorities (ordered chips 1/2/3), and language. A single "Update preferences" button opens the same slide-in panel.
+
+Integration: extract the panel-opening state from `src/components/floating-profile-cta.tsx` into a tiny context (`PreferenceDrawerProvider` in `src/components/preference-drawer.tsx`) so both the floating CTA and the profile card can trigger it. The provider owns `open` state and renders the drawer once at the root. `FloatingProfileCta` becomes just the fixed button that calls `openDrawer()`. Fallback if this refactor is out of scope: the profile buttons simply `navigate({ to: "/questionnaire" })`.
+
+### D) Saved/Shortlisted Facilities card
+
+- Uses `useShortlist()` to read saved facility ids and `facilities` from `src/lib/mock-data.ts` to resolve them.
+- Renders a compact list (thumbnail, name, neighbourhood, price range, rating, "View" link → `/facility/$id`, and a "Remove" button that calls `toggle(id)`).
+- Empty state: "No saved homes yet — browse and tap the heart to shortlist." with a link to `/search`.
+
+## 4. Floating CTA on the profile page
+
+The existing `FloatingProfileCta` should stay hidden on `/profile` (redundant there). Add `/profile` to the pathname exclusion list in `src/components/floating-profile-cta.tsx`.
 
 ## Out of scope
 
-- No backend, no auth, no analytics.
-- No changes to mock data, routing, or existing questionnaire logic beyond extracting it into a shared component.
+- No real auth, no backend, no avatar upload.
+- No editing questionnaire answers directly from card C (users use the shared questionnaire flow to change them).
+- No changes to mock data or facility pages beyond the new "Remove from shortlist" reuse of the existing hook.
