@@ -26,14 +26,14 @@ export const Route = createFileRoute("/facility/$id")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Facility not found — Kinstead" }, { name: "robots", content: "noindex" }] };
+      return { meta: [{ title: "Facility not found — ElderMatch" }, { name: "robots", content: "noindex" }] };
     }
     const f = loaderData.facility;
     return {
       meta: [
-        { title: `${f.name} — ${f.neighborhood}, ${f.city} · Kinstead` },
+        { title: `${f.name} — ${f.neighborhood}, ${f.city} · ElderMatch` },
         { name: "description", content: f.description },
-        { property: "og:title", content: `${f.name} — Kinstead` },
+        { property: "og:title", content: `${f.name} — ElderMatch` },
         { property: "og:description", content: f.description },
         { property: "og:image", content: f.images[0] },
         { name: "twitter:image", content: f.images[0] },
@@ -305,7 +305,7 @@ function FacilityProfile() {
               <div className="mt-5 flex items-start gap-2 rounded-xl bg-warm/40 p-3 text-xs text-warm-foreground">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-verified" />
                 <span>
-                  Kinstead never charges families to enquire or tour a facility.
+                  ElderMatch never charges families to enquire or tour a facility.
                 </span>
               </div>
             </div>
@@ -404,7 +404,7 @@ function ContactModal({ facilityName, onClose }: { facilityName: string; onClose
             {submitting ? "Sending…" : "Send enquiry"}
           </button>
           <p className="text-center text-xs text-muted-foreground">
-            Kinstead never shares your details with anyone else.
+            ElderMatch never shares your details with anyone else.
           </p>
         </form>
       </div>

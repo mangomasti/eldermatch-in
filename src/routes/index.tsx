@@ -5,11 +5,11 @@ import { Logo } from "@/components/logo";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Welcome to Kinstead — trusted senior care, made simple" },
+      { title: "Welcome to ElderMatch — trusted senior care, made simple" },
       {
         name: "description",
         content:
-          "Kinstead helps families find verified assisted living homes, and helps facilities reach the families who need them.",
+          "ElderMatch helps families find verified assisted living homes, and helps facilities reach the families who need them.",
       },
     ],
   }),
