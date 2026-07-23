@@ -1,7 +1,31 @@
 import { Link } from "@tanstack/react-router";
 import { Logo } from "./logo";
-import { Menu, X } from "lucide-react";
+import { Menu, User, X } from "lucide-react";
 import { useState } from "react";
+import { useProfile } from "@/lib/prefs";
+
+function initials(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "";
+  const first = parts[0]?.[0] ?? "";
+  const last = parts.length > 1 ? parts[parts.length - 1]?.[0] ?? "" : "";
+  return (first + last).toUpperCase();
+}
+
+function ProfileAvatar({ onClick }: { onClick?: () => void }) {
+  const { profile, hydrated } = useProfile();
+  const label = hydrated && profile.basic.name ? initials(profile.basic.name) : "";
+  return (
+    <Link
+      to="/profile"
+      onClick={onClick}
+      aria-label="My profile"
+      className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary/10 text-sm font-semibold text-primary ring-1 ring-border transition-colors hover:bg-primary/15"
+    >
+      {label ? label : <User className="h-4 w-4" />}
+    </Link>
+  );
+}
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -9,24 +33,27 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 md:px-8">
         <Logo />
-        <nav className="hidden items-center gap-1 md:flex">
-          <NavLink to="/search">Browse homes</NavLink>
-          <NavLink to="/questionnaire">Get recommendations</NavLink>
-          <NavLink to="/about">How we verify</NavLink>
-          <Link
-            to="/register-facility"
-            className="ml-2 rounded-full border border-primary/30 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+        <div className="flex items-center gap-2">
+          <nav className="hidden items-center gap-1 md:flex">
+            <NavLink to="/search">Browse homes</NavLink>
+            <NavLink to="/questionnaire">Get recommendations</NavLink>
+            <NavLink to="/about">How we verify</NavLink>
+            <Link
+              to="/register-facility"
+              className="ml-2 rounded-full border border-primary/30 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              List your facility
+            </Link>
+          </nav>
+          <ProfileAvatar />
+          <button
+            className="rounded-full border border-border p-2 md:hidden"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle menu"
           >
-            List your facility
-          </Link>
-        </nav>
-        <button
-          className="rounded-full border border-border p-2 md:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Toggle menu"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
       {open && (
         <div className="border-t border-border/60 bg-background md:hidden">
@@ -34,6 +61,7 @@ export function SiteHeader() {
             <NavLink to="/search" onClick={() => setOpen(false)}>Browse homes</NavLink>
             <NavLink to="/questionnaire" onClick={() => setOpen(false)}>Get recommendations</NavLink>
             <NavLink to="/about" onClick={() => setOpen(false)}>How we verify</NavLink>
+            <NavLink to="/profile" onClick={() => setOpen(false)}>My profile</NavLink>
             <Link
               to="/register-facility"
               onClick={() => setOpen(false)}

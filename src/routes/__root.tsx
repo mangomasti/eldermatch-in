@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingProfileCta } from "@/components/floating-profile-cta";
+import { PreferenceDrawerProvider } from "@/components/preference-drawer";
 
 function NotFoundComponent() {
   return (
@@ -133,8 +134,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
-      <FloatingProfileCta />
+      <PreferenceDrawerProvider>
+        <Outlet />
+        <FloatingProfileCta />
+      </PreferenceDrawerProvider>
       <Toaster position="top-center" />
     </QueryClientProvider>
   );
