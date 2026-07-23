@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 const KEY_PREFS = "kinstead.prefs";
 const KEY_SHORTLIST = "kinstead.shortlist";
+const KEY_PROFILE = "eldermatch.profile";
 
 export type Preferences = {
   searchFor: "Myself" | "Parent or family member" | "Someone else" | "";
@@ -19,6 +20,58 @@ export const DEFAULT_PREFS: Preferences = {
   location: "",
   priorities: [],
   language: "",
+};
+
+export const RELATIONSHIPS = [
+  "Myself",
+  "My parent",
+  "My spouse",
+  "My grandparent",
+  "Other family member",
+  "Someone I care for professionally",
+] as const;
+export type Relationship = (typeof RELATIONSHIPS)[number] | "";
+
+export const LIVING_SITUATIONS = [
+  "Living alone",
+  "Living with family",
+  "Currently in a facility",
+  "Currently hospitalized",
+] as const;
+export type LivingSituation = (typeof LIVING_SITUATIONS)[number] | "";
+
+export const URGENCY_LEVELS = [
+  "Just researching",
+  "Planning within a few months",
+  "Need placement urgently",
+] as const;
+export type Urgency = (typeof URGENCY_LEVELS)[number] | "";
+
+export type Profile = {
+  basic: {
+    name: string;
+    email: string;
+    phone: string;
+    relationship: Relationship;
+  };
+  recipient: {
+    name: string;
+    notReadyToShareName: boolean;
+    age: string; // stored as string to allow empty input
+    livingSituation: LivingSituation;
+    urgency: Urgency;
+  };
+};
+
+export const DEFAULT_PROFILE: Profile = {
+  basic: { name: "", email: "", phone: "", relationship: "" },
+  recipient: {
+    name: "",
+    notReadyToShareName: false,
+    age: "",
+    livingSituation: "",
+    urgency: "",
+  },
 };
 
 function safeRead<T>(key: string, fallback: T): T {
@@ -79,4 +132,29 @@ export function useShortlist() {
   const has = (id: string) => ids.includes(id);
 
   return { ids, toggle, has, hydrated };
+}
+
+export function useProfile() {
+  const [profile, setProfile] = useState<Profile>(DEFAULT_PROFILE);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setProfile(safeRead<Profile>(KEY_PROFILE, DEFAULT_PROFILE));
+    setHydrated(true);
+  }, []);
+
+  const save = (partial: Partial<Profile>) => {
+    setProfile((prev) => {
+      const next: Profile = {
+        basic: { ...prev.basic, ...(partial.basic ?? {}) },
+        recipient: { ...prev.recipient, ...(partial.recipient ?? {}) },
+      };
+      try {
+        window.localStorage.setItem(KEY_PROFILE, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  return { profile, save, hydrated };
 }
