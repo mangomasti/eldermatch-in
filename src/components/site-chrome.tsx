@@ -68,7 +68,7 @@ export function SiteFooter() {
         <div className="md:col-span-2">
           <Logo />
           <p className="mt-3 max-w-sm text-sm text-muted-foreground">
-            Kinstead helps families find trusted senior care in their city — verified facilities, real photos, and reviews only from confirmed stays.
+            ElderMatch helps families find trusted senior care in their city — verified facilities, real photos, and reviews only from confirmed stays.
           </p>
         </div>
         <div>
@@ -88,7 +88,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground">
-        © 2026 Kinstead. Made with care.
+        © 2026 ElderMatch. Made with care.
       </div>
     </footer>
   );

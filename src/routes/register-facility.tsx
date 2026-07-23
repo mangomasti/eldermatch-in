@@ -8,7 +8,7 @@ import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 export const Route = createFileRoute("/register-facility")({
   head: () => ({
     meta: [
-      { title: "List your facility on Kinstead" },
+      { title: "List your facility on ElderMatch" },
       {
         name: "description",
         content:
@@ -69,7 +69,7 @@ function RegisterFacility() {
           </span>
           <span className="text-xs font-medium uppercase tracking-wide text-primary">For facilities</span>
         </div>
-        <h1 className="mt-4 font-serif text-4xl md:text-5xl">List your facility on Kinstead</h1>
+        <h1 className="mt-4 font-serif text-4xl md:text-5xl">List your facility on ElderMatch</h1>
         <p className="mt-3 max-w-xl text-muted-foreground">
           Free to list. We verify every facility on-site before it goes live — families trust us because of it.
         </p>
@@ -151,7 +151,7 @@ function RegisterFacility() {
               Submit for verification
             </button>
             <p className="mt-3 text-center text-xs text-muted-foreground">
-              By submitting, you agree to allow a Kinstead verifier to visit on-site.
+              By submitting, you agree to allow a ElderMatch verifier to visit on-site.
             </p>
           </div>
         </form>

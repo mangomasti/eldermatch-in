@@ -19,11 +19,11 @@ export const Route = createFileRoute("/search")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Browse verified senior care homes — Kinstead" },
+      { title: "Browse verified senior care homes — ElderMatch" },
       {
         name: "description",
         content:
-          "Filter by care type, budget, amenities and neighbourhood. Every home on Kinstead is licence-checked and reviewed on-site.",
+          "Filter by care type, budget, amenities and neighbourhood. Every home on ElderMatch is licence-checked and reviewed on-site.",
       },
     ],
   }),

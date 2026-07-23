@@ -5,13 +5,13 @@ import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "How verification works — Kinstead" },
+      { title: "How verification works — ElderMatch" },
       {
         name: "description",
         content:
-          "How Kinstead verifies every senior care home: licence checks, on-site audits, confirmed-stay reviews, and quarterly re-verification.",
+          "How ElderMatch verifies every senior care home: licence checks, on-site audits, confirmed-stay reviews, and quarterly re-verification.",
       },
-      { property: "og:title", content: "How verification works — Kinstead" },
+      { property: "og:title", content: "How verification works — ElderMatch" },
       {
         property: "og:description",
         content:
@@ -33,19 +33,19 @@ const STEPS = [
     icon: Users,
     title: "On-site audit",
     body:
-      "A trained Kinstead auditor visits every facility unannounced. We inspect rooms, kitchens, medication protocols, staff-to-resident ratios, and emergency preparedness. We speak to residents and staff without management present.",
+      "A trained ElderMatch auditor visits every facility unannounced. We inspect rooms, kitchens, medication protocols, staff-to-resident ratios, and emergency preparedness. We speak to residents and staff without management present.",
   },
   {
     icon: Camera,
     title: "Real photo & video capture",
     body:
-      "Photos on Kinstead are captured by our team during the on-site visit. No filters, no staging. Facilities can add their own images, but every image is manually reviewed for authenticity before it's published.",
+      "Photos on ElderMatch are captured by our team during the on-site visit. No filters, no staging. Facilities can add their own images, but every image is manually reviewed for authenticity before it's published.",
   },
   {
     icon: MessageCircle,
     title: "Verified-stay reviews",
     body:
-      "Only families with a confirmed stay — booked or enquired through Kinstead — can leave a review. Every review is moderated for authenticity. Facilities cannot remove reviews they don't like.",
+      "Only families with a confirmed stay — booked or enquired through ElderMatch — can leave a review. Every review is moderated for authenticity. Facilities cannot remove reviews they don't like.",
   },
   {
     icon: RefreshCw,
@@ -68,7 +68,7 @@ function About() {
           Verification is the point.
         </h1>
         <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
-          Kinstead exists because choosing a care home shouldn't feel like a gamble. Every home on this platform has been visited, audited, and continuously re-checked by our team. Here's exactly what that means.
+          ElderMatch exists because choosing a care home shouldn't feel like a gamble. Every home on this platform has been visited, audited, and continuously re-checked by our team. Here's exactly what that means.
         </p>
 
         <div className="mt-14 space-y-5">

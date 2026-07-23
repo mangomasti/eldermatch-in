@@ -8,7 +8,7 @@ export function Logo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
       <span className="inline-grid h-8 w-8 place-items-center rounded-full bg-primary text-primary-foreground">
         <Heart className="h-4 w-4" fill="currentColor" strokeWidth={0} />
       </span>
-      <span>Kinstead</span>
+      <span>ElderMatch</span>
     </Link>
   );
 }

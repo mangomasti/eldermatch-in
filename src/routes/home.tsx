@@ -8,13 +8,13 @@ import { facilities, NEIGHBORHOODS } from "@/lib/mock-data";
 export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
-      { title: "Find the right care home for your loved one — Kinstead" },
+      { title: "Find the right care home for your loved one — ElderMatch" },
       {
         name: "description",
         content:
           "Search verified assisted living, memory care and nursing homes near you. Real photos, verified reviews, licensed facilities.",
       },
-      { property: "og:title", content: "Find the right care home for your loved one — Kinstead" },
+      { property: "og:title", content: "Find the right care home for your loved one — ElderMatch" },
       {
         property: "og:description",
         content: "Verified senior care homes with real photos and reviews from confirmed stays.",

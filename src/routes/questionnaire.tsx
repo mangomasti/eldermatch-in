@@ -29,7 +29,7 @@ export const Route = createFileRoute("/questionnaire")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Get personalised recommendations — Kinstead" },
+      { title: "Get personalised recommendations — ElderMatch" },
       {
         name: "description",
         content:
@@ -75,7 +75,7 @@ function Questionnaire() {
   return (
     <div className="min-h-screen bg-warm/30">
       <header className="mx-auto flex max-w-4xl items-center justify-between px-5 py-6 md:px-8">
-        <Link to="/" className="serif text-lg font-medium">Kinstead</Link>
+        <Link to="/" className="serif text-lg font-medium">ElderMatch</Link>
         <button onClick={skip} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
           <SkipForward className="h-4 w-4" /> Skip for now
         </button>
