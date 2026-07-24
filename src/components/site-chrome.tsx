@@ -111,9 +111,11 @@ export function SiteFooter() {
           <div className="mb-3 text-sm font-semibold">For facilities</div>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li><Link to="/register-facility" className="hover:text-foreground">List your facility</Link></li>
+            <li><Link to="/dashboard" className="hover:text-foreground">Facility login</Link></li>
             <li><Link to="/about" className="hover:text-foreground">Our standards</Link></li>
           </ul>
         </div>
+
       </div>
       <div className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground">
         © 2026 ElderMatch. Made with care.

@@ -11,6 +11,14 @@ export type Preferences = {
   location: string;
   priorities: string[];
   language: string;
+  // Expanded fields (all optional / skippable)
+  condition?: string;
+  mobility?: string;
+  environment?: string;
+  timeline?: string;
+  roomPreference?: string;
+  pets?: string;
+  distantFamily?: "Yes" | "No" | "";
 };
 
 export const DEFAULT_PREFS: Preferences = {
@@ -20,7 +28,56 @@ export const DEFAULT_PREFS: Preferences = {
   location: "",
   priorities: [],
   language: "",
+  condition: "",
+  mobility: "",
+  environment: "",
+  timeline: "",
+  roomPreference: "",
+  pets: "",
+  distantFamily: "",
 };
+
+export const CONDITION_OPTIONS = [
+  "Dementia/Alzheimer's",
+  "Parkinson's",
+  "Diabetes management",
+  "Post-stroke recovery",
+  "None of these",
+  "Prefer not to say",
+] as const;
+
+export const MOBILITY_OPTIONS = [
+  "Fully independent",
+  "Uses a cane or walker",
+  "Wheelchair-bound",
+  "Bedridden",
+] as const;
+
+export const ENVIRONMENT_OPTIONS = [
+  "Quiet & calm",
+  "Social & active",
+  "Small intimate setting",
+  "Large community with lots of amenities",
+] as const;
+
+export const TIMELINE_OPTIONS = [
+  "Immediately / urgent",
+  "Within 1 month",
+  "1–3 months",
+  "Just researching for the future",
+] as const;
+
+export const ROOM_OPTIONS = [
+  "Private required",
+  "Open to shared",
+  "No preference",
+] as const;
+
+export const PETS_OPTIONS = [
+  "Yes, has a pet",
+  "Important even without a pet",
+  "Not important",
+] as const;
 
 export const RELATIONSHIPS = [
   "Myself",
@@ -40,13 +97,6 @@ export const LIVING_SITUATIONS = [
 ] as const;
 export type LivingSituation = (typeof LIVING_SITUATIONS)[number] | "";
 
-export const URGENCY_LEVELS = [
-  "Just researching",
-  "Planning within a few months",
-  "Need placement urgently",
-] as const;
-export type Urgency = (typeof URGENCY_LEVELS)[number] | "";
-
 export type Profile = {
   basic: {
     name: string;
@@ -57,9 +107,8 @@ export type Profile = {
   recipient: {
     name: string;
     notReadyToShareName: boolean;
-    age: string; // stored as string to allow empty input
+    age: string;
     livingSituation: LivingSituation;
-    urgency: Urgency;
   };
 };
 
@@ -70,7 +119,6 @@ export const DEFAULT_PROFILE: Profile = {
     notReadyToShareName: false,
     age: "",
     livingSituation: "",
-    urgency: "",
   },
 };
 
@@ -139,7 +187,11 @@ export function useProfile() {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    setProfile(safeRead<Profile>(KEY_PROFILE, DEFAULT_PROFILE));
+    const loaded = safeRead<Partial<Profile>>(KEY_PROFILE, DEFAULT_PROFILE);
+    setProfile({
+      basic: { ...DEFAULT_PROFILE.basic, ...(loaded.basic ?? {}) },
+      recipient: { ...DEFAULT_PROFILE.recipient, ...(loaded.recipient ?? {}) },
+    });
     setHydrated(true);
   }, []);
 

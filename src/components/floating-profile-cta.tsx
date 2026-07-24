@@ -12,6 +12,8 @@ export function FloatingProfileCta() {
 
   if (!hydrated) return null;
   if (HIDDEN_PATHS.has(pathname)) return null;
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/register-facility")) return null;
+
 
   const hasProfile = prefs != null;
   const label = hasProfile ? "Update Your Preferences" : "Build Your Profile";

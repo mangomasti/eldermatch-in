@@ -1,71 +1,71 @@
 ## Overview
 
-Add a mock user profile stored in `localStorage` alongside existing prefs/shortlist. Profile is accessed via a header avatar and rendered on a dedicated `/profile` route with four sections. Care preferences reuse the existing questionnaire data — no duplication.
+Three coordinated additions to ElderMatch: a mock Facility Admin Dashboard, an expanded Preference Questionnaire, and richer Facility registration + public profile fields (with anonymized reviews).
 
-## 1. Data layer
+---
 
-Extend `src/lib/prefs.ts` with a new `useProfile` hook mirroring `usePreferences`:
+## Part 1 — Facility Admin Dashboard
 
-- Storage key: `eldermatch.profile` (new; `kinstead.*` keys stay untouched so existing saved prefs/shortlist survive).
-- Type `Profile` with:
-  - `basic`: `{ name, email, phone, relationship }` where relationship is a union of the six dropdown values.
-  - `recipient`: `{ name, notReadyToShareName: boolean, age, livingSituation, urgency }`.
-- Returns `{ profile, save, hydrated }`. `save` merges partial updates.
+**New routes** (layout + tabs):
+- `src/routes/dashboard.tsx` — sidebar layout with `<Outlet />`, shell chrome
+- `src/routes/dashboard.index.tsx` — Overview
+- `src/routes/dashboard.profile.tsx` — Manage Profile
+- `src/routes/dashboard.verification.tsx` — Verification checklist
+- `src/routes/dashboard.leads.tsx` — Enquiries with status dropdown
+- `src/routes/dashboard.reviews.tsx` — Anonymous reviews + respond
+- `src/routes/dashboard.analytics.tsx` — Mock bar chart + percentile stat
 
-No changes to the existing `usePreferences` / `useShortlist` hooks or their storage keys.
+**Access:**
+- After submitting `register-facility.tsx`, redirect to `/dashboard` (replace success screen's primary CTA / navigate on submit)
+- Add "Facility Login" link in `SiteFooter`
 
-## 2. Header avatar (access point)
+**Mock data:** extend `src/lib/mock-data.ts` with `MOCK_DASHBOARD` (facility identity, stats, leads, reviews, verification state, weekly views array).
 
-Update `src/components/site-chrome.tsx`:
+**Design:** dense card grid, muted sidebar, same tokens. Profile views & Leads generated are the largest hero stats.
 
-- Add a `ProfileAvatar` button rendered inside `SiteHeader`, right-aligned next to the existing nav actions on desktop and inside the mobile menu on small screens.
-- Circular button: shows the user's initials if `profile?.basic.name` is set, otherwise a `User` lucide icon. Uses `bg-primary/10 text-primary`, `ring-1 ring-border`, and a hover state.
-- Wraps `<Link to="/profile">` with `aria-label="My profile"`. No dropdown — click navigates to the page.
-- Suppress rendering until `useProfile().hydrated` to avoid SSR mismatch (returns a neutral placeholder circle so header layout doesn't shift).
+---
 
-## 3. `/profile` route
+## Part 2 — Expanded Questionnaire
 
-New file `src/routes/profile.tsx` with:
+Edit `src/components/questionnaire-form.tsx` to add 7 new steps (all skippable): condition, mobility, environment, timeline, room preference, pets, distant family.
 
-- `head()` metadata: title "My profile — ElderMatch", matching description + og:title/og:description; no og:image.
-- Wrapped in `SiteHeader` + `SiteFooter`.
-- Page hero: name + relationship subline + "Edit basic info" button.
-- Four cards in a single-column layout on mobile, two-column on `md+`:
+Extend `Preferences` in `src/lib/prefs.ts` with new fields + defaults.
 
-### A) Basic Info card
+Remove `urgency` from `Profile.recipient` in `prefs.ts` and from `src/routes/profile.tsx` recipient card; timeline lives in Preferences now.
 
-Inline form (always editable, autosaves on blur via `save`) with fields: Name, Email (type=email), Phone (type=tel), Relationship (native `<select>` with the six options). Uses the same `inputCls` styling pattern already used in `facility.$id.tsx`. Small "Saved" toast on blur when a field changes.
+Update `src/routes/profile.tsx` Care Preferences card to display the new fields.
 
-### B) Care Recipient Details card
+Add lightweight "Recommended for you" tag on `src/routes/search.tsx` facility cards when preferences match (illustrative — e.g. show tag if condition/mobility aligns with facility's care capabilities).
 
-Same inline-edit pattern:
+---
 
-- Name text input + a checkbox "Not ready to share yet" that disables the name field and stores `notReadyToShareName: true`.
-- Age (number input, 40–110 range).
-- Current living situation `<select>`: Living alone / Living with family / Currently in a facility / Currently hospitalized.
-- Urgency `<select>`: Just researching / Planning within a few months / Need placement urgently. When "urgent" is chosen, show a subtle amber note "We'll prioritise homes with immediate availability."
+## Part 3 — Registration + Public Profile
 
-### C) Care Preferences card (reuses questionnaire)
+**Registration (`src/routes/register-facility.tsx`):** add fields — tier dropdown, standardized care checkboxes with tooltip definitions, itemized costs (single/double/shared + extras + deposit), condition-specific multi-select, staff experience, hospital tie-up, distances (airport/hospital), cuisine, emergency plan (on-call doctor / ambulance / partner hospital). On submit → `navigate({ to: "/dashboard" })`.
 
-Read-only summary sourced from `usePreferences()`:
+**Mock data (`src/lib/mock-data.ts`):** extend each facility with tier, itemized costs, condition capabilities, staff experience, hospital tie-up, distances, cuisine, emergency plan, priceHistory, lastVerified, lastUpdated. Strip reviewer names → replace with `verifiedStay: true`.
 
-- If `prefs` is null: empty state with a "Build your preferences" button that opens the existing floating-CTA slide-in panel (see integration note below), or falls back to a link to `/questionnaire`.
-- If `prefs` exists: render care needs as chips, budget as "Up to ₹X,XXX/mo", location, priorities (ordered chips 1/2/3), and language. A single "Update preferences" button opens the same slide-in panel.
+**Public profile (`src/routes/facility.$id.tsx`):**
+- Tier badge near top; last verified / last updated prominent
+- Itemized cost table (included vs. billed separately)
+- Condition-specific care tags
+- Hospital tie-up section
+- Staff credential callout
+- Distances shown with location
+- Cuisine field
+- Emergency Preparedness section
+- Price history mini-timeline
+- "Request a Trial Stay" button beside contact CTA
+- Reviews render anonymously with "Verified Stay" badge
 
-Integration: extract the panel-opening state from `src/components/floating-profile-cta.tsx` into a tiny context (`PreferenceDrawerProvider` in `src/components/preference-drawer.tsx`) so both the floating CTA and the profile card can trigger it. The provider owns `open` state and renders the drawer once at the root. `FloatingProfileCta` becomes just the fixed button that calls `openDrawer()`. Fallback if this refactor is out of scope: the profile buttons simply `navigate({ to: "/questionnaire" })`.
+---
 
-### D) Saved/Shortlisted Facilities card
+## Technical notes
 
-- Uses `useShortlist()` to read saved facility ids and `facilities` from `src/lib/mock-data.ts` to resolve them.
-- Renders a compact list (thumbnail, name, neighbourhood, price range, rating, "View" link → `/facility/$id`, and a "Remove" button that calls `toggle(id)`).
-- Empty state: "No saved homes yet — browse and tap the heart to shortlist." with a link to `/search`.
+- All new routes use `createFileRoute` with `head()` metadata.
+- Dashboard sidebar uses existing shadcn sidebar primitives.
+- Analytics chart: simple CSS bar chart (no chart lib needed).
+- Tooltips for care-type definitions: shadcn `Tooltip`.
+- No backend — leads/reviews/stats are hardcoded mock state; edits are local component state with toast confirmations.
+- Preferences additions are backward-compatible via optional fields + defaults.
 
-## 4. Floating CTA on the profile page
-
-The existing `FloatingProfileCta` should stay hidden on `/profile` (redundant there). Add `/profile` to the pathname exclusion list in `src/components/floating-profile-cta.tsx`.
-
-## Out of scope
-
-- No real auth, no backend, no avatar upload.
-- No editing questionnaire answers directly from card C (users use the shared questionnaire flow to change them).
-- No changes to mock data or facility pages beyond the new "Remove from shortlist" reuse of the existing hook.
