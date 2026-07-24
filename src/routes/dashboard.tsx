@@ -30,14 +30,15 @@ export const Route = createFileRoute("/dashboard")({
   component: DashboardLayout,
 });
 
-const NAV = [
+const NAV: { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean }[] = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/dashboard/profile", label: "Manage profile", icon: Building2 },
   { to: "/dashboard/verification", label: "Verification", icon: ShieldCheck },
   { to: "/dashboard/leads", label: "Leads", icon: Inbox },
   { to: "/dashboard/reviews", label: "Reviews", icon: Star },
   { to: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
-] as const;
+];
+
 
 function DashboardLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
