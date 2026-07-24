@@ -13,9 +13,18 @@ import {
   Stethoscope,
   Languages,
   Sparkles,
+  Building2,
+  Utensils,
+  Plane,
+  Hospital,
+  Siren,
+  TrendingUp,
+  BedDouble,
+  Calendar,
+  PawPrint,
 } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
-import { getFacility, formatINR } from "@/lib/mock-data";
+import { getFacility, getEnrichment, formatINR } from "@/lib/mock-data";
 import { useShortlist } from "@/lib/prefs";
 
 export const Route = createFileRoute("/facility/$id")({
@@ -64,9 +73,11 @@ export const Route = createFileRoute("/facility/$id")({
 function FacilityProfile() {
   const data = Route.useLoaderData() as { facility: import("@/lib/mock-data").Facility };
   const f = data.facility;
+  const e = getEnrichment(f.id);
   const { has, toggle } = useShortlist();
   const saved = has(f.id);
   const [contactOpen, setContactOpen] = useState(false);
+  const [trialOpen, setTrialOpen] = useState(false);
 
   return (
     <div className="min-h-screen">
@@ -108,6 +119,11 @@ function FacilityProfile() {
                       <BadgeCheck className="h-3.5 w-3.5" /> Verified · Last verified {f.lastVerified}
                     </span>
                   )}
+                  {e && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                      <Building2 className="h-3.5 w-3.5" /> {e.tier}
+                    </span>
+                  )}
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                   <span className="inline-flex items-center gap-1">
@@ -137,17 +153,79 @@ function FacilityProfile() {
 
             <p className="mt-6 text-base leading-relaxed text-foreground/85">{f.longDescription}</p>
 
-            <Section title="Pricing">
+            <Section title="What's included in the price">
               <div className="rounded-2xl border border-border bg-card p-5">
                 <div className="flex items-baseline gap-2">
                   <span className="font-serif text-3xl">{formatINR(f.priceMin)}</span>
                   <span className="text-muted-foreground">to {formatINR(f.priceMax)} / month</span>
                 </div>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Base cost includes room, boarding, housekeeping and standard care. Physiotherapy sessions, specialist medications, and one-to-one attendants are billed separately.
-                </p>
+                {e ? (
+                  <div className="mt-5 space-y-3">
+                    <table className="w-full text-sm">
+                      <tbody className="divide-y divide-border">
+                        {typeof e.itemizedCosts.private === "number" && (
+                          <tr>
+                            <td className="py-2 text-muted-foreground">Private room (base)</td>
+                            <td className="py-2 text-right font-medium">
+                              {e.itemizedCosts.private === 0 ? "Free" : `${formatINR(e.itemizedCosts.private)} /mo`}
+                            </td>
+                          </tr>
+                        )}
+                        {typeof e.itemizedCosts.shared === "number" && (
+                          <tr>
+                            <td className="py-2 text-muted-foreground">Shared room (base)</td>
+                            <td className="py-2 text-right font-medium">
+                              {e.itemizedCosts.shared === 0 ? "Free" : `${formatINR(e.itemizedCosts.shared)} /mo`}
+                            </td>
+                          </tr>
+                        )}
+                        {e.itemizedCosts.extras.map((x) => (
+                          <tr key={x.name}>
+                            <td className="py-2 text-muted-foreground">{x.name}</td>
+                            <td className="py-2 text-right font-medium">{x.cost}</td>
+                          </tr>
+                        ))}
+                        <tr>
+                          <td className="py-2 text-muted-foreground">Security deposit</td>
+                          <td className="py-2 text-right font-medium">{e.itemizedCosts.deposit}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p className="text-xs text-muted-foreground">Base includes room, meals, housekeeping, standard nursing and activity programme.</p>
+                  </div>
+                ) : (
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Base cost includes room, boarding, housekeeping and standard care. Extras billed separately.
+                  </p>
+                )}
               </div>
+
+              {e && (
+                <div className="mt-3 flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card p-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-primary" />
+                    <span className="font-medium">Price history:</span>
+                  </div>
+                  {e.priceHistory.map((p) => (
+                    <span key={p.month} className="text-muted-foreground">
+                      {p.month}: <span className="text-foreground">{p.price === 0 ? "Free" : formatINR(p.price)}</span>
+                    </span>
+                  ))}
+                </div>
+              )}
             </Section>
+
+            {e && e.conditionCare.length > 0 && (
+              <Section title="Specialised condition care">
+                <div className="flex flex-wrap gap-2">
+                  {e.conditionCare.map((c) => (
+                    <span key={c} className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary">
+                      <Stethoscope className="h-3.5 w-3.5" /> {c}
+                    </span>
+                  ))}
+                </div>
+              </Section>
+            )}
 
             <Section title="Amenities">
               <div className="flex flex-wrap gap-2">
@@ -156,10 +234,15 @@ function FacilityProfile() {
                     {a}
                   </span>
                 ))}
+                {e?.petFriendly && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-warm px-3 py-1.5 text-sm text-warm-foreground">
+                    <PawPrint className="h-3.5 w-3.5" /> Pet-friendly
+                  </span>
+                )}
               </div>
             </Section>
 
-            <Section title="Medical capabilities">
+            <Section title="Medical capabilities & staff">
               <div className="grid gap-3 sm:grid-cols-2">
                 {f.medicalCapabilities.map((m) => (
                   <div key={m} className="flex items-center gap-2.5 rounded-xl border border-border bg-card p-3.5">
@@ -168,14 +251,55 @@ function FacilityProfile() {
                   </div>
                 ))}
               </div>
-              <div className="mt-4 flex items-center gap-3 rounded-xl bg-warm/40 p-4">
-                <Users className="h-5 w-5 text-primary" />
-                <div className="text-sm">
-                  <span className="font-medium">Staff-to-resident ratio: </span>
-                  {f.staffRatio}
+              {e ? (
+                <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                  <Stat icon={<Users className="h-4 w-4" />} label="Staff ratio" value={e.staff.ratio} />
+                  <Stat icon={<BadgeCheck className="h-4 w-4" />} label="Credentials" value={e.staff.credentials} />
+                  <Stat icon={<Sparkles className="h-4 w-4" />} label="Avg. experience" value={e.staff.avgExperience} />
                 </div>
-              </div>
+              ) : (
+                <div className="mt-4 flex items-center gap-3 rounded-xl bg-warm/40 p-4">
+                  <Users className="h-5 w-5 text-primary" />
+                  <div className="text-sm">
+                    <span className="font-medium">Staff-to-resident ratio: </span>{f.staffRatio}
+                  </div>
+                </div>
+              )}
             </Section>
+
+            {e && (
+              <Section title="Location & connections">
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <Stat icon={<Hospital className="h-4 w-4" />} label="Nearest hospital" value={e.distanceToHospital} />
+                  <Stat icon={<Plane className="h-4 w-4" />} label="Nearest airport" value={e.distanceToAirport} />
+                  <Stat icon={<Utensils className="h-4 w-4" />} label="Cuisine" value={e.cuisine.join(", ")} />
+                </div>
+                {e.hospitalTieUp && (
+                  <div className="mt-3 flex items-start gap-2 rounded-xl bg-verified/10 p-3 text-sm text-foreground">
+                    <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-verified" />
+                    <span>
+                      <span className="font-medium">Hospital tie-up:</span> {e.hospitalTieUp}
+                    </span>
+                  </div>
+                )}
+              </Section>
+            )}
+
+            {e && (
+              <Section title="Emergency response plan">
+                <div className="rounded-2xl border border-border bg-card p-5">
+                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
+                    <Siren className="h-4 w-4 text-highlight" /> What happens in a medical emergency
+                  </div>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start gap-2"><Stethoscope className="mt-0.5 h-4 w-4 text-primary" />{e.emergencyPlan.onCallDoctor}</li>
+                    <li className="flex items-start gap-2"><Siren className="mt-0.5 h-4 w-4 text-primary" />{e.emergencyPlan.ambulance}</li>
+                    <li className="flex items-start gap-2"><Hospital className="mt-0.5 h-4 w-4 text-primary" />{e.emergencyPlan.partnerHospital}</li>
+                    <li className="flex items-start gap-2"><Users className="mt-0.5 h-4 w-4 text-primary" />{e.emergencyPlan.protocol}</li>
+                  </ul>
+                </div>
+              </Section>
+            )}
 
             <Section title="Licensing & accreditation">
               <ul className="space-y-2">
@@ -237,16 +361,19 @@ function FacilityProfile() {
             </Section>
 
             <Section title={`Reviews · ${f.rating} average from ${f.reviewCount} stays`}>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Reviews are anonymous by default to protect resident privacy. Only families with a <span className="font-medium text-verified">Verified Stay</span> can post.
+              </p>
               <div className="space-y-4">
                 {f.reviews.map((r, i) => (
                   <article key={i} className="rounded-2xl border border-border bg-card p-5">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-3">
                         <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/10 font-semibold text-primary">
-                          {r.author.charAt(0)}
+                          {String.fromCharCode(65 + i)}
                         </span>
                         <div>
-                          <div className="text-sm font-semibold">{r.author}</div>
+                          <div className="text-sm font-semibold">Verified family {String.fromCharCode(65 + i)}</div>
                           <div className="text-xs text-muted-foreground">{r.date}</div>
                         </div>
                       </div>
@@ -293,6 +420,14 @@ function FacilityProfile() {
               >
                 Contact this facility
               </button>
+              {e?.trialStay.available && (
+                <button
+                  onClick={() => setTrialOpen(true)}
+                  className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-full border border-primary/40 py-3 text-sm font-semibold text-primary hover:bg-primary/5"
+                >
+                  <BedDouble className="h-4 w-4" /> Book a {e.trialStay.nights}-night trial stay
+                </button>
+              )}
               <button
                 onClick={() => {
                   toggle(f.id);
@@ -324,6 +459,14 @@ function FacilityProfile() {
       </div>
 
       {contactOpen && <ContactModal facilityName={f.name} onClose={() => setContactOpen(false)} />}
+      {trialOpen && e && (
+        <TrialModal
+          facilityName={f.name}
+          nights={e.trialStay.nights}
+          price={e.trialStay.price}
+          onClose={() => setTrialOpen(false)}
+        />
+      )}
 
       <SiteFooter />
     </div>
@@ -336,6 +479,17 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <h2 className="font-serif text-2xl">{title}</h2>
       <div className="mt-4">{children}</div>
     </section>
+  );
+}
+
+function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-border bg-card p-3.5">
+      <div className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <span className="text-primary">{icon}</span> {label}
+      </div>
+      <div className="mt-1.5 text-sm text-foreground">{value}</div>
+    </div>
   );
 }
 
@@ -406,6 +560,66 @@ function ContactModal({ facilityName, onClose }: { facilityName: string; onClose
           <p className="text-center text-xs text-muted-foreground">
             ElderMatch never shares your details with anyone else.
           </p>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function TrialModal({
+  facilityName,
+  nights,
+  price,
+  onClose,
+}: {
+  facilityName: string;
+  nights: number;
+  price?: number;
+  onClose: () => void;
+}) {
+  const [submitting, setSubmitting] = useState(false);
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setTimeout(() => {
+      toast.success(`Trial stay request sent to ${facilityName}.`);
+      onClose();
+    }, 400);
+  };
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto p-0 sm:items-center sm:p-4">
+      <div className="absolute inset-0 bg-foreground/40" onClick={onClose} />
+      <div className="relative z-10 w-full max-w-md rounded-t-3xl bg-background p-6 shadow-[var(--shadow-lift)] sm:rounded-3xl">
+        <div className="flex items-start justify-between">
+          <div>
+            <h3 className="font-serif text-2xl">Book a {nights}-night trial</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              A short stay is the best way to know if {facilityName} is the right fit.
+              {typeof price === "number" && ` Trial pricing: ${formatINR(price)}.`}
+            </p>
+          </div>
+          <button onClick={onClose} className="rounded-full p-1.5 hover:bg-accent">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <form onSubmit={submit} className="mt-5 space-y-3">
+          <Field label="Your name">
+            <input required className={inputCls} placeholder="Full name" />
+          </Field>
+          <Field label="Phone">
+            <input required type="tel" className={inputCls} placeholder="+91 ..." />
+          </Field>
+          <Field label="Preferred start date">
+            <input required type="date" className={inputCls} />
+          </Field>
+          <button
+            type="submit"
+            disabled={submitting}
+            className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+          >
+            <Calendar className="h-4 w-4" />
+            {submitting ? "Sending…" : "Request trial stay"}
+          </button>
         </form>
       </div>
     </div>

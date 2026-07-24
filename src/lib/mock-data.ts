@@ -523,3 +523,443 @@ export function formatINR(n: number) {
 export function getFacility(id: string) {
   return facilities.find((f) => f.id === id);
 }
+
+// ============================================================
+// Expanded metadata: standardized tiers, care types, per-facility enrichment
+// ============================================================
+
+export const FACILITY_TIERS = [
+  "NGO/Free care",
+  "Budget/Private",
+  "Mid-range assisted living",
+  "Premium/Medical care",
+] as const;
+export type FacilityTier = (typeof FACILITY_TIERS)[number];
+
+export const STANDARDIZED_CARE_TYPES: { name: string; definition: string }[] = [
+  { name: "Assisted Living", definition: "Help with daily activities (bathing, dressing, meals) while maintaining independence." },
+  { name: "Nursing Care", definition: "24/7 medical nursing for chronic conditions and post-hospital recovery." },
+  { name: "Dementia Care", definition: "Specialised memory care with secure environment and trained staff." },
+  { name: "Palliative Care", definition: "Comfort-focused care for terminal illness, emphasising quality of life." },
+  { name: "Respite / Short-stay", definition: "Temporary stays (days to weeks) to support family caregivers." },
+  { name: "Independent Living", definition: "Community living with light housekeeping and social programmes." },
+];
+
+export const CONDITION_CARE_OPTIONS = [
+  "Post-surgery recovery",
+  "Paralysis",
+  "Chronic illness (diabetes, hypertension)",
+  "Palliative care",
+  "Bedridden care",
+  "Dementia/Alzheimer's",
+];
+
+export type FacilityEnrichment = {
+  tier: FacilityTier;
+  yearFounded: number;
+  lastUpdated: string;
+  itemizedCosts: {
+    private?: number;
+    shared?: number;
+    extras: { name: string; cost: string }[];
+    deposit: string;
+  };
+  conditionCare: string[];
+  staff: { credentials: string; ratio: string; avgExperience: string };
+  hospitalTieUp?: string;
+  distanceToHospital: string;
+  distanceToAirport: string;
+  cuisine: string[];
+  emergencyPlan: {
+    onCallDoctor: string;
+    ambulance: string;
+    partnerHospital: string;
+    protocol: string;
+  };
+  priceHistory: { month: string; price: number }[];
+  trialStay: { available: boolean; nights: number; price?: number };
+  petFriendly: boolean;
+  distantFamilySupport?: string;
+};
+
+const commonEmergency = {
+  onCallDoctor: "24/7 on-call doctor within 15 minutes",
+  ambulance: "Ambulance on standby, 2-minute dispatch",
+  partnerHospital: "Manipal Hospital (partner, priority admission)",
+  protocol: "Family notified within 5 minutes of any incident.",
+};
+
+export const FACILITY_ENRICHMENT: Record<string, FacilityEnrichment> = {
+  "willowbrook-gardens": {
+    tier: "Mid-range assisted living",
+    yearFounded: 2016,
+    lastUpdated: "March 2026",
+    itemizedCosts: {
+      private: 65000,
+      shared: 45000,
+      extras: [
+        { name: "Physiotherapy sessions", cost: "₹500 / session" },
+        { name: "Special diet (diabetic)", cost: "₹2,500 / month" },
+        { name: "Escorted hospital visit", cost: "₹1,500 / visit" },
+      ],
+      deposit: "₹50,000 refundable",
+    },
+    conditionCare: ["Post-surgery recovery", "Chronic illness (diabetes, hypertension)", "Dementia/Alzheimer's"],
+    staff: {
+      credentials: "GNM & B.Sc. Nursing; 2 geriatric-trained doctors",
+      ratio: "1 : 4 (day) · 1 : 8 (night)",
+      avgExperience: "8 years",
+    },
+    hospitalTieUp: "Manipal Hospitals (Old Airport Road) — 15 min",
+    distanceToHospital: "3.2 km to Manipal",
+    distanceToAirport: "38 km to KIA",
+    cuisine: ["South Indian", "North Indian", "Continental", "Diabetic-friendly"],
+    emergencyPlan: commonEmergency,
+    priceHistory: [
+      { month: "Sep 2025", price: 60000 },
+      { month: "Dec 2025", price: 62000 },
+      { month: "Mar 2026", price: 65000 },
+    ],
+    trialStay: { available: true, nights: 3, price: 8500 },
+    petFriendly: true,
+    distantFamilySupport: "Weekly video check-ins for NRI families",
+  },
+  "silverpine-residences": {
+    tier: "Premium/Medical care",
+    yearFounded: 2012,
+    lastUpdated: "February 2026",
+    itemizedCosts: {
+      private: 95000,
+      extras: [
+        { name: "24/7 dedicated attendant", cost: "₹15,000 / month" },
+        { name: "Specialist consultations", cost: "₹2,000 / visit" },
+      ],
+      deposit: "₹1,00,000 refundable",
+    },
+    conditionCare: ["Post-surgery recovery", "Paralysis", "Palliative care", "Bedridden care"],
+    staff: {
+      credentials: "MD-supervised; ICU-trained nurses",
+      ratio: "1 : 3 (day) · 1 : 6 (night)",
+      avgExperience: "12 years",
+    },
+    hospitalTieUp: "Fortis Whitefield — 8 min",
+    distanceToHospital: "1.6 km to Fortis",
+    distanceToAirport: "45 km to KIA",
+    cuisine: ["South Indian", "North Indian", "Low-sodium", "Renal diet"],
+    emergencyPlan: { ...commonEmergency, partnerHospital: "Fortis Whitefield (partner, priority admission)" },
+    priceHistory: [
+      { month: "Sep 2025", price: 90000 },
+      { month: "Dec 2025", price: 92000 },
+      { month: "Feb 2026", price: 95000 },
+    ],
+    trialStay: { available: true, nights: 5, price: 18000 },
+    petFriendly: false,
+    distantFamilySupport: "Dedicated NRI liaison and monthly medical reports",
+  },
+  "banyan-house": {
+    tier: "Budget/Private",
+    yearFounded: 2019,
+    lastUpdated: "January 2026",
+    itemizedCosts: {
+      shared: 28000,
+      private: 42000,
+      extras: [
+        { name: "Laundry (personal)", cost: "₹800 / month" },
+        { name: "Physio (weekly)", cost: "₹1,800 / month" },
+      ],
+      deposit: "₹25,000 refundable",
+    },
+    conditionCare: ["Chronic illness (diabetes, hypertension)"],
+    staff: {
+      credentials: "GNM nurses + trained caregivers",
+      ratio: "1 : 6 (day) · 1 : 12 (night)",
+      avgExperience: "5 years",
+    },
+    hospitalTieUp: "Apollo Jayanagar — 10 min",
+    distanceToHospital: "2.4 km to Apollo",
+    distanceToAirport: "42 km to KIA",
+    cuisine: ["South Indian", "Home-style vegetarian"],
+    emergencyPlan: { ...commonEmergency, partnerHospital: "Apollo Jayanagar (partner)" },
+    priceHistory: [
+      { month: "Jul 2025", price: 26000 },
+      { month: "Oct 2025", price: 27000 },
+      { month: "Jan 2026", price: 28000 },
+    ],
+    trialStay: { available: true, nights: 2, price: 3500 },
+    petFriendly: true,
+  },
+  "meadowlark-manor": {
+    tier: "Premium/Medical care",
+    yearFounded: 2010,
+    lastUpdated: "March 2026",
+    itemizedCosts: {
+      private: 88000,
+      extras: [
+        { name: "Personal chef consult", cost: "₹5,000 / month" },
+        { name: "Salon & wellness", cost: "₹2,500 / month" },
+      ],
+      deposit: "₹75,000 refundable",
+    },
+    conditionCare: ["Dementia/Alzheimer's", "Post-surgery recovery"],
+    staff: {
+      credentials: "Geriatrician-led; certified memory-care staff",
+      ratio: "1 : 3 (day) · 1 : 5 (night)",
+      avgExperience: "10 years",
+    },
+    hospitalTieUp: "Sakra World Hospital — 12 min",
+    distanceToHospital: "2.9 km to Sakra",
+    distanceToAirport: "40 km to KIA",
+    cuisine: ["Multi-cuisine", "Diabetic-friendly", "Jain options"],
+    emergencyPlan: { ...commonEmergency, partnerHospital: "Sakra World Hospital (partner)" },
+    priceHistory: [
+      { month: "Sep 2025", price: 84000 },
+      { month: "Dec 2025", price: 86000 },
+      { month: "Mar 2026", price: 88000 },
+    ],
+    trialStay: { available: true, nights: 3, price: 12000 },
+    petFriendly: false,
+    distantFamilySupport: "Video visits scheduled by concierge",
+  },
+  "ashraya-nivas": {
+    tier: "NGO/Free care",
+    yearFounded: 2005,
+    lastUpdated: "December 2025",
+    itemizedCosts: {
+      shared: 0,
+      extras: [
+        { name: "Voluntary contribution", cost: "As you're able" },
+      ],
+      deposit: "None",
+    },
+    conditionCare: ["Chronic illness (diabetes, hypertension)"],
+    staff: {
+      credentials: "ANM nurses + volunteer caregivers",
+      ratio: "1 : 8 (day) · 1 : 15 (night)",
+      avgExperience: "6 years",
+    },
+    hospitalTieUp: "Victoria Hospital (govt.) — 20 min",
+    distanceToHospital: "5.1 km to Victoria",
+    distanceToAirport: "48 km to KIA",
+    cuisine: ["South Indian vegetarian"],
+    emergencyPlan: { ...commonEmergency, partnerHospital: "Victoria Hospital (govt. tie-up)", ambulance: "108 ambulance response" },
+    priceHistory: [
+      { month: "Jan 2025", price: 0 },
+      { month: "Jan 2026", price: 0 },
+    ],
+    trialStay: { available: false, nights: 0 },
+    petFriendly: false,
+  },
+  "cypress-court": {
+    tier: "Mid-range assisted living",
+    yearFounded: 2015,
+    lastUpdated: "March 2026",
+    itemizedCosts: {
+      private: 58000,
+      shared: 40000,
+      extras: [
+        { name: "Physiotherapy", cost: "₹450 / session" },
+        { name: "Cultural events", cost: "Included" },
+      ],
+      deposit: "₹40,000 refundable",
+    },
+    conditionCare: ["Chronic illness (diabetes, hypertension)", "Post-surgery recovery"],
+    staff: {
+      credentials: "GNM nurses; visiting physician (3x/week)",
+      ratio: "1 : 5 (day) · 1 : 10 (night)",
+      avgExperience: "7 years",
+    },
+    hospitalTieUp: "Aster CMI — 14 min",
+    distanceToHospital: "3.6 km to Aster",
+    distanceToAirport: "35 km to KIA",
+    cuisine: ["South Indian", "North Indian", "Vegan options"],
+    emergencyPlan: { ...commonEmergency, partnerHospital: "Aster CMI (partner)" },
+    priceHistory: [
+      { month: "Sep 2025", price: 54000 },
+      { month: "Dec 2025", price: 56000 },
+      { month: "Mar 2026", price: 58000 },
+    ],
+    trialStay: { available: true, nights: 3, price: 7500 },
+    petFriendly: true,
+    distantFamilySupport: "Fortnightly video updates",
+  },
+};
+
+export function getEnrichment(id: string): FacilityEnrichment | undefined {
+  return FACILITY_ENRICHMENT[id];
+}
+
+// ============================================================
+// Mock Dashboard data (for the Facility Admin experience)
+// ============================================================
+
+export type Lead = {
+  id: string;
+  name: string;
+  contact: string;
+  question: string;
+  receivedAt: string;
+  status: "New" | "Contacted" | "Tour scheduled" | "Enrolled" | "Not a fit";
+  notes: string;
+};
+
+export type ReviewItem = {
+  id: string;
+  rating: number;
+  date: string;
+  verifiedStay: boolean;
+  text: string;
+  ownerReply?: string;
+};
+
+export type DashboardData = {
+  facilityId: string;
+  metrics: {
+    profileViews30d: number;
+    profileViewsPrev30d: number;
+    inquiries30d: number;
+    inquiriesPrev30d: number;
+    saves30d: number;
+    conversionRate: number;
+    responseTimeHours: number;
+    avgRating: number;
+    ratingCount: number;
+  };
+  verification: {
+    status: "Verified" | "Pending" | "Expiring soon";
+    lastVerified: string;
+    expiresOn: string;
+    documents: { name: string; status: "Approved" | "Missing" | "Expiring" }[];
+  };
+  leads: Lead[];
+  reviews: ReviewItem[];
+  demographics: { area: string; percent: number }[];
+  weeklyViews: { week: string; views: number }[];
+  competitorComparison: {
+    metric: string;
+    you: number | string;
+    marketAvg: number | string;
+  }[];
+};
+
+export const MOCK_DASHBOARD: DashboardData = {
+  facilityId: "willowbrook-gardens",
+  metrics: {
+    profileViews30d: 1284,
+    profileViewsPrev30d: 1042,
+    inquiries30d: 38,
+    inquiriesPrev30d: 29,
+    saves30d: 92,
+    conversionRate: 3.0,
+    responseTimeHours: 4.2,
+    avgRating: 4.8,
+    ratingCount: 127,
+  },
+  verification: {
+    status: "Verified",
+    lastVerified: "March 2026",
+    expiresOn: "March 2027",
+    documents: [
+      { name: "Karnataka PNH registration", status: "Approved" },
+      { name: "Fire safety NOC", status: "Approved" },
+      { name: "NABH pre-accreditation", status: "Approved" },
+      { name: "Insurance (public liability)", status: "Expiring" },
+    ],
+  },
+  leads: [
+    {
+      id: "L-1042",
+      name: "Priya S.",
+      contact: "priya***@gmail.com · +91 98••••32",
+      question: "Do you have availability for a 78-year-old post-hip-surgery in April?",
+      receivedAt: "2 hours ago",
+      status: "New",
+      notes: "",
+    },
+    {
+      id: "L-1041",
+      name: "Anonymous (NRI family)",
+      contact: "Via ElderMatch relay",
+      question: "Interested in trial stay. Father has early Alzheimer's.",
+      receivedAt: "Yesterday",
+      status: "Contacted",
+      notes: "Sent brochure; scheduling video tour Thursday.",
+    },
+    {
+      id: "L-1040",
+      name: "Rakesh M.",
+      contact: "+91 98••••17",
+      question: "Monthly cost for shared room including physiotherapy?",
+      receivedAt: "3 days ago",
+      status: "Tour scheduled",
+      notes: "Tour: Sat 11am.",
+    },
+    {
+      id: "L-1038",
+      name: "Vandana K.",
+      contact: "vandana***@yahoo.in",
+      question: "Vegetarian Jain meals available?",
+      receivedAt: "1 week ago",
+      status: "Enrolled",
+      notes: "Moved in on the 12th.",
+    },
+    {
+      id: "L-1035",
+      name: "Suresh R.",
+      contact: "+91 97••••04",
+      question: "Palliative care options?",
+      receivedAt: "2 weeks ago",
+      status: "Not a fit",
+      notes: "Referred to Silverpine.",
+    },
+  ],
+  reviews: [
+    {
+      id: "R-3021",
+      rating: 5,
+      date: "2 weeks ago",
+      verifiedStay: true,
+      text: "The nursing team is exceptional. My mother settled in within a week and the garden has been a real gift for her.",
+      ownerReply: "Thank you — we're so glad she's thriving. Please pass on our warm regards.",
+    },
+    {
+      id: "R-3018",
+      rating: 4,
+      date: "1 month ago",
+      verifiedStay: true,
+      text: "Great facility overall. Food could have more variety on weekends but the care is genuinely warm.",
+    },
+    {
+      id: "R-3012",
+      rating: 5,
+      date: "2 months ago",
+      verifiedStay: true,
+      text: "As an NRI, the weekly video updates gave me real peace of mind. Highly recommend for distant families.",
+      ownerReply: "Thank you — our NRI liaison programme is one of the things we're proudest of.",
+    },
+    {
+      id: "R-3005",
+      rating: 3,
+      date: "3 months ago",
+      verifiedStay: true,
+      text: "Care is solid, but the initial paperwork was slower than expected.",
+    },
+  ],
+  demographics: [
+    { area: "Indiranagar & nearby", percent: 42 },
+    { area: "Whitefield / east BLR", percent: 22 },
+    { area: "Central Bengaluru", percent: 18 },
+    { area: "NRI / out of city", percent: 18 },
+  ],
+  weeklyViews: [
+    { week: "W1", views: 264 },
+    { week: "W2", views: 298 },
+    { week: "W3", views: 341 },
+    { week: "W4", views: 381 },
+  ],
+  competitorComparison: [
+    { metric: "Avg. price (private room)", you: "₹65,000", marketAvg: "₹72,000" },
+    { metric: "Rating", you: 4.8, marketAvg: 4.5 },
+    { metric: "Response time (hours)", you: 4.2, marketAvg: 9.6 },
+    { metric: "Verified stay reviews", you: 127, marketAvg: 84 },
+  ],
+};

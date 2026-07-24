@@ -1,7 +1,17 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
-import { usePreferences, DEFAULT_PREFS, type Preferences } from "@/lib/prefs";
+import {
+  usePreferences,
+  DEFAULT_PREFS,
+  type Preferences,
+  CONDITION_OPTIONS,
+  MOBILITY_OPTIONS,
+  ENVIRONMENT_OPTIONS,
+  TIMELINE_OPTIONS,
+  ROOM_OPTIONS,
+  PETS_OPTIONS,
+} from "@/lib/prefs";
 import { LANGUAGES, NEIGHBORHOODS } from "@/lib/mock-data";
 
 const CARE_NEEDS = [
@@ -24,6 +34,13 @@ const PRIORITIES = [
 const STEPS = [
   "Who is this for?",
   "Care needs",
+  "Diagnosed condition",
+  "Mobility level",
+  "Preferred environment",
+  "Timeline",
+  "Room preference",
+  "Pets",
+  "Distant family",
   "Budget",
   "Location",
   "Priorities",
@@ -57,7 +74,7 @@ export function QuestionnaireForm({
       <div className="mb-8">
         <div className="mb-2 flex items-center justify-between text-xs font-medium text-muted-foreground">
           <span>Step {step + 1} of {STEPS.length}</span>
-          <span>{STEPS[step]}</span>
+          <span className="max-w-[55%] truncate text-right">{STEPS[step]}</span>
         </div>
         <div className="h-1.5 overflow-hidden rounded-full bg-border">
           <div
@@ -111,6 +128,91 @@ export function QuestionnaireForm({
         )}
 
         {step === 2 && (
+          <StepShell
+            title="Any diagnosed condition needing specialised care?"
+            hint="Skip if you'd rather not say."
+          >
+            <SingleChoice
+              options={CONDITION_OPTIONS as unknown as string[]}
+              value={form.condition ?? ""}
+              onChange={(v) => setForm({ ...form, condition: v })}
+            />
+          </StepShell>
+        )}
+
+        {step === 3 && (
+          <StepShell title="What's their mobility level?">
+            <SingleChoice
+              options={MOBILITY_OPTIONS as unknown as string[]}
+              value={form.mobility ?? ""}
+              onChange={(v) => setForm({ ...form, mobility: v })}
+            />
+          </StepShell>
+        )}
+
+        {step === 4 && (
+          <StepShell title="What kind of environment would they thrive in?">
+            <SingleChoice
+              options={ENVIRONMENT_OPTIONS as unknown as string[]}
+              value={form.environment ?? ""}
+              onChange={(v) => setForm({ ...form, environment: v })}
+            />
+          </StepShell>
+        )}
+
+        {step === 5 && (
+          <StepShell title="How soon is placement needed?">
+            <SingleChoice
+              options={TIMELINE_OPTIONS as unknown as string[]}
+              value={form.timeline ?? ""}
+              onChange={(v) => setForm({ ...form, timeline: v })}
+            />
+          </StepShell>
+        )}
+
+        {step === 6 && (
+          <StepShell title="Shared room okay, or private required?">
+            <SingleChoice
+              options={ROOM_OPTIONS as unknown as string[]}
+              value={form.roomPreference ?? ""}
+              onChange={(v) => setForm({ ...form, roomPreference: v })}
+            />
+          </StepShell>
+        )}
+
+        {step === 7 && (
+          <StepShell
+            title="Any pets, or is pet-friendliness important?"
+            hint="Helpful for filtering out no-pet facilities."
+          >
+            <SingleChoice
+              options={PETS_OPTIONS as unknown as string[]}
+              value={form.pets ?? ""}
+              onChange={(v) => setForm({ ...form, pets: v })}
+            />
+          </StepShell>
+        )}
+
+        {step === 8 && (
+          <StepShell
+            title="Does your family live far away or abroad?"
+            hint="We use this to surface facilities with extra trust signals for you."
+          >
+            <div className="grid gap-3 sm:grid-cols-2">
+              {(["Yes", "No"] as const).map((v) => (
+                <OptionButton
+                  key={v}
+                  active={form.distantFamily === v}
+                  onClick={() => setForm({ ...form, distantFamily: v })}
+                >
+                  {v}
+                </OptionButton>
+              ))}
+            </div>
+          </StepShell>
+        )}
+
+        {step === 9 && (
           <StepShell title="What's your monthly budget?">
             <div className="rounded-2xl bg-warm/40 p-5">
               <div className="flex items-baseline justify-between">
@@ -137,7 +239,7 @@ export function QuestionnaireForm({
           </StepShell>
         )}
 
-        {step === 3 && (
+        {step === 10 && (
           <StepShell title="Preferred area">
             <div className="grid gap-3 sm:grid-cols-2">
               {NEIGHBORHOODS.map((n) => (
@@ -159,7 +261,7 @@ export function QuestionnaireForm({
           </StepShell>
         )}
 
-        {step === 4 && (
+        {step === 11 && (
           <StepShell title="What matters most?" hint="Pick up to 3.">
             <div className="grid gap-3 sm:grid-cols-2">
               {PRIORITIES.map((p) => {
@@ -186,7 +288,7 @@ export function QuestionnaireForm({
           </StepShell>
         )}
 
-        {step === 5 && (
+        {step === 12 && (
           <StepShell title="Preferred language">
             <div className="grid gap-3 sm:grid-cols-2">
               {LANGUAGES.map((l) => (
@@ -236,6 +338,26 @@ function StepShell({ title, hint, children }: { title: string; hint?: string; ch
       <h2 className="font-serif text-2xl text-foreground md:text-3xl">{title}</h2>
       {hint && <p className="mt-1.5 text-sm text-muted-foreground">{hint}</p>}
       <div className="mt-6">{children}</div>
+    </div>
+  );
+}
+
+function SingleChoice({
+  options,
+  value,
+  onChange,
+}: {
+  options: string[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      {options.map((opt) => (
+        <OptionButton key={opt} active={value === opt} onClick={() => onChange(value === opt ? "" : opt)}>
+          {opt}
+        </OptionButton>
+      ))}
     </div>
   );
 }

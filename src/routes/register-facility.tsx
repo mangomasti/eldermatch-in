@@ -1,8 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Upload, CheckCircle2, Building2 } from "lucide-react";
-import { ALL_CARE_TYPES } from "@/lib/mock-data";
+import { Upload, Building2 } from "lucide-react";
+import { STANDARDIZED_CARE_TYPES, FACILITY_TIERS, CONDITION_CARE_OPTIONS } from "@/lib/mock-data";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 
 export const Route = createFileRoute("/register-facility")({
@@ -20,44 +20,16 @@ export const Route = createFileRoute("/register-facility")({
 });
 
 function RegisterFacility() {
+  const navigate = useNavigate();
+  const [tier, setTier] = useState<string>("");
   const [types, setTypes] = useState<string[]>([]);
-  const [submitted, setSubmitted] = useState(false);
+  const [conditions, setConditions] = useState<string[]>([]);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    toast.success("Thanks! Our verification team will contact you within 3-5 business days.");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    toast.success("Submitted! Redirecting you to your facility dashboard…");
+    setTimeout(() => navigate({ to: "/dashboard" }), 700);
   };
-
-  if (submitted) {
-    return (
-      <div className="min-h-screen">
-        <SiteHeader />
-        <main className="mx-auto max-w-2xl px-5 py-20 text-center md:px-8">
-          <span className="inline-grid h-16 w-16 place-items-center rounded-full bg-verified/15 text-verified">
-            <CheckCircle2 className="h-8 w-8" />
-          </span>
-          <h1 className="mt-6 font-serif text-3xl md:text-4xl">Submission received</h1>
-          <p className="mt-3 text-muted-foreground">
-            Thanks for putting your facility forward. Our verification team will review your submission and contact you within <strong>3–5 business days</strong> to schedule an on-site visit.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              to="/home"
-              className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
-            >
-              Back to homepage
-            </Link>
-            <Link to="/about" className="rounded-full border border-border px-5 py-2.5 text-sm font-medium">
-              How verification works
-            </Link>
-          </div>
-        </main>
-        <SiteFooter />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen">
@@ -77,6 +49,28 @@ function RegisterFacility() {
         <form onSubmit={submit} className="mt-10 space-y-6 rounded-3xl bg-card p-6 shadow-[var(--shadow-card)] md:p-8">
           <Field label="Facility name">
             <input required className={inputCls} placeholder="Willowbrook Gardens" />
+          </Field>
+
+          <Field label="Facility tier" hint="Helps families instantly understand your positioning.">
+            <div className="grid gap-2 sm:grid-cols-2">
+              {FACILITY_TIERS.map((t) => (
+                <label
+                  key={t}
+                  className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3.5 py-2.5 text-sm ${
+                    tier === t ? "border-primary bg-primary/5" : "border-input bg-background"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="tier"
+                    checked={tier === t}
+                    onChange={() => setTier(t)}
+                    className="h-4 w-4 accent-[color:var(--primary)]"
+                  />
+                  {t}
+                </label>
+              ))}
+            </div>
           </Field>
 
           <Field label="Full address">
@@ -101,10 +95,39 @@ function RegisterFacility() {
             </Field>
           </div>
 
-          <Field label="Care types offered">
+          <Field label="Care types offered" hint="Pick from our standardised list so families compare like-for-like.">
             <div className="grid gap-2 sm:grid-cols-2">
-              {ALL_CARE_TYPES.map((c) => {
-                const active = types.includes(c);
+              {STANDARDIZED_CARE_TYPES.map((c) => {
+                const active = types.includes(c.name);
+                return (
+                  <label
+                    key={c.name}
+                    className={`flex cursor-pointer items-start gap-2 rounded-xl border px-3.5 py-2.5 text-sm ${
+                      active ? "border-primary bg-primary/5" : "border-input bg-background"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={active}
+                      onChange={() =>
+                        setTypes(active ? types.filter((x) => x !== c.name) : [...types, c.name])
+                      }
+                      className="mt-0.5 h-4 w-4 accent-[color:var(--primary)]"
+                    />
+                    <span>
+                      <div className="font-medium">{c.name}</div>
+                      <div className="text-xs text-muted-foreground">{c.definition}</div>
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </Field>
+
+          <Field label="Specialised condition care" hint="Optional. Helps you appear for the right condition-based searches.">
+            <div className="grid gap-2 sm:grid-cols-2">
+              {CONDITION_CARE_OPTIONS.map((c) => {
+                const active = conditions.includes(c);
                 return (
                   <label
                     key={c}
@@ -116,7 +139,7 @@ function RegisterFacility() {
                       type="checkbox"
                       checked={active}
                       onChange={() =>
-                        setTypes(active ? types.filter((x) => x !== c) : [...types, c])
+                        setConditions(active ? conditions.filter((x) => x !== c) : [...conditions, c])
                       }
                       className="h-4 w-4 accent-[color:var(--primary)]"
                     />
@@ -127,20 +150,61 @@ function RegisterFacility() {
             </div>
           </Field>
 
+          <div className="rounded-2xl border border-border bg-warm/20 p-4">
+            <div className="mb-3 text-sm font-semibold">Cost breakdown (₹ / month)</div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Private room — base">
+                <input type="number" className={inputCls} placeholder="65000" />
+              </Field>
+              <Field label="Shared room — base">
+                <input type="number" className={inputCls} placeholder="45000" />
+              </Field>
+              <Field label="Physio session — extra">
+                <input className={inputCls} placeholder="₹500 / session" />
+              </Field>
+              <Field label="Attendant (1:1) — extra">
+                <input className={inputCls} placeholder="₹15,000 / month" />
+              </Field>
+              <Field label="Special diet — extra">
+                <input className={inputCls} placeholder="₹2,500 / month" />
+              </Field>
+              <Field label="Refundable deposit">
+                <input className={inputCls} placeholder="₹50,000" />
+              </Field>
+            </div>
+          </div>
+
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Pricing — minimum (₹/month)">
-              <input required type="number" className={inputCls} placeholder="35000" />
+            <Field label="Staff credentials">
+              <input className={inputCls} placeholder="e.g. GNM & B.Sc. nurses, geriatrician on-call" />
             </Field>
-            <Field label="Pricing — maximum (₹/month)">
-              <input required type="number" className={inputCls} placeholder="70000" />
+            <Field label="Average staff experience">
+              <input className={inputCls} placeholder="e.g. 8 years" />
             </Field>
           </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Nearest hospital (partner)">
+              <input className={inputCls} placeholder="e.g. Manipal Hospitals — 15 min" />
+            </Field>
+            <Field label="Distance to nearest airport">
+              <input className={inputCls} placeholder="e.g. 38 km to KIA" />
+            </Field>
+          </div>
+
+          <Field label="Cuisine offered">
+            <input className={inputCls} placeholder="e.g. South Indian, North Indian, Diabetic-friendly" />
+          </Field>
+
+          <Field label="Emergency response plan" hint="How you handle medical emergencies. Shown publicly.">
+            <textarea rows={3} className={inputCls} placeholder="On-call doctor SLA, ambulance arrangement, partner hospital, family notification protocol…" />
+          </Field>
 
           <Field label="Brief description">
             <textarea rows={4} className={inputCls} placeholder="Tell families about your home — size, ethos, what makes it special." />
           </Field>
 
-          <UploadBox label="Upload photos" hint="Add 5–10 recent, unretouched photos of your facility. JPG/PNG up to 10MB each." />
+          <UploadBox label="Upload photos" hint="Add 5–10 recent, unretouched photos. JPG/PNG up to 10MB each." />
           <UploadBox label="Upload licensing & accreditation documents" hint="PDF preferred. Include state registration and any NABH / ISO certificates." />
 
           <div className="pt-2">
@@ -148,10 +212,14 @@ function RegisterFacility() {
               type="submit"
               className="w-full rounded-full bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-90"
             >
-              Submit for verification
+              Submit & open my dashboard
             </button>
             <p className="mt-3 text-center text-xs text-muted-foreground">
-              By submitting, you agree to allow a ElderMatch verifier to visit on-site.
+              By submitting, you agree to allow an ElderMatch verifier to visit on-site.
+              You'll be taken to a preview of your facility dashboard right after.
+            </p>
+            <p className="mt-2 text-center text-xs">
+              Already listed? <Link to="/dashboard" className="text-primary hover:underline">Go to dashboard</Link>
             </p>
           </div>
         </form>
@@ -164,10 +232,11 @@ function RegisterFacility() {
 const inputCls =
   "w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-sm outline-none focus:border-primary";
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-sm font-medium text-foreground/85">{label}</span>
+      {hint && <span className="-mt-1 mb-2 block text-xs text-muted-foreground">{hint}</span>}
       {children}
     </label>
   );

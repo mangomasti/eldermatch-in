@@ -19,8 +19,8 @@ import {
   useShortlist,
   RELATIONSHIPS,
   LIVING_SITUATIONS,
-  URGENCY_LEVELS,
 } from "@/lib/prefs";
+
 import { facilities, formatINR } from "@/lib/mock-data";
 import { usePreferenceDrawer } from "@/components/preference-drawer";
 
@@ -225,34 +225,13 @@ function ProfilePage() {
                   </select>
                 </Field>
               </div>
-              <Field label="Urgency">
-                <select
-                  className={inputCls}
-                  value={profile.recipient.urgency}
-                  onChange={(e) => {
-                    save({
-                      recipient: {
-                        ...profile.recipient,
-                        urgency: e.target.value as typeof profile.recipient.urgency,
-                      },
-                    });
-                    notify();
-                  }}
-                >
-                  <option value="">Select…</option>
-                  {URGENCY_LEVELS.map((u) => (
-                    <option key={u} value={u}>
-                      {u}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-              {profile.recipient.urgency === "Need placement urgently" && (
+              {prefs?.timeline === "Immediately / urgent" && (
                 <div className="flex items-start gap-2 rounded-xl border border-highlight/30 bg-highlight/10 p-3 text-xs text-highlight">
                   <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
                   <span>We'll prioritise homes with immediate availability in your matches.</span>
                 </div>
               )}
+
             </div>
           </Card>
 
@@ -333,9 +312,17 @@ function ProfilePage() {
                     <Muted>No preference</Muted>
                   )}
                 </PrefRow>
+                {prefs.condition && <PrefRow label="Condition"><span className="text-sm">{prefs.condition}</span></PrefRow>}
+                {prefs.mobility && <PrefRow label="Mobility"><span className="text-sm">{prefs.mobility}</span></PrefRow>}
+                {prefs.environment && <PrefRow label="Environment"><span className="text-sm">{prefs.environment}</span></PrefRow>}
+                {prefs.timeline && <PrefRow label="Timeline"><span className="text-sm">{prefs.timeline}</span></PrefRow>}
+                {prefs.roomPreference && <PrefRow label="Room"><span className="text-sm">{prefs.roomPreference}</span></PrefRow>}
+                {prefs.pets && <PrefRow label="Pets"><span className="text-sm">{prefs.pets}</span></PrefRow>}
+                {prefs.distantFamily && <PrefRow label="Distant family"><span className="text-sm">{prefs.distantFamily}</span></PrefRow>}
               </div>
             )}
           </Card>
+
 
           {/* D) Shortlisted */}
           <Card
