@@ -273,6 +273,11 @@ function FacilityProfile() {
                   <Stat icon={<Hospital className="h-4 w-4" />} label="Nearest hospital" value={e.distanceToHospital} />
                   <Stat icon={<Plane className="h-4 w-4" />} label="Nearest airport" value={e.distanceToAirport} />
                   <Stat icon={<Utensils className="h-4 w-4" />} label="Cuisine" value={e.cuisine.join(", ")} />
+                  <Stat
+                    icon={<Utensils className="h-4 w-4" />}
+                    label="Community / dietary preference"
+                    value={facilityDietary(f.id).join(", ")}
+                  />
                 </div>
                 {e.hospitalTieUp && (
                   <div className="mt-3 flex items-start gap-2 rounded-xl bg-verified/10 p-3 text-sm text-foreground">

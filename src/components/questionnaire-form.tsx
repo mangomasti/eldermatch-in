@@ -12,7 +12,7 @@ import {
   ROOM_OPTIONS,
   PETS_OPTIONS,
 } from "@/lib/prefs";
-import { LANGUAGES, NEIGHBORHOODS } from "@/lib/mock-data";
+import { LANGUAGES, NEIGHBORHOODS, DIETARY_PREFERENCES } from "@/lib/mock-data";
 
 const CARE_NEEDS = [
   "Mobility assistance",
@@ -45,6 +45,7 @@ const STEPS = [
   "Location",
   "Priorities",
   "Language",
+  "Community / dietary preference",
 ];
 
 export function QuestionnaireForm({
@@ -300,6 +301,33 @@ export function QuestionnaireForm({
                   {l}
                 </OptionButton>
               ))}
+            </div>
+          </StepShell>
+        )}
+        {step === 13 && (
+          <StepShell
+            title="Any community or dietary preference?"
+            hint="Optional — we use it to highlight homes whose kitchen matches."
+          >
+            <div className="grid gap-3 sm:grid-cols-2">
+              {DIETARY_PREFERENCES.map((d) => {
+                const list = form.dietary ?? [];
+                const active = list.includes(d);
+                return (
+                  <OptionButton
+                    key={d}
+                    active={active}
+                    onClick={() =>
+                      setForm({
+                        ...form,
+                        dietary: active ? list.filter((x) => x !== d) : [...list, d],
+                      })
+                    }
+                  >
+                    {d}
+                  </OptionButton>
+                );
+              })}
             </div>
           </StepShell>
         )}

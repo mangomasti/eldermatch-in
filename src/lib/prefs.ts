@@ -19,6 +19,7 @@ export type Preferences = {
   roomPreference?: string;
   pets?: string;
   distantFamily?: "Yes" | "No" | "";
+  dietary?: string[];
 };
 
 export const DEFAULT_PREFS: Preferences = {
@@ -35,6 +36,7 @@ export const DEFAULT_PREFS: Preferences = {
   roomPreference: "",
   pets: "",
   distantFamily: "",
+  dietary: [],
 };
 
 export const CONDITION_OPTIONS = [
