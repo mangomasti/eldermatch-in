@@ -24,7 +24,7 @@ import {
   PawPrint,
 } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
-import { getFacility, getEnrichment, formatINR } from "@/lib/mock-data";
+import { getFacility, getEnrichment, formatINR, facilityDietary } from "@/lib/mock-data";
 import { useShortlist } from "@/lib/prefs";
 
 export const Route = createFileRoute("/facility/$id")({
