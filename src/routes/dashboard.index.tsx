@@ -9,8 +9,10 @@ import {
   ArrowDownRight,
   ShieldCheck,
   AlertTriangle,
+  Lock,
 } from "lucide-react";
 import { MOCK_DASHBOARD, getFacility } from "@/lib/mock-data";
+import { useFacilitySession } from "@/lib/facility-session";
 
 export const Route = createFileRoute("/dashboard/")({
   component: Overview,
@@ -127,6 +129,41 @@ function Overview() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function HeroMetric({
+  icon,
+  label,
+  value,
+  change,
+  caption,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  change?: number | null;
+  caption?: string;
+}) {
+  const up = typeof change === "number" && change >= 0;
+  return (
+    <div className="rounded-3xl border border-border bg-card p-7">
+      <div className="flex items-center gap-2 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+        <span className="text-primary">{icon}</span> {label}
+      </div>
+      <div className="mt-3 font-serif text-6xl leading-none">{value}</div>
+      {typeof change === "number" && (
+        <div
+          className={`mt-3 inline-flex items-center gap-1 text-sm font-medium ${
+            up ? "text-verified" : "text-highlight"
+          }`}
+        >
+          {up ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+          {Math.abs(change)}% vs. previous 30 days
+        </div>
+      )}
+      {caption && <p className="mt-2 text-xs text-muted-foreground">{caption}</p>}
     </div>
   );
 }
