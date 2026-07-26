@@ -33,7 +33,7 @@ function FacilityLogin() {
     e.preventDefault();
     writeFacilitySession({
       facilityId: listing?.id ?? "willowbrook-gardens",
-      facilityName: listing?.name ?? name || "Willowbrook Gardens",
+      facilityName: listing?.name ?? (name || "Willowbrook Gardens"),
       mode: "full",
     });
     toast.success("Welcome back — opening your dashboard.");
