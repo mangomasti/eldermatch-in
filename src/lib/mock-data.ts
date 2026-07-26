@@ -288,8 +288,7 @@ export const facilities: Facility[] = [
     careTypes: ["Independent living", "Assisted living"],
     amenities: [
       "Rooftop garden",
-      "Restaurant-style dining",
-      "Fitness centre",
+          "Fitness centre",
       "Library",
       "Guest suites",
       "Weekend outings",
@@ -500,7 +499,6 @@ export const ALL_AMENITIES = [
   "24/7 nursing",
   "Pet-friendly",
   "In-house clinic",
-  "Restaurant-style dining",
   "Fitness centre",
   "Library",
 ];
@@ -963,3 +961,276 @@ export const MOCK_DASHBOARD: DashboardData = {
     { metric: "Verified stay reviews", you: 127, marketAvg: 84 },
   ],
 };
+
+// ============================================================
+// Community / dietary preference
+// ============================================================
+
+export const DIETARY_PREFERENCES = [
+  "Jain",
+  "Brahmin",
+  "Muslim",
+  "Christian",
+  "Vegetarian (general)",
+  "Non-Vegetarian available",
+  "No specific preference",
+] as const;
+export type DietaryPreference = (typeof DIETARY_PREFERENCES)[number];
+
+export const FACILITY_DIETARY: Record<string, string[]> = {
+  "willowbrook-gardens": ["Vegetarian (general)", "Jain", "Brahmin", "Non-Vegetarian available"],
+  "silverpine-residences": ["Vegetarian (general)", "Non-Vegetarian available", "Christian", "Muslim"],
+  "banyan-house": ["Brahmin", "Vegetarian (general)", "Jain"],
+  "meadowlark-manor": ["Vegetarian (general)", "Non-Vegetarian available", "Christian"],
+  "tulsi-nivas": ["Brahmin", "Jain", "Vegetarian (general)"],
+  "cypress-court": ["Vegetarian (general)", "Non-Vegetarian available", "Muslim", "Christian"],
+};
+
+export function facilityDietary(id: string) {
+  return FACILITY_DIETARY[id] ?? ["No specific preference"];
+}
+
+// ============================================================
+// Simplified browse care categories
+// ============================================================
+
+export const BROWSE_CARE_TYPES = [
+  "Assisted Living",
+  "Independent Living",
+  "Palliative Care",
+] as const;
+
+export function facilityBrowseCategories(f: Facility): string[] {
+  const out: string[] = [];
+  if (f.careTypes.some((c) => /assisted/i.test(c))) out.push("Assisted Living");
+  if (f.careTypes.some((c) => /independent/i.test(c))) out.push("Independent Living");
+  const e = FACILITY_ENRICHMENT[f.id];
+  if (
+    f.amenities.some((a) => /palliative/i.test(a)) ||
+    f.medicalCapabilities.some((a) => /palliative/i.test(a)) ||
+    e?.conditionCare.some((c) => /palliative/i.test(c))
+  )
+    out.push("Palliative Care");
+  return out;
+}
+
+// ============================================================
+// Unclaimed (pre-loaded) facility listings for the owner entry flow
+// ============================================================
+
+export type OwnerListing = {
+  id: string;
+  name: string;
+  neighborhood: string;
+  city: string;
+  careType: string;
+  tier: FacilityTier;
+  status: "Unclaimed" | "Already Registered";
+};
+
+export const UNCLAIMED_LISTINGS: OwnerListing[] = [
+  {
+    id: "shanti-nilaya",
+    name: "Shanti Nilaya Senior Home",
+    neighborhood: "Basavanagudi",
+    city: "Bengaluru",
+    careType: "Assisted Living",
+    tier: "Budget/Private",
+    status: "Unclaimed",
+  },
+  {
+    id: "sunshine-elders",
+    name: "Sunshine Elders Care",
+    neighborhood: "Rajajinagar",
+    city: "Bengaluru",
+    careType: "Assisted Living",
+    tier: "NGO/Free care",
+    status: "Unclaimed",
+  },
+  {
+    id: "green-meadows-seniors",
+    name: "Green Meadows Seniors Village",
+    neighborhood: "Yelahanka",
+    city: "Bengaluru",
+    careType: "Independent Living",
+    tier: "Mid-range assisted living",
+    status: "Unclaimed",
+  },
+  {
+    id: "aashray-palliative",
+    name: "Aashray Palliative Home",
+    neighborhood: "Banashankari",
+    city: "Bengaluru",
+    careType: "Palliative Care",
+    tier: "NGO/Free care",
+    status: "Unclaimed",
+  },
+];
+
+export const OWNER_LISTINGS: OwnerListing[] = [
+  ...facilities.map<OwnerListing>((f) => ({
+    id: f.id,
+    name: f.name,
+    neighborhood: f.neighborhood,
+    city: f.city,
+    careType: facilityBrowseCategories(f)[0] ?? f.careTypes[0],
+    tier: FACILITY_ENRICHMENT[f.id]?.tier ?? "Mid-range assisted living",
+    status: "Already Registered",
+  })),
+  ...UNCLAIMED_LISTINGS,
+];
+
+export function getOwnerListing(id: string) {
+  return OWNER_LISTINGS.find((l) => l.id === id);
+}
+
+// ============================================================
+// Facility-side aggregate insights (Insights tab)
+// ============================================================
+
+export const MOCK_INSIGHTS = {
+  shortlists30d: 24,
+  shortlistsChangePct: 15,
+  shortlistsTotal: 186,
+  profileViews30d: 1284,
+  monthlyShortlists: [
+    { month: "Nov", count: 12 },
+    { month: "Dec", count: 15 },
+    { month: "Jan", count: 18 },
+    { month: "Feb", count: 21 },
+    { month: "Mar", count: 24 },
+  ],
+  visitorTrends: [
+    { label: "Most searched care type by visitors", value: "Assisted Living", share: 58 },
+    { label: "Most common budget range among visitors", value: "₹40,000–₹60,000", share: 44 },
+    { label: "Top priority among visitors", value: "Location convenience", share: 37 },
+    { label: "Common room preference", value: "Private room requested", share: 62 },
+  ],
+  careTypeMix: [
+    { label: "Assisted Living", pct: 58 },
+    { label: "Independent Living", pct: 26 },
+    { label: "Palliative Care", pct: 16 },
+  ],
+  budgetMix: [
+    { label: "Under ₹40,000", pct: 21 },
+    { label: "₹40,000–₹60,000", pct: 44 },
+    { label: "₹60,000–₹90,000", pct: 24 },
+    { label: "Above ₹90,000", pct: 11 },
+  ],
+};
+
+// ============================================================
+// Founder / internal admin mock data
+// ============================================================
+
+export const FOUNDER_PASSWORD = "eldermatch2026";
+
+export const FOUNDER_OVERVIEW = {
+  totalFacilities: 148,
+  byTier: [
+    { tier: "NGO/Free care", count: 22 },
+    { tier: "Budget/Private", count: 51 },
+    { tier: "Mid-range assisted living", count: 48 },
+    { tier: "Premium/Medical care", count: 27 },
+  ],
+  totalUsers: 3421,
+  totalLeads: 1874,
+  totalShortlists: 6210,
+  revenueNote: "₹0 — no monetization live yet",
+  mockCommission: "₹0 tracked across 0 paid placements",
+};
+
+export type QueueItem = {
+  id: string;
+  facility: string;
+  tier: string;
+  submitted: string;
+  documents: string;
+  kind: "registration" | "claim";
+  claimant?: string;
+  decision?: "Approved" | "Rejected" | "Info requested";
+};
+
+export const FOUNDER_QUEUE: QueueItem[] = [
+  { id: "Q-101", facility: "Nandi Serene Care", tier: "Budget/Private", submitted: "2 days ago", documents: "3 of 4 uploaded", kind: "registration" },
+  { id: "Q-102", facility: "Ashwini Elder Residency", tier: "Mid-range assisted living", submitted: "4 days ago", documents: "4 of 4 uploaded", kind: "registration" },
+  { id: "Q-103", facility: "Hope Haven Trust", tier: "NGO/Free care", submitted: "1 week ago", documents: "2 of 4 uploaded", kind: "registration" },
+  { id: "Q-201", facility: "Shanti Nilaya Senior Home", tier: "Budget/Private", submitted: "1 day ago", documents: "Ownership proof uploaded", kind: "claim", claimant: "Ramesh Gowda (Owner)" },
+  { id: "Q-202", facility: "Sunshine Elders Care", tier: "NGO/Free care", submitted: "3 days ago", documents: "Trust deed pending", kind: "claim", claimant: "Sr. Mary Joseph (Administrator)" },
+];
+
+export type PlatformFacilityRow = {
+  id: string;
+  name: string;
+  neighborhood: string;
+  tier: string;
+  claimed: boolean;
+  verified: boolean;
+  active: boolean;
+  views: number;
+  leads: number;
+  shortlists: number;
+};
+
+export const FOUNDER_FACILITIES: PlatformFacilityRow[] = [
+  ...facilities.map<PlatformFacilityRow>((f, i) => ({
+    id: f.id,
+    name: f.name,
+    neighborhood: f.neighborhood,
+    tier: FACILITY_ENRICHMENT[f.id]?.tier ?? "Mid-range assisted living",
+    claimed: true,
+    verified: f.verified,
+    active: true,
+    views: 1284 - i * 137,
+    leads: 38 - i * 4,
+    shortlists: 92 - i * 9,
+  })),
+  ...UNCLAIMED_LISTINGS.map<PlatformFacilityRow>((l, i) => ({
+    id: l.id,
+    name: l.name,
+    neighborhood: l.neighborhood,
+    tier: l.tier,
+    claimed: false,
+    verified: false,
+    active: true,
+    views: 320 - i * 45,
+    leads: 6 - i,
+    shortlists: 14 - i * 2,
+  })),
+];
+
+export type PlatformUserRow = {
+  id: string;
+  name: string;
+  email: string;
+  signupDate: string;
+  enquiries: number;
+  shortlists: number;
+};
+
+export const FOUNDER_USERS: PlatformUserRow[] = [
+  { id: "U-2041", name: "Priya Sharma", email: "priya.s@gmail.com", signupDate: "12 Mar 2026", enquiries: 4, shortlists: 7 },
+  { id: "U-2038", name: "Arun Menon", email: "arun.menon@outlook.com", signupDate: "09 Mar 2026", enquiries: 2, shortlists: 3 },
+  { id: "U-2030", name: "Fatima Sheikh", email: "fatima.sk@gmail.com", signupDate: "27 Feb 2026", enquiries: 6, shortlists: 11 },
+  { id: "U-2025", name: "Joseph Thomas", email: "j.thomas@yahoo.in", signupDate: "21 Feb 2026", enquiries: 1, shortlists: 2 },
+  { id: "U-2019", name: "Lakshmi Gowda", email: "lakshmi.g@gmail.com", signupDate: "14 Feb 2026", enquiries: 3, shortlists: 5 },
+  { id: "U-2011", name: "Vikram Shetty", email: "vikram.shetty@gmail.com", signupDate: "02 Feb 2026", enquiries: 5, shortlists: 9 },
+  { id: "U-2004", name: "Anitha Rao", email: "anitha.rao@rediffmail.com", signupDate: "19 Jan 2026", enquiries: 2, shortlists: 4 },
+  { id: "U-1998", name: "Ganesh Bhat", email: "ganesh.bhat@gmail.com", signupDate: "05 Jan 2026", enquiries: 0, shortlists: 1 },
+];
+
+export const FOUNDER_GROWTH = [
+  { month: "Oct", facilities: 8, users: 210, enquiries: 96 },
+  { month: "Nov", facilities: 11, users: 268, enquiries: 128 },
+  { month: "Dec", facilities: 14, users: 341, enquiries: 174 },
+  { month: "Jan", facilities: 19, users: 402, enquiries: 233 },
+  { month: "Feb", facilities: 23, users: 512, enquiries: 291 },
+  { month: "Mar", facilities: 31, users: 648, enquiries: 358 },
+];
+
+export const FOUNDER_PREFERENCE_TRENDS = [
+  { label: "Most requested care type", value: "Assisted Living", share: 61 },
+  { label: "Most common budget range", value: "₹40,000–₹60,000", share: 39 },
+  { label: "Top priority overall", value: "Healthcare quality", share: 34 },
+  { label: "Most common dietary preference", value: "Vegetarian (general)", share: 46 },
+];

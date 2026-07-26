@@ -9,8 +9,10 @@ import {
   ArrowDownRight,
   ShieldCheck,
   AlertTriangle,
+  Lock,
 } from "lucide-react";
 import { MOCK_DASHBOARD, getFacility } from "@/lib/mock-data";
+import { useFacilitySession } from "@/lib/facility-session";
 
 export const Route = createFileRoute("/dashboard/")({
   component: Overview,
@@ -18,13 +20,33 @@ export const Route = createFileRoute("/dashboard/")({
 
 function Overview() {
   const d = MOCK_DASHBOARD;
-  const f = getFacility(d.facilityId);
+  const { session, locked } = useFacilitySession();
+  const f = getFacility(session.facilityId) ?? getFacility(d.facilityId);
   const viewsChange = pct(d.metrics.profileViews30d, d.metrics.profileViewsPrev30d);
   const inqChange = pct(d.metrics.inquiries30d, d.metrics.inquiriesPrev30d);
   const newLeads = d.leads.filter((l) => l.status === "New").length;
 
   return (
     <div className="space-y-6">
+      {locked && (
+        <div className="flex items-start gap-3 rounded-2xl border border-highlight/30 bg-highlight/10 p-4">
+          <Lock className="mt-0.5 h-4 w-4 shrink-0 text-highlight" />
+          <p className="text-sm text-foreground/85">
+            <span className="font-semibold">Your claim is under review</span> — full dashboard access
+            will unlock once verified.
+          </p>
+        </div>
+      )}
+      {session.mode === "registration-pending" && (
+        <div className="flex items-start gap-3 rounded-2xl border border-border bg-warm/30 p-4">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-highlight" />
+          <p className="text-sm text-foreground/85">
+            <span className="font-semibold">Pending verification</span> — your new listing is live in
+            preview while our team completes the on-site check. Everything stays editable.
+          </p>
+        </div>
+      )}
+
       <div>
         <h1 className="font-serif text-3xl">Good morning{f ? `, ${f.name.split(" ")[0]}` : ""} 👋</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -32,12 +54,29 @@ function Overview() {
         </p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <MetricCard icon={<Eye className="h-4 w-4" />} label="Profile views" value={d.metrics.profileViews30d.toLocaleString()} change={viewsChange} />
-        <MetricCard icon={<Inbox className="h-4 w-4" />} label="Inquiries" value={d.metrics.inquiries30d.toString()} change={inqChange} />
+      <div className="grid gap-4 lg:grid-cols-2">
+        <HeroMetric
+          icon={<Eye className="h-5 w-5" />}
+          label="Profile views"
+          value={d.metrics.profileViews30d.toLocaleString()}
+          change={viewsChange}
+          caption="Visibility is the single biggest driver of enquiries."
+        />
+        <HeroMetric
+          icon={<Inbox className="h-5 w-5" />}
+          label="Leads generated"
+          value={d.metrics.inquiries30d.toString()}
+          change={inqChange}
+          caption={`${newLeads} new lead${newLeads === 1 ? "" : "s"} waiting for a reply.`}
+        />
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
         <MetricCard icon={<Heart className="h-4 w-4" />} label="Shortlists" value={d.metrics.saves30d.toString()} />
         <MetricCard icon={<Star className="h-4 w-4" />} label="Rating" value={`${d.metrics.avgRating} · ${d.metrics.ratingCount}`} />
+        <MetricCard icon={<Clock className="h-4 w-4" />} label="Response time" value={`${d.metrics.responseTimeHours}h`} />
       </div>
+
 
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2 rounded-3xl border border-border bg-card p-6">
@@ -90,6 +129,41 @@ function Overview() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function HeroMetric({
+  icon,
+  label,
+  value,
+  change,
+  caption,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  change?: number | null;
+  caption?: string;
+}) {
+  const up = typeof change === "number" && change >= 0;
+  return (
+    <div className="rounded-3xl border border-border bg-card p-7">
+      <div className="flex items-center gap-2 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+        <span className="text-primary">{icon}</span> {label}
+      </div>
+      <div className="mt-3 font-serif text-6xl leading-none">{value}</div>
+      {typeof change === "number" && (
+        <div
+          className={`mt-3 inline-flex items-center gap-1 text-sm font-medium ${
+            up ? "text-verified" : "text-highlight"
+          }`}
+        >
+          {up ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+          {Math.abs(change)}% vs. previous 30 days
+        </div>
+      )}
+      {caption && <p className="mt-2 text-xs text-muted-foreground">{caption}</p>}
     </div>
   );
 }

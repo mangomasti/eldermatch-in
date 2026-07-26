@@ -2,8 +2,14 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Upload, Building2 } from "lucide-react";
-import { STANDARDIZED_CARE_TYPES, FACILITY_TIERS, CONDITION_CARE_OPTIONS } from "@/lib/mock-data";
+import {
+  STANDARDIZED_CARE_TYPES,
+  FACILITY_TIERS,
+  CONDITION_CARE_OPTIONS,
+  DIETARY_PREFERENCES,
+} from "@/lib/mock-data";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
+import { writeFacilitySession } from "@/lib/facility-session";
 
 export const Route = createFileRoute("/register-facility")({
   head: () => ({
@@ -24,9 +30,16 @@ function RegisterFacility() {
   const [tier, setTier] = useState<string>("");
   const [types, setTypes] = useState<string[]>([]);
   const [conditions, setConditions] = useState<string[]>([]);
+  const [dietary, setDietary] = useState<string[]>([]);
+  const [facilityName, setFacilityName] = useState("");
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    writeFacilitySession({
+      facilityId: "willowbrook-gardens",
+      facilityName: facilityName || "Your facility",
+      mode: "registration-pending",
+    });
     toast.success("Submitted! Redirecting you to your facility dashboard…");
     setTimeout(() => navigate({ to: "/dashboard" }), 700);
   };
@@ -48,7 +61,13 @@ function RegisterFacility() {
 
         <form onSubmit={submit} className="mt-10 space-y-6 rounded-3xl bg-card p-6 shadow-[var(--shadow-card)] md:p-8">
           <Field label="Facility name">
-            <input required className={inputCls} placeholder="Willowbrook Gardens" />
+            <input
+              required
+              value={facilityName}
+              onChange={(e) => setFacilityName(e.target.value)}
+              className={inputCls}
+              placeholder="Willowbrook Gardens"
+            />
           </Field>
 
           <Field label="Facility tier" hint="Helps families instantly understand your positioning.">
@@ -191,6 +210,32 @@ function RegisterFacility() {
               <input className={inputCls} placeholder="e.g. 38 km to KIA" />
             </Field>
           </div>
+
+          <Field label="Community / dietary preference" hint="Select all that your kitchen can reliably serve.">
+            <div className="grid gap-2 sm:grid-cols-2">
+              {DIETARY_PREFERENCES.map((d) => {
+                const active = dietary.includes(d);
+                return (
+                  <label
+                    key={d}
+                    className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3.5 py-2.5 text-sm ${
+                      active ? "border-primary bg-primary/5" : "border-input bg-background"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={active}
+                      onChange={() =>
+                        setDietary(active ? dietary.filter((x) => x !== d) : [...dietary, d])
+                      }
+                      className="h-4 w-4 accent-[color:var(--primary)]"
+                    />
+                    {d}
+                  </label>
+                );
+              })}
+            </div>
+          </Field>
 
           <Field label="Cuisine offered">
             <input className={inputCls} placeholder="e.g. South Indian, North Indian, Diabetic-friendly" />

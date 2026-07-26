@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { ShieldCheck, AlertTriangle, FileCheck2, Upload, Calendar } from "lucide-react";
 import { MOCK_DASHBOARD } from "@/lib/mock-data";
+import { useFacilitySession } from "@/lib/facility-session";
 
 export const Route = createFileRoute("/dashboard/verification")({
   component: Verification,
@@ -9,9 +10,19 @@ export const Route = createFileRoute("/dashboard/verification")({
 
 function Verification() {
   const v = MOCK_DASHBOARD.verification;
+  const { locked } = useFacilitySession();
 
   return (
     <div className="space-y-6">
+      {locked && (
+        <div className="rounded-2xl border border-highlight/30 bg-highlight/10 p-5">
+          <div className="text-sm font-semibold text-highlight">Claim Submitted — Pending Review</div>
+          <p className="mt-1 text-sm text-foreground/85">
+            We're checking your ownership documents. Full dashboard access unlocks within 2–3 business
+            days of approval.
+          </p>
+        </div>
+      )}
       <div>
         <h1 className="font-serif text-3xl">Verification</h1>
         <p className="mt-1 text-sm text-muted-foreground">
