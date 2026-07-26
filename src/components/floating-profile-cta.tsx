@@ -12,7 +12,15 @@ export function FloatingProfileCta() {
 
   if (!hydrated) return null;
   if (HIDDEN_PATHS.has(pathname)) return null;
-  if (pathname.startsWith("/dashboard") || pathname.startsWith("/register-facility")) return null;
+  if (
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/register-facility") ||
+    pathname.startsWith("/facility-access") ||
+    pathname.startsWith("/facility-login") ||
+    pathname.startsWith("/facility-claim") ||
+    pathname.startsWith("/founder-access")
+  )
+    return null;
 
 
   const hasProfile = prefs != null;

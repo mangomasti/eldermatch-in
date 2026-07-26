@@ -51,7 +51,7 @@ function RoleSelect() {
             subtitle="Get your verified facility in front of the families who are actively searching."
             icon={<Building2 className="h-7 w-7" />}
             accent="warm"
-            onClick={() => navigate({ to: "/register-facility" })}
+            onClick={() => navigate({ to: "/facility-access" })}
           />
         </div>
 
