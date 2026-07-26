@@ -27,6 +27,7 @@ import { Route as DashboardVerificationRouteImport } from './routes/dashboard.ve
 import { Route as DashboardReviewsRouteImport } from './routes/dashboard.reviews'
 import { Route as DashboardProfileRouteImport } from './routes/dashboard.profile'
 import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
+import { Route as DashboardInsightsRouteImport } from './routes/dashboard.insights'
 import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -119,6 +120,11 @@ const DashboardLeadsRoute = DashboardLeadsRouteImport.update({
   path: '/leads',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardInsightsRoute = DashboardInsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardAnalyticsRoute = DashboardAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
@@ -138,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/insights': typeof DashboardInsightsRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/reviews': typeof DashboardReviewsRoute
@@ -158,6 +165,7 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/insights': typeof DashboardInsightsRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/reviews': typeof DashboardReviewsRoute
@@ -180,6 +188,7 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/insights': typeof DashboardInsightsRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/reviews': typeof DashboardReviewsRoute
@@ -203,6 +212,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/sitemap.xml'
     | '/dashboard/analytics'
+    | '/dashboard/insights'
     | '/dashboard/leads'
     | '/dashboard/profile'
     | '/dashboard/reviews'
@@ -223,6 +233,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/sitemap.xml'
     | '/dashboard/analytics'
+    | '/dashboard/insights'
     | '/dashboard/leads'
     | '/dashboard/profile'
     | '/dashboard/reviews'
@@ -244,6 +255,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/sitemap.xml'
     | '/dashboard/analytics'
+    | '/dashboard/insights'
     | '/dashboard/leads'
     | '/dashboard/profile'
     | '/dashboard/reviews'
@@ -397,6 +409,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLeadsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/insights': {
+      id: '/dashboard/insights'
+      path: '/insights'
+      fullPath: '/dashboard/insights'
+      preLoaderRoute: typeof DashboardInsightsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/analytics': {
       id: '/dashboard/analytics'
       path: '/analytics'
@@ -409,6 +428,7 @@ declare module '@tanstack/react-router' {
 
 interface DashboardRouteChildren {
   DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
+  DashboardInsightsRoute: typeof DashboardInsightsRoute
   DashboardLeadsRoute: typeof DashboardLeadsRoute
   DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardReviewsRoute: typeof DashboardReviewsRoute
@@ -418,6 +438,7 @@ interface DashboardRouteChildren {
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAnalyticsRoute: DashboardAnalyticsRoute,
+  DashboardInsightsRoute: DashboardInsightsRoute,
   DashboardLeadsRoute: DashboardLeadsRoute,
   DashboardProfileRoute: DashboardProfileRoute,
   DashboardReviewsRoute: DashboardReviewsRoute,
