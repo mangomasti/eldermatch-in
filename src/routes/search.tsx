@@ -6,9 +6,12 @@ import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 import { FacilityCard } from "@/components/facility-card";
 import {
   facilities,
-  ALL_CARE_TYPES,
+  BROWSE_CARE_TYPES,
   ALL_AMENITIES,
   NEIGHBORHOODS,
+  DIETARY_PREFERENCES,
+  facilityBrowseCategories,
+  facilityDietary,
   formatINR,
 } from "@/lib/mock-data";
 import { usePreferences } from "@/lib/prefs";
@@ -37,6 +40,7 @@ function SearchPage() {
   const [budget, setBudget] = useState<number>(150000);
   const [careTypes, setCareTypes] = useState<string[]>([]);
   const [amenities, setAmenities] = useState<string[]>([]);
+  const [dietary, setDietary] = useState<string[]>([]);
   const [minRating, setMinRating] = useState(0);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -46,13 +50,20 @@ function SearchPage() {
       if (neighborhood && !`${f.neighborhood} ${f.city}`.toLowerCase().includes(neighborhood.toLowerCase()))
         return false;
       if (f.priceMin > budget) return false;
-      if (careTypes.length && !careTypes.some((c) => f.careTypes.includes(c))) return false;
+      if (careTypes.length) {
+        const cats = facilityBrowseCategories(f);
+        if (!careTypes.some((c) => cats.includes(c))) return false;
+      }
+      if (dietary.length && !dietary.includes("No specific preference")) {
+        const diets = facilityDietary(f.id);
+        if (!dietary.some((d) => diets.includes(d))) return false;
+      }
       if (amenities.length && !amenities.every((a) => f.amenities.includes(a))) return false;
       if (f.rating < minRating) return false;
       if (verifiedOnly && !f.verified) return false;
       return true;
     });
-  }, [neighborhood, budget, careTypes, amenities, minRating, verifiedOnly]);
+  }, [neighborhood, budget, careTypes, amenities, dietary, minRating, verifiedOnly]);
 
   const recommendedIds = useMemo(() => {
     if (!prefs) return new Set<string>();
@@ -109,7 +120,7 @@ function SearchPage() {
 
       <FilterBlock title="Care type">
         <div className="space-y-2">
-          {ALL_CARE_TYPES.map((c) => (
+          {BROWSE_CARE_TYPES.map((c) => (
             <CheckRow
               key={c}
               label={c}
@@ -128,6 +139,19 @@ function SearchPage() {
               label={a}
               checked={amenities.includes(a)}
               onChange={() => setAmenities(toggle(amenities, a))}
+            />
+          ))}
+        </div>
+      </FilterBlock>
+
+      <FilterBlock title="Community / dietary preference">
+        <div className="space-y-2">
+          {DIETARY_PREFERENCES.map((d) => (
+            <CheckRow
+              key={d}
+              label={d}
+              checked={dietary.includes(d)}
+              onChange={() => setDietary(toggle(dietary, d))}
             />
           ))}
         </div>
