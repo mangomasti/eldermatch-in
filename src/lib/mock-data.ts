@@ -288,8 +288,7 @@ export const facilities: Facility[] = [
     careTypes: ["Independent living", "Assisted living"],
     amenities: [
       "Rooftop garden",
-      "Restaurant-style dining",
-      "Fitness centre",
+          "Fitness centre",
       "Library",
       "Guest suites",
       "Weekend outings",
@@ -500,7 +499,6 @@ export const ALL_AMENITIES = [
   "24/7 nursing",
   "Pet-friendly",
   "In-house clinic",
-  "Restaurant-style dining",
   "Fitness centre",
   "Library",
 ];
