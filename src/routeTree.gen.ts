@@ -15,6 +15,7 @@ import { Route as RegisterFacilityRouteImport } from './routes/register-facility
 import { Route as QuestionnaireRouteImport } from './routes/questionnaire'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as FacilityAccessRouteImport } from './routes/facility-access'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -54,6 +55,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const HomeRoute = HomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FacilityAccessRoute = FacilityAccessRouteImport.update({
+  id: '/facility-access',
+  path: '/facility-access',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/facility-access': typeof FacilityAccessRoute
   '/home': typeof HomeRoute
   '/profile': typeof ProfileRoute
   '/questionnaire': typeof QuestionnaireRoute
@@ -128,6 +135,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/facility-access': typeof FacilityAccessRoute
   '/home': typeof HomeRoute
   '/profile': typeof ProfileRoute
   '/questionnaire': typeof QuestionnaireRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/facility-access': typeof FacilityAccessRoute
   '/home': typeof HomeRoute
   '/profile': typeof ProfileRoute
   '/questionnaire': typeof QuestionnaireRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/dashboard'
+    | '/facility-access'
     | '/home'
     | '/profile'
     | '/questionnaire'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/facility-access'
     | '/home'
     | '/profile'
     | '/questionnaire'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/dashboard'
+    | '/facility-access'
     | '/home'
     | '/profile'
     | '/questionnaire'
@@ -221,6 +233,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  FacilityAccessRoute: typeof FacilityAccessRoute
   HomeRoute: typeof HomeRoute
   ProfileRoute: typeof ProfileRoute
   QuestionnaireRoute: typeof QuestionnaireRoute
@@ -272,6 +285,13 @@ declare module '@tanstack/react-router' {
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/facility-access': {
+      id: '/facility-access'
+      path: '/facility-access'
+      fullPath: '/facility-access'
+      preLoaderRoute: typeof FacilityAccessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -373,6 +393,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  FacilityAccessRoute: FacilityAccessRoute,
   HomeRoute: HomeRoute,
   ProfileRoute: ProfileRoute,
   QuestionnaireRoute: QuestionnaireRoute,
