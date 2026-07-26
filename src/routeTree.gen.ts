@@ -15,12 +15,14 @@ import { Route as RegisterFacilityRouteImport } from './routes/register-facility
 import { Route as QuestionnaireRouteImport } from './routes/questionnaire'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as FacilityLoginRouteImport } from './routes/facility-login'
 import { Route as FacilityAccessRouteImport } from './routes/facility-access'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as FacilityIdRouteImport } from './routes/facility.$id'
+import { Route as FacilityClaimIdRouteImport } from './routes/facility-claim.$id'
 import { Route as DashboardVerificationRouteImport } from './routes/dashboard.verification'
 import { Route as DashboardReviewsRouteImport } from './routes/dashboard.reviews'
 import { Route as DashboardProfileRouteImport } from './routes/dashboard.profile'
@@ -57,6 +59,11 @@ const HomeRoute = HomeRouteImport.update({
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FacilityLoginRoute = FacilityLoginRouteImport.update({
+  id: '/facility-login',
+  path: '/facility-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FacilityAccessRoute = FacilityAccessRouteImport.update({
   id: '/facility-access',
   path: '/facility-access',
@@ -85,6 +92,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
 const FacilityIdRoute = FacilityIdRouteImport.update({
   id: '/facility/$id',
   path: '/facility/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FacilityClaimIdRoute = FacilityClaimIdRouteImport.update({
+  id: '/facility-claim/$id',
+  path: '/facility-claim/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardVerificationRoute = DashboardVerificationRouteImport.update({
@@ -118,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/facility-access': typeof FacilityAccessRoute
+  '/facility-login': typeof FacilityLoginRoute
   '/home': typeof HomeRoute
   '/profile': typeof ProfileRoute
   '/questionnaire': typeof QuestionnaireRoute
@@ -129,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/reviews': typeof DashboardReviewsRoute
   '/dashboard/verification': typeof DashboardVerificationRoute
+  '/facility-claim/$id': typeof FacilityClaimIdRoute
   '/facility/$id': typeof FacilityIdRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
@@ -136,6 +150,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/facility-access': typeof FacilityAccessRoute
+  '/facility-login': typeof FacilityLoginRoute
   '/home': typeof HomeRoute
   '/profile': typeof ProfileRoute
   '/questionnaire': typeof QuestionnaireRoute
@@ -147,6 +162,7 @@ export interface FileRoutesByTo {
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/reviews': typeof DashboardReviewsRoute
   '/dashboard/verification': typeof DashboardVerificationRoute
+  '/facility-claim/$id': typeof FacilityClaimIdRoute
   '/facility/$id': typeof FacilityIdRoute
   '/dashboard': typeof DashboardIndexRoute
 }
@@ -156,6 +172,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/facility-access': typeof FacilityAccessRoute
+  '/facility-login': typeof FacilityLoginRoute
   '/home': typeof HomeRoute
   '/profile': typeof ProfileRoute
   '/questionnaire': typeof QuestionnaireRoute
@@ -167,6 +184,7 @@ export interface FileRoutesById {
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/reviews': typeof DashboardReviewsRoute
   '/dashboard/verification': typeof DashboardVerificationRoute
+  '/facility-claim/$id': typeof FacilityClaimIdRoute
   '/facility/$id': typeof FacilityIdRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
@@ -177,6 +195,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/dashboard'
     | '/facility-access'
+    | '/facility-login'
     | '/home'
     | '/profile'
     | '/questionnaire'
@@ -188,6 +207,7 @@ export interface FileRouteTypes {
     | '/dashboard/profile'
     | '/dashboard/reviews'
     | '/dashboard/verification'
+    | '/facility-claim/$id'
     | '/facility/$id'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
@@ -195,6 +215,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/facility-access'
+    | '/facility-login'
     | '/home'
     | '/profile'
     | '/questionnaire'
@@ -206,6 +227,7 @@ export interface FileRouteTypes {
     | '/dashboard/profile'
     | '/dashboard/reviews'
     | '/dashboard/verification'
+    | '/facility-claim/$id'
     | '/facility/$id'
     | '/dashboard'
   id:
@@ -214,6 +236,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/dashboard'
     | '/facility-access'
+    | '/facility-login'
     | '/home'
     | '/profile'
     | '/questionnaire'
@@ -225,6 +248,7 @@ export interface FileRouteTypes {
     | '/dashboard/profile'
     | '/dashboard/reviews'
     | '/dashboard/verification'
+    | '/facility-claim/$id'
     | '/facility/$id'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
@@ -234,12 +258,14 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   FacilityAccessRoute: typeof FacilityAccessRoute
+  FacilityLoginRoute: typeof FacilityLoginRoute
   HomeRoute: typeof HomeRoute
   ProfileRoute: typeof ProfileRoute
   QuestionnaireRoute: typeof QuestionnaireRoute
   RegisterFacilityRoute: typeof RegisterFacilityRoute
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  FacilityClaimIdRoute: typeof FacilityClaimIdRoute
   FacilityIdRoute: typeof FacilityIdRoute
 }
 
@@ -287,6 +313,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/facility-login': {
+      id: '/facility-login'
+      path: '/facility-login'
+      fullPath: '/facility-login'
+      preLoaderRoute: typeof FacilityLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/facility-access': {
       id: '/facility-access'
       path: '/facility-access'
@@ -327,6 +360,13 @@ declare module '@tanstack/react-router' {
       path: '/facility/$id'
       fullPath: '/facility/$id'
       preLoaderRoute: typeof FacilityIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/facility-claim/$id': {
+      id: '/facility-claim/$id'
+      path: '/facility-claim/$id'
+      fullPath: '/facility-claim/$id'
+      preLoaderRoute: typeof FacilityClaimIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/verification': {
@@ -394,12 +434,14 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   DashboardRoute: DashboardRouteWithChildren,
   FacilityAccessRoute: FacilityAccessRoute,
+  FacilityLoginRoute: FacilityLoginRoute,
   HomeRoute: HomeRoute,
   ProfileRoute: ProfileRoute,
   QuestionnaireRoute: QuestionnaireRoute,
   RegisterFacilityRoute: RegisterFacilityRoute,
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  FacilityClaimIdRoute: FacilityClaimIdRoute,
   FacilityIdRoute: FacilityIdRoute,
 }
 export const routeTree = rootRouteImport
