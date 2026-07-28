@@ -92,9 +92,28 @@ function RegisterFacility() {
             </div>
           </Field>
 
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="State">
+              <select required className={inputCls} defaultValue="">
+                <option value="" disabled>
+                  Select a state
+                </option>
+                {INDIAN_STATES.map((st) => (
+                  <option key={st} value={st}>
+                    {st}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="City">
+              <input required className={inputCls} placeholder="e.g. Pune" />
+            </Field>
+          </div>
+
           <Field label="Full address">
-            <input required className={inputCls} placeholder="Street, area, city, PIN" />
+            <input required className={inputCls} placeholder="Street, area, neighbourhood, PIN" />
           </Field>
+
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Primary contact person">
