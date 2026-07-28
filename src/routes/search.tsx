@@ -8,7 +8,6 @@ import {
   facilities,
   BROWSE_CARE_TYPES,
   ALL_AMENITIES,
-  NEIGHBORHOODS,
   INDIAN_STATES,
   citiesInState,
   DIETARY_PREFERENCES,

@@ -3,21 +3,21 @@ import { Search, Sparkles, ShieldCheck, Camera, BadgeCheck, MessageCircle, MapPi
 import { useState } from "react";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 import { FacilityCard } from "@/components/facility-card";
-import { facilities, NEIGHBORHOODS } from "@/lib/mock-data";
+import { facilities, INDIAN_STATES } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
-      { title: "Find the right care home for your loved one — ElderMatch" },
+      { title: "Senior care homes across India — ElderMatch" },
       {
         name: "description",
         content:
-          "Search verified assisted living, memory care and nursing homes near you. Real photos, verified reviews, licensed facilities.",
+          "Search verified assisted living, memory care and nursing homes in 10+ Indian states. Real photos, verified reviews, licensed facilities.",
       },
-      { property: "og:title", content: "Find the right care home for your loved one — ElderMatch" },
+      { property: "og:title", content: "Senior care homes across India — ElderMatch" },
       {
         property: "og:description",
-        content: "Verified senior care homes with real photos and reviews from confirmed stays.",
+        content: "Verified senior care homes across India, with real photos and reviews from confirmed stays.",
       },
     ],
   }),
@@ -48,10 +48,10 @@ function Home() {
                 <ShieldCheck className="h-3.5 w-3.5" /> Every home is licence-checked
               </span>
               <h1 className="mt-5 font-serif text-4xl leading-[1.05] text-foreground sm:text-5xl md:text-6xl">
-                Find the right care home for your loved one.
+                Find the right care home for your loved one — anywhere in India.
               </h1>
               <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-                Compare verified assisted living, memory care and nursing homes in your city — with real photos, honest reviews, and clear pricing.
+                Compare verified assisted living, memory care and nursing homes across 10+ states — with real photos, honest reviews, and clear pricing.
               </p>
 
               <form
@@ -63,7 +63,7 @@ function Home() {
                   <input
                     value={loc}
                     onChange={(e) => setLoc(e.target.value)}
-                    placeholder="Neighbourhood or city — e.g. Indiranagar"
+                    placeholder="City, state or neighbourhood — e.g. Pune, Kerala, Indiranagar"
                     className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground"
                   />
                 </div>
@@ -154,9 +154,9 @@ function Home() {
 
       {/* Popular neighborhoods */}
       <section className="mx-auto max-w-7xl px-5 pt-16 md:px-8">
-        <h2 className="font-serif text-2xl text-foreground md:text-3xl">Popular neighbourhoods</h2>
+        <h2 className="font-serif text-2xl text-foreground md:text-3xl">Browse by state</h2>
         <div className="mt-6 flex flex-wrap gap-2">
-          {NEIGHBORHOODS.map((n) => (
+          {INDIAN_STATES.map((n) => (
             <Link
               key={n}
               to="/search"
