@@ -267,12 +267,22 @@ function ProfilePage() {
               </div>
             ) : (
               <div className="grid gap-4">
-                <PrefRow label="Care needs">
-                  {prefs.careNeeds.length ? (
-                    <ChipRow items={prefs.careNeeds} />
+                <PrefRow label="Searching for">
+                  {prefs.searchFor ? (
+                    <span className="text-sm">{prefs.searchFor}</span>
                   ) : (
-                    <Muted>Any</Muted>
+                    <Muted>Not set</Muted>
                   )}
+                </PrefRow>
+                <PrefRow label="Timeline">
+                  {prefs.timeline ? (
+                    <span className="text-sm">{prefs.timeline}</span>
+                  ) : (
+                    <Muted>Not set</Muted>
+                  )}
+                </PrefRow>
+                <PrefRow label="Care needs">
+                  {prefs.careNeeds.length ? <ChipRow items={prefs.careNeeds} /> : <Muted>Any</Muted>}
                 </PrefRow>
                 <PrefRow label="Budget">
                   <span className="text-sm">
@@ -280,30 +290,25 @@ function ProfilePage() {
                   </span>
                 </PrefRow>
                 <PrefRow label="Preferred location">
-                  {prefs.location ? (
-                    <span className="text-sm">{prefs.location}</span>
+                  {prefs.location || prefs.state ? (
+                    <span className="text-sm">
+                      {[prefs.location, prefs.state].filter(Boolean).join(", ")}
+                    </span>
                   ) : (
-                    <Muted>Any area</Muted>
+                    <Muted>Anywhere in India</Muted>
                   )}
                 </PrefRow>
-                <PrefRow label="Priorities">
-                  {prefs.priorities.length ? (
-                    <div className="flex flex-wrap gap-1.5">
-                      {prefs.priorities.map((p, i) => (
-                        <span
-                          key={p}
-                          className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary"
-                        >
-                          <span className="grid h-4 w-4 place-items-center rounded-full bg-primary text-[10px] text-primary-foreground">
-                            {i + 1}
-                          </span>
-                          {p}
-                        </span>
-                      ))}
-                    </div>
+                <PrefRow label="Matters most">
+                  {prefs.priority ? (
+                    <span className="inline-flex rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+                      {prefs.priority}
+                    </span>
                   ) : (
                     <Muted>Not set</Muted>
                   )}
+                </PrefRow>
+                <PrefRow label="Community / dietary">
+                  {prefs.dietary?.length ? <ChipRow items={prefs.dietary} /> : <Muted>No preference</Muted>}
                 </PrefRow>
                 <PrefRow label="Language">
                   {prefs.language ? (
@@ -312,14 +317,8 @@ function ProfilePage() {
                     <Muted>No preference</Muted>
                   )}
                 </PrefRow>
-                {prefs.condition && <PrefRow label="Condition"><span className="text-sm">{prefs.condition}</span></PrefRow>}
-                {prefs.mobility && <PrefRow label="Mobility"><span className="text-sm">{prefs.mobility}</span></PrefRow>}
-                {prefs.environment && <PrefRow label="Environment"><span className="text-sm">{prefs.environment}</span></PrefRow>}
-                {prefs.timeline && <PrefRow label="Timeline"><span className="text-sm">{prefs.timeline}</span></PrefRow>}
-                {prefs.roomPreference && <PrefRow label="Room"><span className="text-sm">{prefs.roomPreference}</span></PrefRow>}
-                {prefs.pets && <PrefRow label="Pets"><span className="text-sm">{prefs.pets}</span></PrefRow>}
-                {prefs.distantFamily && <PrefRow label="Distant family"><span className="text-sm">{prefs.distantFamily}</span></PrefRow>}
               </div>
+
             )}
           </Card>
 
