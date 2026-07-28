@@ -4,82 +4,66 @@ const KEY_PREFS = "kinstead.prefs";
 const KEY_SHORTLIST = "kinstead.shortlist";
 const KEY_PROFILE = "eldermatch.profile";
 
+/**
+ * Simplified 5-question preference model.
+ * 1. Who + how soon   2. Care needed   3. Budget + location
+ * 4. What matters most 5. Community / language
+ */
 export type Preferences = {
-  searchFor: "Myself" | "Parent or family member" | "Someone else" | "";
+  searchFor: string;
+  timeline: string;
   careNeeds: string[];
   budget: number; // monthly max
-  location: string;
-  priorities: string[];
+  state: string;
+  location: string; // city / area
+  priority: string; // single select
   language: string;
-  // Expanded fields (all optional / skippable)
-  condition?: string;
-  mobility?: string;
-  environment?: string;
-  timeline?: string;
-  roomPreference?: string;
-  pets?: string;
-  distantFamily?: "Yes" | "No" | "";
-  dietary?: string[];
+  dietary: string[];
 };
 
 export const DEFAULT_PREFS: Preferences = {
   searchFor: "",
+  timeline: "",
   careNeeds: [],
   budget: 80000,
+  state: "",
   location: "",
-  priorities: [],
+  priority: "",
   language: "",
-  condition: "",
-  mobility: "",
-  environment: "",
-  timeline: "",
-  roomPreference: "",
-  pets: "",
-  distantFamily: "",
   dietary: [],
 };
 
-export const CONDITION_OPTIONS = [
-  "Dementia/Alzheimer's",
-  "Parkinson's",
-  "Diabetes management",
-  "Post-stroke recovery",
-  "None of these",
-  "Prefer not to say",
-] as const;
-
-export const MOBILITY_OPTIONS = [
-  "Fully independent",
-  "Uses a cane or walker",
-  "Wheelchair-bound",
-  "Bedridden",
-] as const;
-
-export const ENVIRONMENT_OPTIONS = [
-  "Quiet & calm",
-  "Social & active",
-  "Small intimate setting",
-  "Large community with lots of amenities",
+export const SEARCH_FOR_OPTIONS = [
+  "Myself",
+  "A parent",
+  "A spouse",
+  "Another family member",
 ] as const;
 
 export const TIMELINE_OPTIONS = [
   "Immediately / urgent",
   "Within 1 month",
   "1–3 months",
-  "Just researching for the future",
+  "Just researching",
 ] as const;
 
-export const ROOM_OPTIONS = [
-  "Private required",
-  "Open to shared",
-  "No preference",
+export const CARE_NEED_OPTIONS = [
+  "Mobility assistance",
+  "Memory/dementia care",
+  "Medication management",
+  "Physical therapy",
+  "Palliative care",
+  "General/Independent living",
 ] as const;
 
-export const PETS_OPTIONS = [
-  "Yes, has a pet",
-  "Important even without a pet",
-  "Not important",
+export const PRIORITY_OPTIONS = [
+  "Healthcare quality",
+  "Price",
+  "Location",
+  "Social/community fit",
+  "Food/language/community fit",
 ] as const;
+
 
 export const RELATIONSHIPS = [
   "Myself",
