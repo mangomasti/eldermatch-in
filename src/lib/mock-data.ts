@@ -644,16 +644,33 @@ export const ALL_AMENITIES = [
   "Library",
 ];
 
-export const NEIGHBORHOODS = [
-  "Indiranagar",
-  "Whitefield",
-  "Jayanagar",
-  "HSR Layout",
-  "Malleshwaram",
-  "Koramangala",
-];
+export const NEIGHBORHOODS = Array.from(
+  new Set(facilities.map((f) => f.neighborhood)),
+).sort();
 
-export const LANGUAGES = ["English", "Hindi", "Kannada", "Tamil", "Telugu", "Malayalam", "Bengali"];
+export const STATES = Array.from(new Set(facilities.map((f) => f.state))).sort();
+
+export const CITIES = Array.from(new Set(facilities.map((f) => f.city))).sort();
+
+export function citiesInState(state: string) {
+  return Array.from(
+    new Set(facilities.filter((f) => !state || f.state === state).map((f) => f.city)),
+  ).sort();
+}
+
+export const LANGUAGES = [
+  "English",
+  "Hindi",
+  "Kannada",
+  "Tamil",
+  "Telugu",
+  "Malayalam",
+  "Bengali",
+  "Marathi",
+  "Gujarati",
+  "Punjabi",
+  "Urdu",
+];
 
 export function formatINR(n: number) {
   return `₹${n.toLocaleString("en-IN")}`;
@@ -923,6 +940,54 @@ export const FACILITY_ENRICHMENT: Record<string, FacilityEnrichment> = {
   },
 };
 
+// Auto-generate enrichment for the pan-India sample facilities
+for (const sp of EXTRA_SPECS) {
+  const f = EXTRA_FACILITIES.find((x) => x.id === sp.id)!;
+  const priv = Math.round(sp.priceMax * 0.8);
+  const shared = Math.round(sp.priceMin * 0.95);
+  FACILITY_ENRICHMENT[sp.id] = {
+    tier: sp.tier,
+    yearFounded: 2008 + (sp.reviewCount % 12),
+    lastUpdated: "March 2026",
+    itemizedCosts: {
+      private: sp.tier === "NGO/Free care" ? undefined : priv,
+      shared: sp.tier === "NGO/Free care" ? 0 : shared,
+      extras: [
+        { name: "Physiotherapy sessions", cost: "₹450 / session" },
+        { name: "Medicines (billed at cost)", cost: "Actuals, monthly statement" },
+        { name: "Electricity / AC surcharge", cost: "₹1,200 / month" },
+      ],
+      deposit: sp.tier === "NGO/Free care" ? "None" : `₹${(Math.round(sp.priceMin / 10000) * 10000).toLocaleString("en-IN")} refundable`,
+    },
+    conditionCare: f.careTypes.some((c) => /memory/i.test(c))
+      ? ["Dementia/Alzheimer's", "Chronic illness (diabetes, hypertension)"]
+      : f.careTypes.some((c) => /nursing/i.test(c))
+        ? ["Post-surgery recovery", "Bedridden care", "Palliative care"]
+        : ["Chronic illness (diabetes, hypertension)"],
+    staff: {
+      credentials: "GNM nurses; visiting physician",
+      ratio: f.staffRatio,
+      avgExperience: `${5 + (sp.reviewCount % 7)} years`,
+    },
+    hospitalTieUp: sp.hospital,
+    distanceToHospital: `${(1 + (sp.reviewCount % 5)).toFixed(1)} km to ${sp.hospital.split(" — ")[0]}`,
+    distanceToAirport: `${18 + (sp.reviewCount % 30)} km to ${sp.city} airport`,
+    cuisine: sp.cuisine,
+    emergencyPlan: {
+      ...commonEmergency,
+      partnerHospital: `${sp.hospital.split(" — ")[0]} (partner, priority admission)`,
+    },
+    priceHistory: [
+      { month: "Sep 2025", price: Math.round(sp.priceMin * 0.92) },
+      { month: "Dec 2025", price: Math.round(sp.priceMin * 0.96) },
+      { month: "Mar 2026", price: sp.priceMin },
+    ],
+    trialStay: { available: sp.tier !== "NGO/Free care", nights: 3, price: Math.round(sp.priceMin / 8) },
+    petFriendly: sp.reviewCount % 2 === 0,
+    distantFamilySupport: "Weekly video check-ins for families living away",
+  };
+}
+
 export function getEnrichment(id: string): FacilityEnrichment | undefined {
   return FACILITY_ENRICHMENT[id];
 }
@@ -1127,6 +1192,10 @@ export const FACILITY_DIETARY: Record<string, string[]> = {
   "cypress-court": ["Vegetarian (general)", "Non-Vegetarian available", "Muslim", "Christian"],
 };
 
+for (const sp of EXTRA_SPECS) {
+  FACILITY_DIETARY[sp.id] = sp.dietary;
+}
+
 export function facilityDietary(id: string) {
   return FACILITY_DIETARY[id] ?? ["No specific preference"];
 }
@@ -1164,6 +1233,7 @@ export type OwnerListing = {
   name: string;
   neighborhood: string;
   city: string;
+  state: string;
   careType: string;
   tier: FacilityTier;
   status: "Unclaimed" | "Already Registered";
@@ -1218,6 +1288,7 @@ export const OWNER_LISTINGS: OwnerListing[] = [
     name: f.name,
     neighborhood: f.neighborhood,
     city: f.city,
+    state: f.state,
     careType: facilityBrowseCategories(f)[0] ?? f.careTypes[0],
     tier: FACILITY_ENRICHMENT[f.id]?.tier ?? "Mid-range assisted living",
     status: "Already Registered",
