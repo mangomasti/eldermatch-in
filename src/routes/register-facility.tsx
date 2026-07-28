@@ -7,6 +7,8 @@ import {
   FACILITY_TIERS,
   CONDITION_CARE_OPTIONS,
   DIETARY_PREFERENCES,
+  INDIAN_STATES,
+
 } from "@/lib/mock-data";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 import { writeFacilitySession } from "@/lib/facility-session";
