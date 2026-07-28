@@ -37,9 +37,16 @@ export const Route = createFileRoute("/search")({
 function SearchPage() {
   const { q } = Route.useSearch();
   const { prefs } = usePreferences();
-  const [stateFilter, setStateFilter] = useState<string>("");
-  const [city, setCity] = useState<string>("");
-  const [neighborhood, setNeighborhood] = useState<string>(q ?? "");
+  const initial = q ?? "";
+  const [stateFilter, setStateFilter] = useState<string>(
+    facilities.some((f) => f.state === initial) ? initial : "",
+  );
+  const [city, setCity] = useState<string>(
+    facilities.some((f) => f.city === initial) ? initial : "",
+  );
+  const [neighborhood, setNeighborhood] = useState<string>(
+    facilities.some((f) => f.neighborhood === initial) ? initial : "",
+  );
   const [budget, setBudget] = useState<number>(150000);
   const [careTypes, setCareTypes] = useState<string[]>([]);
   const [amenities, setAmenities] = useState<string[]>([]);
