@@ -93,10 +93,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Welcome to ElderMatch — trusted senior care, made simple" },
-      { name: "twitter:description", content: "ElderMatch helps families find verified assisted living homes, and helps facilities reach the families who need them." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2618b65a-555c-4af7-a399-d3e7d48c80b1/id-preview-4dc7f1e8--7b0fa879-ecd0-4e4f-adcf-a8c218f7aa93.lovable.app-1784176880788.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2618b65a-555c-4af7-a399-d3e7d48c80b1/id-preview-4dc7f1e8--7b0fa879-ecd0-4e4f-adcf-a8c218f7aa93.lovable.app-1784176880788.png" },
+      {
+        name: "twitter:title",
+        content: "Welcome to ElderMatch — trusted senior care, made simple",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "ElderMatch helps families find verified assisted living homes, and helps facilities reach the families who need them.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2618b65a-555c-4af7-a399-d3e7d48c80b1/id-preview-4dc7f1e8--7b0fa879-ecd0-4e4f-adcf-a8c218f7aa93.lovable.app-1784176880788.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2618b65a-555c-4af7-a399-d3e7d48c80b1/id-preview-4dc7f1e8--7b0fa879-ecd0-4e4f-adcf-a8c218f7aa93.lovable.app-1784176880788.png",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

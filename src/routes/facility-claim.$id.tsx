@@ -67,9 +67,12 @@ function ClaimListing() {
             <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-verified/15 text-verified">
               <CheckCircle2 className="h-7 w-7" />
             </span>
-            <h1 className="mt-5 font-serif text-3xl">Thanks — we've received your claim request.</h1>
+            <h1 className="mt-5 font-serif text-3xl">
+              Thanks — we've received your claim request.
+            </h1>
             <p className="mx-auto mt-3 max-w-md text-muted-foreground">
-              Our team will verify your ownership within 2–3 business days before you get full access.
+              Our team will verify your ownership within 2–3 business days before you get full
+              access.
             </p>
             <button
               onClick={() => navigate({ to: "/dashboard" })}
@@ -85,10 +88,14 @@ function ClaimListing() {
             </span>
             <h1 className="mt-4 font-serif text-3xl md:text-4xl">Claim {listing.name}</h1>
             <p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
-              <MapPin className="h-3.5 w-3.5" /> {listing.neighborhood}, {listing.city} · {listing.careType}
+              <MapPin className="h-3.5 w-3.5" /> {listing.neighborhood}, {listing.city} ·{" "}
+              {listing.careType}
             </p>
 
-            <form onSubmit={submit} className="mt-8 space-y-5 rounded-3xl bg-card p-6 shadow-[var(--shadow-card)] md:p-8">
+            <form
+              onSubmit={submit}
+              className="mt-8 space-y-5 rounded-3xl bg-card p-6 shadow-[var(--shadow-card)] md:p-8"
+            >
               <label className="block">
                 <span className="mb-1.5 block text-sm font-medium">Your name</span>
                 <input required className={inputCls} placeholder="Full name" />
@@ -124,7 +131,12 @@ function ClaimListing() {
                 </label>
                 <label className="block">
                   <span className="mb-1.5 block text-sm font-medium">Email</span>
-                  <input required type="email" className={inputCls} placeholder="you@facility.com" />
+                  <input
+                    required
+                    type="email"
+                    className={inputCls}
+                    placeholder="you@facility.com"
+                  />
                 </label>
               </div>
 
@@ -141,7 +153,9 @@ function ClaimListing() {
                   ) : (
                     <>
                       <span className="font-medium text-foreground">Click to upload</span>
-                      <span className="text-xs">Registration certificate, trust deed, GST or utility bill (PDF/JPG)</span>
+                      <span className="text-xs">
+                        Registration certificate, trust deed, GST or utility bill (PDF/JPG)
+                      </span>
                     </>
                   )}
                 </button>

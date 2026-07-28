@@ -16,10 +16,12 @@ function Verification() {
     <div className="space-y-6">
       {locked && (
         <div className="rounded-2xl border border-highlight/30 bg-highlight/10 p-5">
-          <div className="text-sm font-semibold text-highlight">Claim Submitted — Pending Review</div>
+          <div className="text-sm font-semibold text-highlight">
+            Claim Submitted — Pending Review
+          </div>
           <p className="mt-1 text-sm text-foreground/85">
-            We're checking your ownership documents. Full dashboard access unlocks within 2–3 business
-            days of approval.
+            We're checking your ownership documents. Full dashboard access unlocks within 2–3
+            business days of approval.
           </p>
         </div>
       )}
@@ -80,7 +82,8 @@ function Verification() {
               <AlertTriangle className="h-4 w-4" /> Action needed
             </div>
             <p className="text-sm text-foreground/85">
-              Your insurance certificate expires in 21 days. Upload a renewed copy to keep your Verified badge.
+              Your insurance certificate expires in 21 days. Upload a renewed copy to keep your
+              Verified badge.
             </p>
             <button
               onClick={() => toast.success("Upload dialog opened (mock).")}

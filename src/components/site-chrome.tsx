@@ -8,7 +8,7 @@ function initials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "";
   const first = parts[0]?.[0] ?? "";
-  const last = parts.length > 1 ? parts[parts.length - 1]?.[0] ?? "" : "";
+  const last = parts.length > 1 ? (parts[parts.length - 1]?.[0] ?? "") : "";
   return (first + last).toUpperCase();
 }
 
@@ -58,10 +58,18 @@ export function SiteHeader() {
       {open && (
         <div className="border-t border-border/60 bg-background md:hidden">
           <div className="mx-auto flex max-w-7xl flex-col gap-1 px-5 py-4">
-            <NavLink to="/search" onClick={() => setOpen(false)}>Browse homes</NavLink>
-            <NavLink to="/questionnaire" onClick={() => setOpen(false)}>Get recommendations</NavLink>
-            <NavLink to="/about" onClick={() => setOpen(false)}>How we verify</NavLink>
-            <NavLink to="/profile" onClick={() => setOpen(false)}>My profile</NavLink>
+            <NavLink to="/search" onClick={() => setOpen(false)}>
+              Browse homes
+            </NavLink>
+            <NavLink to="/questionnaire" onClick={() => setOpen(false)}>
+              Get recommendations
+            </NavLink>
+            <NavLink to="/about" onClick={() => setOpen(false)}>
+              How we verify
+            </NavLink>
+            <NavLink to="/profile" onClick={() => setOpen(false)}>
+              My profile
+            </NavLink>
             <Link
               to="/register-facility"
               onClick={() => setOpen(false)}
@@ -76,7 +84,15 @@ export function SiteHeader() {
   );
 }
 
-function NavLink({ to, children, onClick }: { to: string; children: React.ReactNode; onClick?: () => void }) {
+function NavLink({
+  to,
+  children,
+  onClick,
+}: {
+  to: string;
+  children: React.ReactNode;
+  onClick?: () => void;
+}) {
   return (
     <Link
       to={to}
@@ -96,26 +112,50 @@ export function SiteFooter() {
         <div className="md:col-span-2">
           <Logo />
           <p className="mt-3 max-w-sm text-sm text-muted-foreground">
-            ElderMatch helps families find trusted senior care in their city — verified facilities, real photos, and reviews only from confirmed stays.
+            ElderMatch helps families find trusted senior care in their city — verified facilities,
+            real photos, and reviews only from confirmed stays.
           </p>
         </div>
         <div>
           <div className="mb-3 text-sm font-semibold">For families</div>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/search" className="hover:text-foreground">Browse homes</Link></li>
-            <li><Link to="/questionnaire" className="hover:text-foreground">Personalised recommendations</Link></li>
-            <li><Link to="/about" className="hover:text-foreground">How verification works</Link></li>
+            <li>
+              <Link to="/search" className="hover:text-foreground">
+                Browse homes
+              </Link>
+            </li>
+            <li>
+              <Link to="/questionnaire" className="hover:text-foreground">
+                Personalised recommendations
+              </Link>
+            </li>
+            <li>
+              <Link to="/about" className="hover:text-foreground">
+                How verification works
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <div className="mb-3 text-sm font-semibold">For facilities</div>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/register-facility" className="hover:text-foreground">List your facility</Link></li>
-            <li><Link to="/facility-login" className="hover:text-foreground">Facility login</Link></li>
-            <li><Link to="/about" className="hover:text-foreground">Our standards</Link></li>
+            <li>
+              <Link to="/register-facility" className="hover:text-foreground">
+                List your facility
+              </Link>
+            </li>
+            <li>
+              <Link to="/facility-login" className="hover:text-foreground">
+                Facility login
+              </Link>
+            </li>
+            <li>
+              <Link to="/about" className="hover:text-foreground">
+                Our standards
+              </Link>
+            </li>
           </ul>
         </div>
-
       </div>
       <div className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground">
         © 2026 ElderMatch. Made with care.

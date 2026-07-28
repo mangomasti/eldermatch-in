@@ -35,7 +35,12 @@ export const Route = createFileRoute("/facility/$id")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Facility not found — ElderMatch" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [
+          { title: "Facility not found — ElderMatch" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     }
     const f = loaderData.facility;
     return {
@@ -85,26 +90,66 @@ function FacilityProfile() {
 
       <div className="mx-auto max-w-6xl px-5 pt-8 md:px-8">
         <nav className="text-sm text-muted-foreground">
-          <Link to="/home" className="hover:text-foreground">Home</Link>
+          <Link to="/home" className="hover:text-foreground">
+            Home
+          </Link>
           <span className="px-2">/</span>
-          <Link to="/search" className="hover:text-foreground">Homes</Link>
+          <Link to="/search" className="hover:text-foreground">
+            Homes
+          </Link>
           <span className="px-2">/</span>
           <span className="text-foreground">{f.name}</span>
         </nav>
 
-        {/* Gallery */}
-        <div className="mt-5 grid gap-2 overflow-hidden rounded-3xl md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2">
-          <div className="relative aspect-[4/3] md:col-start-1 md:row-span-2 md:aspect-auto">
-            <img src={f.images[0]} alt={f.name} className="absolute inset-0 h-full w-full object-cover" />
-            <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-background/95 px-3 py-1.5 text-xs font-medium text-verified shadow-sm">
-              <ShieldCheck className="h-3.5 w-3.5" /> Verified recent photos
-            </span>
-          </div>
-          {f.images.slice(1, 4).map((src, i) => (
-            <div key={i} className="relative hidden aspect-[4/3] md:block md:aspect-auto">
-              <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        {/* Gallery — swipeable on mobile, mosaic on desktop */}
+        <div className="mt-5">
+          {/* Mobile: horizontal snap carousel */}
+          <div className="md:hidden">
+            <div className="flex snap-x snap-mandatory gap-2 overflow-x-auto rounded-3xl pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {f.images.map((src, i) => (
+                <div
+                  key={i}
+                  className="relative aspect-[4/3] w-full shrink-0 snap-center overflow-hidden rounded-3xl"
+                >
+                  <img
+                    src={src}
+                    alt={`${f.name} photo ${i + 1}`}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                  {i === 0 && (
+                    <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-background/95 px-3 py-1.5 text-xs font-medium text-verified shadow-sm">
+                      <ShieldCheck className="h-3.5 w-3.5" /> Verified recent photos
+                    </span>
+                  )}
+                  <span className="absolute bottom-3 right-3 rounded-full bg-foreground/70 px-2.5 py-1 text-xs font-medium text-background">
+                    {i + 1} / {f.images.length}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
+            <p className="mt-1 text-center text-xs text-muted-foreground">
+              Swipe to see more photos
+            </p>
+          </div>
+
+          {/* Desktop mosaic */}
+          <div className="hidden gap-2 overflow-hidden rounded-3xl md:grid md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2">
+            <div className="relative md:col-start-1 md:row-span-2">
+              <img
+                src={f.images[0]}
+                alt={f.name}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-background/95 px-3 py-1.5 text-xs font-medium text-verified shadow-sm">
+                <ShieldCheck className="h-3.5 w-3.5" /> Verified recent photos
+              </span>
+            </div>
+            {f.images.slice(1, 5).map((src, i) => (
+              <div key={i} className="relative min-h-[140px]">
+                <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover" />
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="mt-8 grid gap-10 md:grid-cols-[1fr_360px]">
@@ -116,7 +161,8 @@ function FacilityProfile() {
                   <h1 className="font-serif text-3xl md:text-4xl">{f.name}</h1>
                   {f.verified && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-verified/10 px-3 py-1 text-xs font-semibold text-verified">
-                      <BadgeCheck className="h-3.5 w-3.5" /> Verified · Last verified {f.lastVerified}
+                      <BadgeCheck className="h-3.5 w-3.5" /> Verified · Last verified{" "}
+                      {f.lastVerified}
                     </span>
                   )}
                   {e && (
@@ -131,7 +177,8 @@ function FacilityProfile() {
                   </span>
                   <span className="inline-flex items-center gap-1">
                     <Star className="h-4 w-4 fill-highlight text-highlight" />
-                    <span className="font-semibold text-foreground">{f.rating}</span> ({f.reviewCount} reviews)
+                    <span className="font-semibold text-foreground">{f.rating}</span> (
+                    {f.reviewCount} reviews)
                   </span>
                 </div>
               </div>
@@ -152,170 +199,6 @@ function FacilityProfile() {
             </div>
 
             <p className="mt-6 text-base leading-relaxed text-foreground/85">{f.longDescription}</p>
-
-            <Section title="What's included in the price">
-              <div className="rounded-2xl border border-border bg-card p-5">
-                <div className="flex items-baseline gap-2">
-                  <span className="font-serif text-3xl">{formatINR(f.priceMin)}</span>
-                  <span className="text-muted-foreground">to {formatINR(f.priceMax)} / month</span>
-                </div>
-                {e ? (
-                  <div className="mt-5 space-y-3">
-                    <table className="w-full text-sm">
-                      <tbody className="divide-y divide-border">
-                        {typeof e.itemizedCosts.private === "number" && (
-                          <tr>
-                            <td className="py-2 text-muted-foreground">Private room (base)</td>
-                            <td className="py-2 text-right font-medium">
-                              {e.itemizedCosts.private === 0 ? "Free" : `${formatINR(e.itemizedCosts.private)} /mo`}
-                            </td>
-                          </tr>
-                        )}
-                        {typeof e.itemizedCosts.shared === "number" && (
-                          <tr>
-                            <td className="py-2 text-muted-foreground">Shared room (base)</td>
-                            <td className="py-2 text-right font-medium">
-                              {e.itemizedCosts.shared === 0 ? "Free" : `${formatINR(e.itemizedCosts.shared)} /mo`}
-                            </td>
-                          </tr>
-                        )}
-                        {e.itemizedCosts.extras.map((x) => (
-                          <tr key={x.name}>
-                            <td className="py-2 text-muted-foreground">{x.name}</td>
-                            <td className="py-2 text-right font-medium">{x.cost}</td>
-                          </tr>
-                        ))}
-                        <tr>
-                          <td className="py-2 text-muted-foreground">Security deposit</td>
-                          <td className="py-2 text-right font-medium">{e.itemizedCosts.deposit}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <p className="text-xs text-muted-foreground">Base includes room, meals, housekeeping, standard nursing and activity programme.</p>
-                  </div>
-                ) : (
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    Base cost includes room, boarding, housekeeping and standard care. Extras billed separately.
-                  </p>
-                )}
-              </div>
-
-              {e && (
-                <div className="mt-3 flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card p-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Price history:</span>
-                  </div>
-                  {e.priceHistory.map((p) => (
-                    <span key={p.month} className="text-muted-foreground">
-                      {p.month}: <span className="text-foreground">{p.price === 0 ? "Free" : formatINR(p.price)}</span>
-                    </span>
-                  ))}
-                </div>
-              )}
-            </Section>
-
-            {e && e.conditionCare.length > 0 && (
-              <Section title="Specialised condition care">
-                <div className="flex flex-wrap gap-2">
-                  {e.conditionCare.map((c) => (
-                    <span key={c} className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary">
-                      <Stethoscope className="h-3.5 w-3.5" /> {c}
-                    </span>
-                  ))}
-                </div>
-              </Section>
-            )}
-
-            <Section title="Amenities">
-              <div className="flex flex-wrap gap-2">
-                {f.amenities.map((a) => (
-                  <span key={a} className="rounded-full bg-secondary px-3 py-1.5 text-sm text-secondary-foreground">
-                    {a}
-                  </span>
-                ))}
-                {e?.petFriendly && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-warm px-3 py-1.5 text-sm text-warm-foreground">
-                    <PawPrint className="h-3.5 w-3.5" /> Pet-friendly
-                  </span>
-                )}
-              </div>
-            </Section>
-
-            <Section title="Medical capabilities & staff">
-              <div className="grid gap-3 sm:grid-cols-2">
-                {f.medicalCapabilities.map((m) => (
-                  <div key={m} className="flex items-center gap-2.5 rounded-xl border border-border bg-card p-3.5">
-                    <Stethoscope className="h-4 w-4 shrink-0 text-primary" />
-                    <span className="text-sm">{m}</span>
-                  </div>
-                ))}
-              </div>
-              {e ? (
-                <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                  <Stat icon={<Users className="h-4 w-4" />} label="Staff ratio" value={e.staff.ratio} />
-                  <Stat icon={<BadgeCheck className="h-4 w-4" />} label="Credentials" value={e.staff.credentials} />
-                  <Stat icon={<Sparkles className="h-4 w-4" />} label="Avg. experience" value={e.staff.avgExperience} />
-                </div>
-              ) : (
-                <div className="mt-4 flex items-center gap-3 rounded-xl bg-warm/40 p-4">
-                  <Users className="h-5 w-5 text-primary" />
-                  <div className="text-sm">
-                    <span className="font-medium">Staff-to-resident ratio: </span>{f.staffRatio}
-                  </div>
-                </div>
-              )}
-            </Section>
-
-            {e && (
-              <Section title="Location & connections">
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <Stat icon={<Hospital className="h-4 w-4" />} label="Nearest hospital" value={e.distanceToHospital} />
-                  <Stat icon={<Plane className="h-4 w-4" />} label="Nearest airport" value={e.distanceToAirport} />
-                  <Stat icon={<Utensils className="h-4 w-4" />} label="Cuisine" value={e.cuisine.join(", ")} />
-                  <Stat
-                    icon={<Utensils className="h-4 w-4" />}
-                    label="Community / dietary preference"
-                    value={facilityDietary(f.id).join(", ")}
-                  />
-                </div>
-                {e.hospitalTieUp && (
-                  <div className="mt-3 flex items-start gap-2 rounded-xl bg-verified/10 p-3 text-sm text-foreground">
-                    <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-verified" />
-                    <span>
-                      <span className="font-medium">Hospital tie-up:</span> {e.hospitalTieUp}
-                    </span>
-                  </div>
-                )}
-              </Section>
-            )}
-
-            {e && (
-              <Section title="Emergency response plan">
-                <div className="rounded-2xl border border-border bg-card p-5">
-                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
-                    <Siren className="h-4 w-4 text-highlight" /> What happens in a medical emergency
-                  </div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-start gap-2"><Stethoscope className="mt-0.5 h-4 w-4 text-primary" />{e.emergencyPlan.onCallDoctor}</li>
-                    <li className="flex items-start gap-2"><Siren className="mt-0.5 h-4 w-4 text-primary" />{e.emergencyPlan.ambulance}</li>
-                    <li className="flex items-start gap-2"><Hospital className="mt-0.5 h-4 w-4 text-primary" />{e.emergencyPlan.partnerHospital}</li>
-                    <li className="flex items-start gap-2"><Users className="mt-0.5 h-4 w-4 text-primary" />{e.emergencyPlan.protocol}</li>
-                  </ul>
-                </div>
-              </Section>
-            )}
-
-            <Section title="Licensing & accreditation">
-              <ul className="space-y-2">
-                {f.licensing.map((l) => (
-                  <li key={l} className="flex items-start gap-2 text-sm">
-                    <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-verified" />
-                    <span>{l}</span>
-                  </li>
-                ))}
-              </ul>
-            </Section>
 
             <Section title="A typical week">
               <div className="overflow-x-auto">
@@ -344,7 +227,10 @@ function FacilityProfile() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {f.residentInterests.map((i) => (
-                      <span key={i} className="rounded-full bg-warm px-3 py-1 text-sm text-warm-foreground">
+                      <span
+                        key={i}
+                        className="rounded-full bg-warm px-3 py-1 text-sm text-warm-foreground"
+                      >
                         {i}
                       </span>
                     ))}
@@ -356,7 +242,10 @@ function FacilityProfile() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {f.languages.map((l) => (
-                      <span key={l} className="rounded-full border border-border bg-card px-3 py-1 text-sm">
+                      <span
+                        key={l}
+                        className="rounded-full border border-border bg-card px-3 py-1 text-sm"
+                      >
                         {l}
                       </span>
                     ))}
@@ -365,9 +254,83 @@ function FacilityProfile() {
               </div>
             </Section>
 
+            <Section title="What's included in the price">
+              <div className="rounded-2xl border border-border bg-card p-5">
+                <div className="flex items-baseline gap-2">
+                  <span className="font-serif text-3xl">{formatINR(f.priceMin)}</span>
+                  <span className="text-muted-foreground">to {formatINR(f.priceMax)} / month</span>
+                </div>
+                {e ? (
+                  <div className="mt-5 space-y-3">
+                    <table className="w-full text-sm">
+                      <tbody className="divide-y divide-border">
+                        {typeof e.itemizedCosts.private === "number" && (
+                          <tr>
+                            <td className="py-2 text-muted-foreground">Private room (base)</td>
+                            <td className="py-2 text-right font-medium">
+                              {e.itemizedCosts.private === 0
+                                ? "Free"
+                                : `${formatINR(e.itemizedCosts.private)} /mo`}
+                            </td>
+                          </tr>
+                        )}
+                        {typeof e.itemizedCosts.shared === "number" && (
+                          <tr>
+                            <td className="py-2 text-muted-foreground">Shared room (base)</td>
+                            <td className="py-2 text-right font-medium">
+                              {e.itemizedCosts.shared === 0
+                                ? "Free"
+                                : `${formatINR(e.itemizedCosts.shared)} /mo`}
+                            </td>
+                          </tr>
+                        )}
+                        {e.itemizedCosts.extras.map((x) => (
+                          <tr key={x.name}>
+                            <td className="py-2 text-muted-foreground">{x.name}</td>
+                            <td className="py-2 text-right font-medium">{x.cost}</td>
+                          </tr>
+                        ))}
+                        <tr>
+                          <td className="py-2 text-muted-foreground">Security deposit</td>
+                          <td className="py-2 text-right font-medium">{e.itemizedCosts.deposit}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p className="text-xs text-muted-foreground">
+                      Base includes room, meals, housekeeping, standard nursing and activity
+                      programme.
+                    </p>
+                  </div>
+                ) : (
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Base cost includes room, boarding, housekeeping and standard care. Extras billed
+                    separately.
+                  </p>
+                )}
+              </div>
+
+              {e && (
+                <div className="mt-3 flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card p-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-primary" />
+                    <span className="font-medium">Price history:</span>
+                  </div>
+                  {e.priceHistory.map((p) => (
+                    <span key={p.month} className="text-muted-foreground">
+                      {p.month}:{" "}
+                      <span className="text-foreground">
+                        {p.price === 0 ? "Free" : formatINR(p.price)}
+                      </span>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </Section>
+
             <Section title={`Reviews · ${f.rating} average from ${f.reviewCount} stays`}>
               <p className="mb-4 text-sm text-muted-foreground">
-                Reviews are anonymous by default to protect resident privacy. Only families with a <span className="font-medium text-verified">Verified Stay</span> can post.
+                Reviews are anonymous by default to protect resident privacy. Only families with a{" "}
+                <span className="font-medium text-verified">Verified Stay</span> can post.
               </p>
               <div className="space-y-4">
                 {f.reviews.map((r, i) => (
@@ -378,7 +341,9 @@ function FacilityProfile() {
                           {String.fromCharCode(65 + i)}
                         </span>
                         <div>
-                          <div className="text-sm font-semibold">Verified family {String.fromCharCode(65 + i)}</div>
+                          <div className="text-sm font-semibold">
+                            Verified family {String.fromCharCode(65 + i)}
+                          </div>
                           <div className="text-xs text-muted-foreground">{r.date}</div>
                         </div>
                       </div>
@@ -404,6 +369,154 @@ function FacilityProfile() {
                   </article>
                 ))}
               </div>
+            </Section>
+
+            {e && e.conditionCare.length > 0 && (
+              <Section title="Specialised condition care">
+                <div className="flex flex-wrap gap-2">
+                  {e.conditionCare.map((c) => (
+                    <span
+                      key={c}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary"
+                    >
+                      <Stethoscope className="h-3.5 w-3.5" /> {c}
+                    </span>
+                  ))}
+                </div>
+              </Section>
+            )}
+
+            <Section title="Amenities">
+              <div className="flex flex-wrap gap-2">
+                {f.amenities.map((a) => (
+                  <span
+                    key={a}
+                    className="rounded-full bg-secondary px-3 py-1.5 text-sm text-secondary-foreground"
+                  >
+                    {a}
+                  </span>
+                ))}
+                {e?.petFriendly && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-warm px-3 py-1.5 text-sm text-warm-foreground">
+                    <PawPrint className="h-3.5 w-3.5" /> Pet-friendly
+                  </span>
+                )}
+              </div>
+            </Section>
+
+            <Section title="Medical capabilities & staff">
+              <div className="grid gap-3 sm:grid-cols-2">
+                {f.medicalCapabilities.map((m) => (
+                  <div
+                    key={m}
+                    className="flex items-center gap-2.5 rounded-xl border border-border bg-card p-3.5"
+                  >
+                    <Stethoscope className="h-4 w-4 shrink-0 text-primary" />
+                    <span className="text-sm">{m}</span>
+                  </div>
+                ))}
+              </div>
+              {e ? (
+                <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                  <Stat
+                    icon={<Users className="h-4 w-4" />}
+                    label="Staff ratio"
+                    value={e.staff.ratio}
+                  />
+                  <Stat
+                    icon={<BadgeCheck className="h-4 w-4" />}
+                    label="Credentials"
+                    value={e.staff.credentials}
+                  />
+                  <Stat
+                    icon={<Sparkles className="h-4 w-4" />}
+                    label="Avg. experience"
+                    value={e.staff.avgExperience}
+                  />
+                </div>
+              ) : (
+                <div className="mt-4 flex items-center gap-3 rounded-xl bg-warm/40 p-4">
+                  <Users className="h-5 w-5 text-primary" />
+                  <div className="text-sm">
+                    <span className="font-medium">Staff-to-resident ratio: </span>
+                    {f.staffRatio}
+                  </div>
+                </div>
+              )}
+            </Section>
+
+            {e && (
+              <Section title="Location & connections">
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <Stat
+                    icon={<Hospital className="h-4 w-4" />}
+                    label="Nearest hospital"
+                    value={e.distanceToHospital}
+                  />
+                  <Stat
+                    icon={<Plane className="h-4 w-4" />}
+                    label="Nearest airport"
+                    value={e.distanceToAirport}
+                  />
+                  <Stat
+                    icon={<Utensils className="h-4 w-4" />}
+                    label="Cuisine"
+                    value={e.cuisine.join(", ")}
+                  />
+                  <Stat
+                    icon={<Utensils className="h-4 w-4" />}
+                    label="Community / dietary preference"
+                    value={facilityDietary(f.id).join(", ")}
+                  />
+                </div>
+                {e.hospitalTieUp && (
+                  <div className="mt-3 flex items-start gap-2 rounded-xl bg-verified/10 p-3 text-sm text-foreground">
+                    <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-verified" />
+                    <span>
+                      <span className="font-medium">Hospital tie-up:</span> {e.hospitalTieUp}
+                    </span>
+                  </div>
+                )}
+              </Section>
+            )}
+
+            {e && (
+              <Section title="Emergency response plan">
+                <div className="rounded-2xl border border-border bg-card p-5">
+                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
+                    <Siren className="h-4 w-4 text-highlight" /> What happens in a medical emergency
+                  </div>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start gap-2">
+                      <Stethoscope className="mt-0.5 h-4 w-4 text-primary" />
+                      {e.emergencyPlan.onCallDoctor}
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Siren className="mt-0.5 h-4 w-4 text-primary" />
+                      {e.emergencyPlan.ambulance}
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Hospital className="mt-0.5 h-4 w-4 text-primary" />
+                      {e.emergencyPlan.partnerHospital}
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Users className="mt-0.5 h-4 w-4 text-primary" />
+                      {e.emergencyPlan.protocol}
+                    </li>
+                  </ul>
+                </div>
+              </Section>
+            )}
+
+            <Section title="Licensing & accreditation">
+              <ul className="space-y-2">
+                {f.licensing.map((l) => (
+                  <li key={l} className="flex items-start gap-2 text-sm">
+                    <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-verified" />
+                    <span>{l}</span>
+                  </li>
+                ))}
+              </ul>
             </Section>
           </div>
 
@@ -444,9 +557,7 @@ function FacilityProfile() {
               </button>
               <div className="mt-5 flex items-start gap-2 rounded-xl bg-warm/40 p-3 text-xs text-warm-foreground">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-verified" />
-                <span>
-                  ElderMatch never charges families to enquire or tour a facility.
-                </span>
+                <span>ElderMatch never charges families to enquire or tour a facility.</span>
               </div>
             </div>
           </aside>
@@ -549,7 +660,12 @@ function ContactModal({ facilityName, onClose }: { facilityName: string; onClose
                   key={m}
                   className="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-input bg-background py-2 text-sm hover:border-primary/40"
                 >
-                  <input type="radio" name="contact" defaultChecked={m === "Call"} className="accent-[color:var(--primary)]" />
+                  <input
+                    type="radio"
+                    name="contact"
+                    defaultChecked={m === "Call"}
+                    className="accent-[color:var(--primary)]"
+                  />
                   {m}
                 </label>
               ))}

@@ -8,7 +8,8 @@ import {
   facilities,
   BROWSE_CARE_TYPES,
   ALL_AMENITIES,
-  NEIGHBORHOODS,
+  INDIAN_STATES,
+  citiesInState,
   DIETARY_PREFERENCES,
   facilityBrowseCategories,
   facilityDietary,
@@ -36,7 +37,16 @@ export const Route = createFileRoute("/search")({
 function SearchPage() {
   const { q } = Route.useSearch();
   const { prefs } = usePreferences();
-  const [neighborhood, setNeighborhood] = useState<string>(q ?? "");
+  const initial = q ?? "";
+  const [stateFilter, setStateFilter] = useState<string>(
+    facilities.some((f) => f.state === initial) ? initial : "",
+  );
+  const [city, setCity] = useState<string>(
+    facilities.some((f) => f.city === initial) ? initial : "",
+  );
+  const [neighborhood, setNeighborhood] = useState<string>(
+    facilities.some((f) => f.neighborhood === initial) ? initial : "",
+  );
   const [budget, setBudget] = useState<number>(150000);
   const [careTypes, setCareTypes] = useState<string[]>([]);
   const [amenities, setAmenities] = useState<string[]>([]);
@@ -47,7 +57,12 @@ function SearchPage() {
 
   const results = useMemo(() => {
     return facilities.filter((f) => {
-      if (neighborhood && !`${f.neighborhood} ${f.city}`.toLowerCase().includes(neighborhood.toLowerCase()))
+      if (stateFilter && f.state !== stateFilter) return false;
+      if (city && f.city !== city) return false;
+      if (
+        neighborhood &&
+        !`${f.neighborhood} ${f.city}`.toLowerCase().includes(neighborhood.toLowerCase())
+      )
         return false;
       if (f.priceMin > budget) return false;
       if (careTypes.length) {
@@ -63,7 +78,17 @@ function SearchPage() {
       if (verifiedOnly && !f.verified) return false;
       return true;
     });
-  }, [neighborhood, budget, careTypes, amenities, dietary, minRating, verifiedOnly]);
+  }, [
+    stateFilter,
+    city,
+    neighborhood,
+    budget,
+    careTypes,
+    amenities,
+    dietary,
+    minRating,
+    verifiedOnly,
+  ]);
 
   const recommendedIds = useMemo(() => {
     if (!prefs) return new Set<string>();
@@ -71,30 +96,88 @@ function SearchPage() {
     const scored = facilities
       .map((f) => {
         let score = 0;
-        if (prefs.location && (f.neighborhood === prefs.location || prefs.location === "Anywhere"))
+        if (prefs.state && f.state === prefs.state) score += 2;
+        if (prefs.location && (f.city === prefs.location || f.neighborhood === prefs.location))
           score += 3;
-        if (prefs.careNeeds.some((n) => f.careTypes.includes(n))) score += 2;
+        if (
+          prefs.careNeeds.some((n) =>
+            f.careTypes.some(
+              (c) =>
+                n.toLowerCase().includes(c.toLowerCase().split("/")[0]) ||
+                c.toLowerCase().includes(n.toLowerCase().split("/")[0]),
+            ),
+          )
+        )
+          score += 2;
         if (f.priceMin <= prefs.budget) score += 1;
         if (prefs.language && f.languages.includes(prefs.language)) score += 1;
+        if (prefs.dietary?.length) {
+          const diets = facilityDietary(f.id);
+          if (prefs.dietary.some((d) => diets.includes(d))) score += 1;
+        }
         return { id: f.id, score };
       })
       .sort((a, b) => b.score - a.score);
     return new Set(scored.slice(0, 2).map((s) => s.id));
   }, [prefs]);
 
+  const neighborhoodOptions = useMemo(() => {
+    const pool = facilities.filter(
+      (f) => (!stateFilter || f.state === stateFilter) && (!city || f.city === city),
+    );
+    return Array.from(new Set(pool.map((f) => f.neighborhood))).sort();
+  }, [stateFilter, city]);
+
   const toggle = (arr: string[], v: string) =>
     arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
 
   const filtersPanel = (
     <div className="space-y-6">
-      <FilterBlock title="Location">
+      <FilterBlock title="State">
+        <select
+          value={stateFilter}
+          onChange={(e) => {
+            setStateFilter(e.target.value);
+            setCity("");
+            setNeighborhood("");
+          }}
+          className="w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm"
+        >
+          <option value="">All states</option>
+          {INDIAN_STATES.map((st) => (
+            <option key={st} value={st}>
+              {st}
+            </option>
+          ))}
+        </select>
+      </FilterBlock>
+
+      <FilterBlock title="City">
+        <select
+          value={city}
+          onChange={(e) => {
+            setCity(e.target.value);
+            setNeighborhood("");
+          }}
+          className="w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm"
+        >
+          <option value="">All cities</option>
+          {citiesInState(stateFilter).map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+      </FilterBlock>
+
+      <FilterBlock title="Neighbourhood">
         <select
           value={neighborhood}
           onChange={(e) => setNeighborhood(e.target.value)}
           className="w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm"
         >
           <option value="">All neighbourhoods</option>
-          {NEIGHBORHOODS.map((n) => (
+          {neighborhoodOptions.map((n) => (
             <option key={n} value={n}>
               {n}
             </option>
@@ -196,7 +279,12 @@ function SearchPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 md:px-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="font-serif text-3xl md:text-4xl">Care homes {neighborhood ? `in ${neighborhood}` : "near you"}</h1>
+            <h1 className="font-serif text-3xl md:text-4xl">
+              Care homes{" "}
+              {neighborhood || city || stateFilter
+                ? `in ${neighborhood || city || stateFilter}`
+                : "across India"}
+            </h1>
             <p className="mt-1 text-sm text-muted-foreground">
               {results.length} home{results.length === 1 ? "" : "s"} match your search
             </p>
@@ -235,11 +323,7 @@ function SearchPage() {
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 {results.map((f) => (
-                  <FacilityCard
-                    key={f.id}
-                    facility={f}
-                    recommended={recommendedIds.has(f.id)}
-                  />
+                  <FacilityCard key={f.id} facility={f} recommended={recommendedIds.has(f.id)} />
                 ))}
               </div>
             )}

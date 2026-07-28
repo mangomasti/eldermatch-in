@@ -31,7 +31,8 @@ function Reviews() {
       <div>
         <h1 className="font-serif text-3xl">Reviews</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Only families with a Verified Stay can post. Reviews are anonymous to protect resident privacy.
+          Only families with a Verified Stay can post. Reviews are anonymous to protect resident
+          privacy.
         </p>
       </div>
 
@@ -40,10 +41,15 @@ function Reviews() {
           <div className="font-serif text-4xl">{avg}</div>
           <div className="mt-1 flex items-center gap-0.5">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className={`h-4 w-4 ${i < Math.round(Number(avg)) ? "fill-highlight text-highlight" : "text-muted"}`} />
+              <Star
+                key={i}
+                className={`h-4 w-4 ${i < Math.round(Number(avg)) ? "fill-highlight text-highlight" : "text-muted"}`}
+              />
             ))}
           </div>
-          <div className="mt-1 text-xs text-muted-foreground">Based on {reviews.length} reviews shown</div>
+          <div className="mt-1 text-xs text-muted-foreground">
+            Based on {reviews.length} reviews shown
+          </div>
           <div className="mt-4 space-y-1.5">
             {dist.map((d) => (
               <div key={d.n} className="flex items-center gap-2 text-xs">
@@ -69,7 +75,9 @@ function Reviews() {
                     {String.fromCharCode(65 + i)}
                   </span>
                   <div>
-                    <div className="text-sm font-semibold">Verified family {String.fromCharCode(65 + i)}</div>
+                    <div className="text-sm font-semibold">
+                      Verified family {String.fromCharCode(65 + i)}
+                    </div>
                     <div className="text-xs text-muted-foreground">{r.date}</div>
                   </div>
                 </div>
@@ -81,7 +89,10 @@ function Reviews() {
                   )}
                   <div className="flex items-center gap-0.5">
                     {Array.from({ length: 5 }).map((_, k) => (
-                      <Star key={k} className={`h-3.5 w-3.5 ${k < r.rating ? "fill-highlight text-highlight" : "text-muted"}`} />
+                      <Star
+                        key={k}
+                        className={`h-3.5 w-3.5 ${k < r.rating ? "fill-highlight text-highlight" : "text-muted"}`}
+                      />
                     ))}
                   </div>
                 </div>
@@ -106,7 +117,10 @@ function Reviews() {
                   />
                   <div className="flex justify-end gap-2">
                     <button
-                      onClick={() => { setReplying(null); setDraft(""); }}
+                      onClick={() => {
+                        setReplying(null);
+                        setDraft("");
+                      }}
                       className="rounded-full px-3 py-1.5 text-xs text-muted-foreground"
                     >
                       Cancel
@@ -122,7 +136,10 @@ function Reviews() {
                 </div>
               ) : (
                 <button
-                  onClick={() => { setReplying(r.id); setDraft(""); }}
+                  onClick={() => {
+                    setReplying(r.id);
+                    setDraft("");
+                  }}
                   className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
                 >
                   <Reply className="h-3 w-3" /> Reply publicly

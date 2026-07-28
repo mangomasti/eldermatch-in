@@ -62,15 +62,16 @@ function DashboardLayout() {
     .join("")
     .toUpperCase();
 
-  const lockedHere =
-    locked && NAV.some((n) => n.lockable && !n.exact && pathname.startsWith(n.to));
+  const lockedHere = locked && NAV.some((n) => n.lockable && !n.exact && pathname.startsWith(n.to));
 
   return (
     <div className="min-h-screen bg-warm/20">
       <header className="border-b border-border bg-background">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
           <div className="flex items-center gap-3">
-            <Link to="/" className="font-serif text-lg font-medium">ElderMatch</Link>
+            <Link to="/" className="font-serif text-lg font-medium">
+              ElderMatch
+            </Link>
             <span className="hidden rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary sm:inline-block">
               Facility portal
             </span>
@@ -158,8 +159,8 @@ function DashboardLayout() {
               </span>
               <h1 className="mt-4 font-serif text-2xl">Unlocks after claim verification</h1>
               <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-                Your ownership claim is still under review. We'll unlock this section as soon as it's
-                approved — usually within 2–3 business days.
+                Your ownership claim is still under review. We'll unlock this section as soon as
+                it's approved — usually within 2–3 business days.
               </p>
               <Link
                 to="/dashboard"

@@ -35,7 +35,8 @@ function RoleSelect() {
           Who are you today?
         </h1>
         <p className="mt-4 max-w-xl text-center text-base text-muted-foreground md:text-lg">
-          Whether you're finding care for someone you love, or you run a home that provides it — we'll take you to the right place.
+          Whether you're finding care for someone you love, or you run a home that provides it —
+          we'll take you to the right place.
         </p>
 
         <div className="mt-12 grid w-full gap-6 md:grid-cols-2">

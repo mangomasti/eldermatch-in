@@ -8,6 +8,10 @@ import {
   Users,
   LineChart,
   Lock,
+  IndianRupee,
+  TrendingDown,
+  StickyNote,
+  Menu,
 } from "lucide-react";
 import {
   FOUNDER_PASSWORD,
@@ -18,8 +22,16 @@ import {
   FOUNDER_GROWTH,
   FOUNDER_PREFERENCE_TRENDS,
   FACILITY_TIERS,
+  INDIAN_STATES,
+  REVENUE_ASSUMPTIONS,
+  FOUNDER_REVENUE_MONTHS,
+  FOUNDER_CHURN,
+  FOUNDER_ONBOARDED_TOTAL,
+  FOUNDER_SEED_NOTES,
+  facilities,
   type QueueItem,
   type PlatformFacilityRow,
+  type FounderNote,
 } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/founder-access")({
@@ -33,7 +45,15 @@ export const Route = createFileRoute("/founder-access")({
   component: FounderAccess,
 });
 
-type Tab = "overview" | "queue" | "facilities" | "users" | "analytics";
+type Tab =
+  | "overview"
+  | "queue"
+  | "facilities"
+  | "users"
+  | "analytics"
+  | "revenue"
+  | "churn"
+  | "notes";
 
 const TABS: { id: Tab; label: string; icon: typeof LayoutGrid }[] = [
   { id: "overview", label: "Overview", icon: LayoutGrid },
@@ -41,12 +61,21 @@ const TABS: { id: Tab; label: string; icon: typeof LayoutGrid }[] = [
   { id: "facilities", label: "Facility Management", icon: Building2 },
   { id: "users", label: "User Management", icon: Users },
   { id: "analytics", label: "Platform Analytics", icon: LineChart },
+  { id: "revenue", label: "Revenue Tracking", icon: IndianRupee },
+  { id: "churn", label: "Facility Churn", icon: TrendingDown },
+  { id: "notes", label: "Notes", icon: StickyNote },
 ];
 
 function FounderAccess() {
   const [authed, setAuthed] = useState(false);
   const [pw, setPw] = useState("");
   const [tab, setTab] = useState<Tab>("overview");
+  const [navOpen, setNavOpen] = useState(false);
+
+  // Live console state — every tab reads and writes the same rows.
+  const [rows, setRows] = useState<PlatformFacilityRow[]>(FOUNDER_FACILITIES);
+  const [queue, setQueue] = useState<QueueItem[]>(FOUNDER_QUEUE);
+  const [notes, setNotes] = useState<FounderNote[]>(FOUNDER_SEED_NOTES);
 
   if (!authed) {
     return (
@@ -85,37 +114,72 @@ function FounderAccess() {
     );
   }
 
+  const nav = (
+    <nav className="p-2">
+      {TABS.map((t) => {
+        const Icon = t.icon;
+        return (
+          <button
+            key={t.id}
+            onClick={() => {
+              setTab(t.id);
+              setNavOpen(false);
+            }}
+            className={`mb-0.5 flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm ${
+              tab === t.id ? "bg-slate-800 text-white" : "text-slate-700 hover:bg-slate-100"
+            }`}
+          >
+            <Icon className="h-4 w-4 shrink-0" /> {t.label}
+          </button>
+        );
+      })}
+    </nav>
+  );
+
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-800">
-      <aside className="w-60 shrink-0 border-r border-slate-200 bg-white">
+      <aside className="hidden w-60 shrink-0 border-r border-slate-200 bg-white lg:block">
         <div className="border-b border-slate-200 px-4 py-4">
           <div className="text-sm font-bold">ElderMatch Ops</div>
           <div className="text-[11px] text-slate-500">Internal console</div>
         </div>
-        <nav className="p-2">
-          {TABS.map((t) => {
-            const Icon = t.icon;
-            return (
-              <button
-                key={t.id}
-                onClick={() => setTab(t.id)}
-                className={`mb-0.5 flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm ${
-                  tab === t.id ? "bg-slate-800 text-white" : "text-slate-700 hover:bg-slate-100"
-                }`}
-              >
-                <Icon className="h-4 w-4" /> {t.label}
-              </button>
-            );
-          })}
-        </nav>
+        {nav}
       </aside>
 
-      <main className="min-w-0 flex-1 p-6">
-        {tab === "overview" && <OverviewTab />}
-        {tab === "queue" && <QueueTab />}
-        {tab === "facilities" && <FacilitiesTab />}
-        {tab === "users" && <UsersTab />}
-        {tab === "analytics" && <AnalyticsTab />}
+      {navOpen && (
+        <div className="fixed inset-0 z-50 flex lg:hidden">
+          <div className="absolute inset-0 bg-slate-900/40" onClick={() => setNavOpen(false)} />
+          <div className="relative h-full w-64 bg-white shadow-xl">
+            <div className="border-b border-slate-200 px-4 py-4 text-sm font-bold">
+              ElderMatch Ops
+            </div>
+            {nav}
+          </div>
+        </div>
+      )}
+
+      <main className="min-w-0 flex-1">
+        <div className="flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
+          <button
+            onClick={() => setNavOpen(true)}
+            className="rounded border border-slate-300 p-1.5 text-slate-700"
+            aria-label="Open console menu"
+          >
+            <Menu className="h-4 w-4" />
+          </button>
+          <span className="text-sm font-semibold">{TABS.find((t) => t.id === tab)?.label}</span>
+        </div>
+
+        <div className="p-4 md:p-6">
+          {tab === "overview" && <OverviewTab rows={rows} queue={queue} />}
+          {tab === "queue" && <QueueTab items={queue} setItems={setQueue} setRows={setRows} />}
+          {tab === "facilities" && <FacilitiesTab rows={rows} setRows={setRows} />}
+          {tab === "users" && <UsersTab />}
+          {tab === "analytics" && <AnalyticsTab rows={rows} />}
+          {tab === "revenue" && <RevenueTab rows={rows} />}
+          {tab === "churn" && <ChurnTab rows={rows} />}
+          {tab === "notes" && <NotesTab notes={notes} setNotes={setNotes} />}
+        </div>
       </main>
     </div>
   );
@@ -123,44 +187,100 @@ function FounderAccess() {
 
 /* ---------------- Overview ---------------- */
 
-function OverviewTab() {
+function OverviewTab({ rows, queue }: { rows: PlatformFacilityRow[]; queue: QueueItem[] }) {
   const o = FOUNDER_OVERVIEW;
+  const totalFacilities = rows.length;
+  const active = rows.filter((r) => r.active).length;
+  const verified = rows.filter((r) => r.verified).length;
+  const unclaimed = rows.filter((r) => !r.claimed).length;
+  const pendingQueue = queue.filter((q) => !q.decision).length;
+  const totalLeads = rows.reduce((n, r) => n + r.leads, 0);
+  const totalShortlists = rows.reduce((n, r) => n + r.shortlists, 0);
+  const totalViews = rows.reduce((n, r) => n + r.views, 0);
+
+  const byTier = FACILITY_TIERS.map((t) => ({
+    tier: t,
+    count: rows.filter((r) => r.tier === t).length,
+  })).filter((t) => t.count > 0);
+
+  const byState = INDIAN_STATES.map((st) => ({
+    state: st,
+    count: rows.filter((r) => r.state === st).length,
+  }))
+    .filter((r) => r.count > 0)
+    .sort((a, b) => b.count - a.count);
+
   return (
     <div className="space-y-5">
       <H1>Overview</H1>
-      <div className="grid gap-3 md:grid-cols-4">
-        <Stat label="Total facilities" value={o.totalFacilities.toLocaleString()} />
-        <Stat label="Registered users / families" value={o.totalUsers.toLocaleString()} />
-        <Stat label="Leads generated (all time)" value={o.totalLeads.toLocaleString()} />
-        <Stat label="Shortlists (all time)" value={o.totalShortlists.toLocaleString()} />
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <Stat label="Total facilities" value={totalFacilities.toLocaleString()} />
+        <Stat label="Active listings" value={active.toLocaleString()} />
+        <Stat label="Verified" value={`${verified} / ${totalFacilities}`} />
+        <Stat label="Pending in queue" value={pendingQueue.toLocaleString()} />
+        <Stat label="Registered families" value={o.totalUsers.toLocaleString()} />
+        <Stat label="Profile views (all time)" value={totalViews.toLocaleString()} />
+        <Stat label="Leads generated" value={totalLeads.toLocaleString()} />
+        <Stat label="Shortlists" value={totalShortlists.toLocaleString()} />
       </div>
 
-      <Panel title="Facilities by tier">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-slate-200 text-left text-xs uppercase text-slate-500">
-              <th className="py-2">Tier</th>
-              <th className="py-2">Facilities</th>
-              <th className="py-2">Share</th>
-            </tr>
-          </thead>
-          <tbody>
-            {o.byTier.map((t) => (
-              <tr key={t.tier} className="border-b border-slate-100">
-                <td className="py-2">{t.tier}</td>
-                <td className="py-2 font-medium">{t.count}</td>
-                <td className="py-2 text-slate-500">
-                  {Math.round((t.count / o.totalFacilities) * 100)}%
-                </td>
+      <div className="grid gap-3 lg:grid-cols-2">
+        <Panel title="Facilities by tier">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-left text-xs uppercase text-slate-500">
+                <th className="py-2">Tier</th>
+                <th className="py-2">Facilities</th>
+                <th className="py-2">Share</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </Panel>
+            </thead>
+            <tbody>
+              {byTier.map((t) => (
+                <tr key={t.tier} className="border-b border-slate-100">
+                  <td className="py-2">{t.tier}</td>
+                  <td className="py-2 font-medium">{t.count}</td>
+                  <td className="py-2 text-slate-500">
+                    {Math.round((t.count / totalFacilities) * 100)}%
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Panel>
 
-      <Panel title="Revenue">
-        <div className="text-2xl font-semibold">{o.revenueNote}</div>
-        <p className="mt-1 text-xs text-slate-500">{o.mockCommission}</p>
+        <Panel title="Coverage by state">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-left text-xs uppercase text-slate-500">
+                <th className="py-2">State</th>
+                <th className="py-2">Listings</th>
+                <th className="py-2">Unclaimed</th>
+              </tr>
+            </thead>
+            <tbody>
+              {byState.map((r) => (
+                <tr key={r.state} className="border-b border-slate-100">
+                  <td className="py-2">{r.state}</td>
+                  <td className="py-2 font-medium">{r.count}</td>
+                  <td className="py-2 text-slate-500">
+                    {rows.filter((x) => x.state === r.state && !x.claimed).length}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Panel>
+      </div>
+
+      <Panel title="Health">
+        <div className="grid gap-3 sm:grid-cols-3">
+          <MiniStat label="Unclaimed listings" value={`${unclaimed}`} />
+          <MiniStat
+            label="Lead conversion (leads / views)"
+            value={`${totalViews ? ((totalLeads / totalViews) * 100).toFixed(1) : "0"}%`}
+          />
+          <MiniStat label="Commission model" value={o.mockCommission} />
+        </div>
       </Panel>
     </div>
   );
@@ -168,12 +288,33 @@ function OverviewTab() {
 
 /* ---------------- Verification Queue ---------------- */
 
-function QueueTab() {
-  const [items, setItems] = useState<QueueItem[]>(FOUNDER_QUEUE);
-
+function QueueTab({
+  items,
+  setItems,
+  setRows,
+}: {
+  items: QueueItem[];
+  setItems: React.Dispatch<React.SetStateAction<QueueItem[]>>;
+  setRows: React.Dispatch<React.SetStateAction<PlatformFacilityRow[]>>;
+}) {
   const decide = (id: string, decision: QueueItem["decision"]) => {
+    const item = items.find((i) => i.id === id);
     setItems((prev) => prev.map((i) => (i.id === id ? { ...i, decision } : i)));
-    toast.success(`${id}: ${decision}`);
+    if (item && (decision === "Approved" || decision === "Rejected")) {
+      setRows((prev) =>
+        prev.map((r) =>
+          r.name === item.facility
+            ? {
+                ...r,
+                verified: decision === "Approved",
+                claimed: decision === "Approved" ? true : r.claimed,
+                status: decision === "Approved" ? "Verified" : "Rejected",
+              }
+            : r,
+        ),
+      );
+    }
+    toast.success(`${item?.facility ?? id}: ${decision}`);
   };
 
   const section = (kind: QueueItem["kind"], title: string) => {
@@ -201,12 +342,20 @@ function QueueTab() {
                 <td className="py-2 text-slate-500">{i.submitted}</td>
                 <td className="py-2 text-right">
                   {i.decision ? (
-                    <span className="rounded bg-slate-100 px-2 py-1 text-xs font-medium">{i.decision}</span>
+                    <span className="rounded bg-slate-100 px-2 py-1 text-xs font-medium">
+                      {i.decision}
+                    </span>
                   ) : (
                     <div className="flex justify-end gap-1">
-                      <SmallBtn tone="green" onClick={() => decide(i.id, "Approved")}>Approve</SmallBtn>
-                      <SmallBtn tone="red" onClick={() => decide(i.id, "Rejected")}>Reject</SmallBtn>
-                      <SmallBtn onClick={() => decide(i.id, "Info requested")}>Request info</SmallBtn>
+                      <SmallBtn tone="green" onClick={() => decide(i.id, "Approved")}>
+                        Approve
+                      </SmallBtn>
+                      <SmallBtn tone="red" onClick={() => decide(i.id, "Rejected")}>
+                        Reject
+                      </SmallBtn>
+                      <SmallBtn onClick={() => decide(i.id, "Info requested")}>
+                        Request info
+                      </SmallBtn>
                     </div>
                   )}
                 </td>
@@ -229,16 +378,23 @@ function QueueTab() {
 
 /* ---------------- Facility Management ---------------- */
 
-function FacilitiesTab() {
-  const [rows, setRows] = useState<PlatformFacilityRow[]>(FOUNDER_FACILITIES);
+function FacilitiesTab({
+  rows,
+  setRows,
+}: {
+  rows: PlatformFacilityRow[];
+  setRows: React.Dispatch<React.SetStateAction<PlatformFacilityRow[]>>;
+}) {
   const [q, setQ] = useState("");
   const [tier, setTier] = useState("");
+  const [stateF, setStateF] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
 
   const filtered = rows.filter(
     (r) =>
-      (!q || `${r.name} ${r.neighborhood}`.toLowerCase().includes(q.toLowerCase())) &&
-      (!tier || r.tier === tier),
+      (!q || `${r.name} ${r.neighborhood} ${r.city}`.toLowerCase().includes(q.toLowerCase())) &&
+      (!tier || r.tier === tier) &&
+      (!stateF || r.state === stateF),
   );
   const detail = rows.find((r) => r.id === selected);
 
@@ -264,7 +420,21 @@ function FacilitiesTab() {
         >
           <option value="">All tiers</option>
           {FACILITY_TIERS.map((t) => (
-            <option key={t} value={t}>{t}</option>
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+        <select
+          value={stateF}
+          onChange={(e) => setStateF(e.target.value)}
+          className="rounded border border-slate-300 px-3 py-2 text-sm"
+        >
+          <option value="">All states</option>
+          {INDIAN_STATES.map((st) => (
+            <option key={st} value={st}>
+              {st}
+            </option>
           ))}
         </select>
       </div>
@@ -274,7 +444,7 @@ function FacilitiesTab() {
           <thead>
             <tr className="border-b border-slate-200 text-left text-xs uppercase text-slate-500">
               <th className="py-2">Name</th>
-              <th className="py-2">Area</th>
+              <th className="py-2">City / state</th>
               <th className="py-2">Tier</th>
               <th className="py-2">Claim</th>
               <th className="py-2">Verification</th>
@@ -287,12 +457,29 @@ function FacilitiesTab() {
             {filtered.map((r) => (
               <tr key={r.id} className="border-b border-slate-100">
                 <td className="py-2 font-medium">
-                  <button className="hover:underline" onClick={() => setSelected(r.id)}>{r.name}</button>
+                  <button className="hover:underline" onClick={() => setSelected(r.id)}>
+                    {r.name}
+                  </button>
                 </td>
-                <td className="py-2 text-slate-600">{r.neighborhood}</td>
+                <td className="py-2 text-slate-600">
+                  {r.city}, {r.state}
+                </td>
                 <td className="py-2 text-slate-600">{r.tier}</td>
                 <td className="py-2">{r.claimed ? "Claimed" : "Unclaimed"}</td>
-                <td className="py-2">{r.verified ? "Verified" : "Pending"}</td>
+                <td className="py-2">
+                  <span
+                    className={`rounded px-2 py-0.5 text-xs font-medium ${
+                      r.status === "Verified"
+                        ? "bg-emerald-50 text-emerald-700"
+                        : r.status === "Rejected"
+                          ? "bg-rose-50 text-rose-700"
+                          : "bg-amber-50 text-amber-700"
+                    }`}
+                  >
+                    {r.status}
+                  </span>
+                  {!r.active && <span className="ml-1 text-xs text-slate-400">(inactive)</span>}
+                </td>
                 <td className="py-2">{r.views}</td>
                 <td className="py-2">{r.leads}</td>
                 <td className="py-2 text-right">
@@ -347,23 +534,33 @@ function FacilitiesTab() {
                 className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
               >
                 {FACILITY_TIERS.map((t) => (
-                  <option key={t} value={t}>{t}</option>
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
                 ))}
               </select>
             </Labeled>
             <Labeled label="Verification">
               <select
                 value={detail.verified ? "Verified" : "Pending"}
-                onChange={(e) => update(detail.id, { verified: e.target.value === "Verified" })}
+                onChange={(e) =>
+                  update(detail.id, {
+                    verified: e.target.value === "Verified",
+                    status: e.target.value as PlatformFacilityRow["status"],
+                  })
+                }
                 className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
               >
                 <option>Verified</option>
                 <option>Pending</option>
+                <option>Rejected</option>
               </select>
             </Labeled>
           </div>
           <div className="mt-3 flex gap-2">
-            <SmallBtn tone="green" onClick={() => toast.success("Changes saved (mock).")}>Save changes</SmallBtn>
+            <SmallBtn tone="green" onClick={() => toast.success("Changes saved (mock).")}>
+              Save changes
+            </SmallBtn>
             <SmallBtn onClick={() => setSelected(null)}>Close</SmallBtn>
           </div>
         </Panel>
@@ -420,20 +617,32 @@ function UsersTab() {
 
 /* ---------------- Analytics ---------------- */
 
-function AnalyticsTab() {
+function AnalyticsTab({ rows }: { rows: PlatformFacilityRow[] }) {
   const maxUsers = Math.max(...FOUNDER_GROWTH.map((g) => g.users));
   const maxFac = Math.max(...FOUNDER_GROWTH.map((g) => g.facilities));
   const maxEnq = Math.max(...FOUNDER_GROWTH.map((g) => g.enquiries));
-  const leaderboard = [...FOUNDER_FACILITIES].sort((a, b) => b.views - a.views).slice(0, 6);
+  const leaderboard = [...rows].sort((a, b) => b.views - a.views).slice(0, 8);
 
   return (
     <div className="space-y-5">
       <H1>Platform Analytics</H1>
 
       <div className="grid gap-3 md:grid-cols-3">
-        <BarPanel title="New facilities / month" rows={FOUNDER_GROWTH.map((g) => ({ label: g.month, v: g.facilities }))} max={maxFac} />
-        <BarPanel title="New users / month" rows={FOUNDER_GROWTH.map((g) => ({ label: g.month, v: g.users }))} max={maxUsers} />
-        <BarPanel title="Enquiries / month" rows={FOUNDER_GROWTH.map((g) => ({ label: g.month, v: g.enquiries }))} max={maxEnq} />
+        <BarPanel
+          title="New facilities / month"
+          rows={FOUNDER_GROWTH.map((g) => ({ label: g.month, v: g.facilities }))}
+          max={maxFac}
+        />
+        <BarPanel
+          title="New users / month"
+          rows={FOUNDER_GROWTH.map((g) => ({ label: g.month, v: g.users }))}
+          max={maxUsers}
+        />
+        <BarPanel
+          title="Enquiries / month"
+          rows={FOUNDER_GROWTH.map((g) => ({ label: g.month, v: g.enquiries }))}
+          max={maxEnq}
+        />
       </div>
 
       <Panel title="Top performing facilities">
@@ -479,6 +688,247 @@ function AnalyticsTab() {
   );
 }
 
+/* ---------------- Revenue tracking (hypothetical) ---------------- */
+
+function RevenueTab({ rows }: { rows: PlatformFacilityRow[] }) {
+  const [commissionPct, setCommissionPct] = useState(REVENUE_ASSUMPTIONS.commissionPct);
+  const [subscription, setSubscription] = useState(REVENUE_ASSUMPTIONS.monthlySubscription);
+  const [avgFee, setAvgFee] = useState(45000);
+
+  const activeListings = rows.filter((r) => r.active).length;
+  const inr = (n: number) => `₹${Math.round(n).toLocaleString("en-IN")}`;
+
+  const months = FOUNDER_REVENUE_MONTHS.map((m) => {
+    const commission = m.placements * avgFee * (commissionPct / 100);
+    const subs = activeListings * subscription;
+    return { ...m, commission, subs, total: commission + subs };
+  });
+  const latest = months[months.length - 1];
+  const annualRunRate = latest.total * 12;
+
+  return (
+    <div className="space-y-5">
+      <H1>Revenue Tracking</H1>
+      <p className="-mt-2 text-xs text-slate-500">
+        Hypothetical models only — no payments are processed on the platform today.
+      </p>
+
+      <Panel title="Assumptions">
+        <div className="grid gap-3 sm:grid-cols-3">
+          <Labeled label={`Commission on first month's fee (${commissionPct}%)`}>
+            <input
+              type="range"
+              min={0}
+              max={25}
+              value={commissionPct}
+              onChange={(e) => setCommissionPct(Number(e.target.value))}
+              className="h-6 w-full"
+            />
+          </Labeled>
+          <Labeled label="Listing subscription (₹ / active listing / month)">
+            <input
+              type="number"
+              value={subscription}
+              onChange={(e) => setSubscription(Number(e.target.value))}
+              className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+            />
+          </Labeled>
+          <Labeled label="Average monthly facility fee (₹)">
+            <input
+              type="number"
+              value={avgFee}
+              onChange={(e) => setAvgFee(Number(e.target.value))}
+              className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+            />
+          </Labeled>
+        </div>
+      </Panel>
+
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <Stat label="Active listings" value={activeListings.toLocaleString()} />
+        <Stat label="Placements (last month)" value={`${latest.placements}`} />
+        <Stat label="Modelled MRR" value={inr(latest.total)} />
+        <Stat label="Annual run rate" value={inr(annualRunRate)} />
+      </div>
+
+      <Panel title="Modelled monthly revenue">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 text-left text-xs uppercase text-slate-500">
+              <th className="py-2">Month</th>
+              <th className="py-2">Placements</th>
+              <th className="py-2">Commission</th>
+              <th className="py-2">Subscriptions</th>
+              <th className="py-2">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {months.map((m) => (
+              <tr key={m.month} className="border-b border-slate-100">
+                <td className="py-2">{m.month}</td>
+                <td className="py-2">{m.placements}</td>
+                <td className="py-2 text-slate-600">{inr(m.commission)}</td>
+                <td className="py-2 text-slate-600">{inr(m.subs)}</td>
+                <td className="py-2 font-medium">{inr(m.total)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Panel>
+
+      <BarPanel
+        title="Modelled total revenue trend"
+        rows={months.map((m) => ({ label: m.month, v: Math.round(m.total / 1000) }))}
+        max={Math.max(...months.map((m) => Math.round(m.total / 1000)))}
+      />
+      <p className="text-[11px] text-slate-500">Bars shown in ₹ thousands.</p>
+    </div>
+  );
+}
+
+/* ---------------- Churn ---------------- */
+
+function ChurnTab({ rows }: { rows: PlatformFacilityRow[] }) {
+  const inactive = rows.filter((r) => !r.active);
+  const churned = FOUNDER_CHURN.length;
+  const churnRate = ((churned / FOUNDER_ONBOARDED_TOTAL) * 100).toFixed(1);
+
+  return (
+    <div className="space-y-5">
+      <H1>Facility Churn</H1>
+
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <Stat label="Onboarded (all time)" value={`${FOUNDER_ONBOARDED_TOTAL}`} />
+        <Stat label="Churned" value={`${churned}`} />
+        <Stat label="Churn rate" value={`${churnRate}%`} />
+        <Stat label="Currently inactive" value={`${inactive.length}`} />
+      </div>
+
+      <Panel title="Churned facilities">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 text-left text-xs uppercase text-slate-500">
+              <th className="py-2">Facility</th>
+              <th className="py-2">State</th>
+              <th className="py-2">Tier</th>
+              <th className="py-2">Onboarded</th>
+              <th className="py-2">Last active</th>
+              <th className="py-2">Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            {FOUNDER_CHURN.map((c) => (
+              <tr key={c.id} className="border-b border-slate-100">
+                <td className="py-2 font-medium">{c.name}</td>
+                <td className="py-2 text-slate-600">{c.state}</td>
+                <td className="py-2 text-slate-600">{c.tier}</td>
+                <td className="py-2 text-slate-500">{c.onboarded}</td>
+                <td className="py-2 text-slate-500">{c.lastActive}</td>
+                <td className="py-2">{c.reason}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Panel>
+
+      <Panel title={`Deactivated in console (${inactive.length})`}>
+        {inactive.length === 0 ? (
+          <p className="text-sm text-slate-500">All listings are currently active.</p>
+        ) : (
+          <ul className="space-y-1 text-sm">
+            {inactive.map((r) => (
+              <li key={r.id} className="flex justify-between border-b border-slate-100 py-1.5">
+                <span className="font-medium">{r.name}</span>
+                <span className="text-slate-500">
+                  {r.city}, {r.state} · {r.leads} leads
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panel>
+    </div>
+  );
+}
+
+/* ---------------- Notes (internal scratchpad) ---------------- */
+
+function NotesTab({
+  notes,
+  setNotes,
+}: {
+  notes: FounderNote[];
+  setNotes: React.Dispatch<React.SetStateAction<FounderNote[]>>;
+}) {
+  const [draft, setDraft] = useState("");
+
+  const add = () => {
+    const text = draft.trim();
+    if (!text) return;
+    const now = new Date();
+    setNotes((prev) => [
+      {
+        id: `N-${Date.now()}`,
+        at: now.toLocaleString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        text,
+      },
+      ...prev,
+    ]);
+    setDraft("");
+    toast.success("Note added.");
+  };
+
+  return (
+    <div className="space-y-5">
+      <H1>Notes</H1>
+      <p className="-mt-2 text-xs text-slate-500">
+        Private scratchpad — never shown to facilities or families.
+      </p>
+
+      <Panel title="New note">
+        <textarea
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          rows={3}
+          placeholder="Follow-ups, ideas, calls to make…"
+          className="w-full rounded border border-slate-300 p-3 text-sm outline-none focus:border-slate-500"
+        />
+        <div className="mt-2 flex gap-2">
+          <SmallBtn tone="green" onClick={add}>
+            Save note
+          </SmallBtn>
+          <SmallBtn onClick={() => setDraft("")}>Clear</SmallBtn>
+        </div>
+      </Panel>
+
+      <Panel title={`Saved notes (${notes.length})`}>
+        <ul className="space-y-2">
+          {notes.map((n) => (
+            <li key={n.id} className="rounded border border-slate-200 p-3">
+              <div className="flex items-start justify-between gap-3">
+                <p className="text-sm text-slate-800">{n.text}</p>
+                <SmallBtn
+                  tone="red"
+                  onClick={() => setNotes((prev) => prev.filter((x) => x.id !== n.id))}
+                >
+                  Delete
+                </SmallBtn>
+              </div>
+              <div className="mt-1 text-[11px] text-slate-400">{n.at}</div>
+            </li>
+          ))}
+        </ul>
+      </Panel>
+    </div>
+  );
+}
+
 /* ---------------- primitives ---------------- */
 
 function H1({ children }: { children: React.ReactNode }) {
@@ -499,6 +949,15 @@ function Stat({ label, value }: { label: string; value: string }) {
     <div className="rounded-lg border border-slate-200 bg-white p-4">
       <div className="text-xs uppercase tracking-wide text-slate-500">{label}</div>
       <div className="mt-1 text-2xl font-semibold text-slate-900">{value}</div>
+    </div>
+  );
+}
+
+function MiniStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded border border-slate-200 p-3">
+      <div className="text-xs text-slate-500">{label}</div>
+      <div className="mt-0.5 text-base font-semibold text-slate-900">{value}</div>
     </div>
   );
 }
@@ -549,7 +1008,10 @@ function BarPanel({
         {rows.map((r) => (
           <div key={r.label} className="flex flex-1 flex-col items-center gap-1">
             <span className="text-[10px] text-slate-500">{r.v}</span>
-            <div className="w-full rounded-t bg-slate-700" style={{ height: `${(r.v / max) * 90}px` }} />
+            <div
+              className="w-full rounded-t bg-slate-700"
+              style={{ height: `${(r.v / max) * 90}px` }}
+            />
             <span className="text-[10px] text-slate-500">{r.label}</span>
           </div>
         ))}

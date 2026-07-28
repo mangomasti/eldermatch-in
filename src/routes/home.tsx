@@ -1,23 +1,32 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Search, Sparkles, ShieldCheck, Camera, BadgeCheck, MessageCircle, MapPin } from "lucide-react";
+import {
+  Search,
+  Sparkles,
+  ShieldCheck,
+  Camera,
+  BadgeCheck,
+  MessageCircle,
+  MapPin,
+} from "lucide-react";
 import { useState } from "react";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 import { FacilityCard } from "@/components/facility-card";
-import { facilities, NEIGHBORHOODS } from "@/lib/mock-data";
+import { facilities, INDIAN_STATES } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
-      { title: "Find the right care home for your loved one — ElderMatch" },
+      { title: "Senior care homes across India — ElderMatch" },
       {
         name: "description",
         content:
-          "Search verified assisted living, memory care and nursing homes near you. Real photos, verified reviews, licensed facilities.",
+          "Search verified assisted living, memory care and nursing homes in 10+ Indian states. Real photos, verified reviews, licensed facilities.",
       },
-      { property: "og:title", content: "Find the right care home for your loved one — ElderMatch" },
+      { property: "og:title", content: "Senior care homes across India — ElderMatch" },
       {
         property: "og:description",
-        content: "Verified senior care homes with real photos and reviews from confirmed stays.",
+        content:
+          "Verified senior care homes across India, with real photos and reviews from confirmed stays.",
       },
     ],
   }),
@@ -48,10 +57,11 @@ function Home() {
                 <ShieldCheck className="h-3.5 w-3.5" /> Every home is licence-checked
               </span>
               <h1 className="mt-5 font-serif text-4xl leading-[1.05] text-foreground sm:text-5xl md:text-6xl">
-                Find the right care home for your loved one.
+                Find the right care home for your loved one — anywhere in India.
               </h1>
               <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-                Compare verified assisted living, memory care and nursing homes in your city — with real photos, honest reviews, and clear pricing.
+                Compare verified assisted living, memory care and nursing homes across 10+ states —
+                with real photos, honest reviews, and clear pricing.
               </p>
 
               <form
@@ -63,7 +73,7 @@ function Home() {
                   <input
                     value={loc}
                     onChange={(e) => setLoc(e.target.value)}
-                    placeholder="Neighbourhood or city — e.g. Indiranagar"
+                    placeholder="City, state or neighbourhood — e.g. Pune, Kerala, Indiranagar"
                     className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground"
                   />
                 </div>
@@ -121,7 +131,8 @@ function Home() {
             <div>
               <h3 className="font-serif text-xl md:text-2xl">Not sure where to start?</h3>
               <p className="mt-1 text-sm text-primary-foreground/85">
-                Answer 6 quick questions. We'll surface the homes that best fit your needs and budget.
+                Answer 6 quick questions. We'll surface the homes that best fit your needs and
+                budget.
               </p>
             </div>
           </div>
@@ -141,7 +152,10 @@ function Home() {
             <h2 className="font-serif text-3xl text-foreground md:text-4xl">Featured homes</h2>
             <p className="mt-1 text-muted-foreground">Hand-picked, freshly verified.</p>
           </div>
-          <Link to="/search" className="hidden text-sm font-medium text-primary hover:underline sm:block">
+          <Link
+            to="/search"
+            className="hidden text-sm font-medium text-primary hover:underline sm:block"
+          >
             Browse all homes →
           </Link>
         </div>
@@ -154,9 +168,9 @@ function Home() {
 
       {/* Popular neighborhoods */}
       <section className="mx-auto max-w-7xl px-5 pt-16 md:px-8">
-        <h2 className="font-serif text-2xl text-foreground md:text-3xl">Popular neighbourhoods</h2>
+        <h2 className="font-serif text-2xl text-foreground md:text-3xl">Browse by state</h2>
         <div className="mt-6 flex flex-wrap gap-2">
-          {NEIGHBORHOODS.map((n) => (
+          {INDIAN_STATES.map((n) => (
             <Link
               key={n}
               to="/search"
@@ -174,11 +188,10 @@ function Home() {
         <div className="rounded-3xl bg-warm/40 p-8 md:p-12">
           <div className="grid gap-10 md:grid-cols-[1fr_1.4fr]">
             <div>
-              <h2 className="font-serif text-3xl text-foreground md:text-4xl">
-                Trust, built in.
-              </h2>
+              <h2 className="font-serif text-3xl text-foreground md:text-4xl">Trust, built in.</h2>
               <p className="mt-3 text-muted-foreground">
-                Choosing a care home is one of the hardest decisions a family makes. We remove the guesswork with a rigorous verification process.
+                Choosing a care home is one of the hardest decisions a family makes. We remove the
+                guesswork with a rigorous verification process.
               </p>
               <Link
                 to="/about"
@@ -188,9 +201,21 @@ function Home() {
               </Link>
             </div>
             <div className="grid gap-4 sm:grid-cols-3">
-              <TrustPill icon={<BadgeCheck />} title="Licensed & accredited" desc="Every listing's licence is verified with state authorities." />
-              <TrustPill icon={<MessageCircle />} title="Verified reviews" desc="Only families with confirmed stays can leave reviews." />
-              <TrustPill icon={<Camera />} title="Real photos & videos" desc="Our team visits on-site and captures unretouched imagery." />
+              <TrustPill
+                icon={<BadgeCheck />}
+                title="Licensed & accredited"
+                desc="Every listing's licence is verified with state authorities."
+              />
+              <TrustPill
+                icon={<MessageCircle />}
+                title="Verified reviews"
+                desc="Only families with confirmed stays can leave reviews."
+              />
+              <TrustPill
+                icon={<Camera />}
+                title="Real photos & videos"
+                desc="Our team visits on-site and captures unretouched imagery."
+              />
             </div>
           </div>
         </div>

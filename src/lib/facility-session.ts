@@ -22,7 +22,9 @@ function read(): FacilitySession {
   if (typeof window === "undefined") return DEFAULT_SESSION;
   try {
     const raw = window.localStorage.getItem(KEY);
-    return raw ? { ...DEFAULT_SESSION, ...(JSON.parse(raw) as Partial<FacilitySession>) } : DEFAULT_SESSION;
+    return raw
+      ? { ...DEFAULT_SESSION, ...(JSON.parse(raw) as Partial<FacilitySession>) }
+      : DEFAULT_SESSION;
   } catch {
     return DEFAULT_SESSION;
   }

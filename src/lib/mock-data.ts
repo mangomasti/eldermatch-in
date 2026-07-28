@@ -3,6 +3,7 @@ export type Facility = {
   name: string;
   neighborhood: string;
   city: string;
+  state: string;
   address: string;
   priceMin: number;
   priceMax: number;
@@ -35,12 +36,13 @@ export type Facility = {
 const img = (id: string, w = 1200) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
 
-export const facilities: Facility[] = [
+const coreFacilities: Facility[] = [
   {
     id: "willowbrook-gardens",
     name: "Willowbrook Gardens",
     neighborhood: "Indiranagar",
     city: "Bengaluru",
+    state: "Karnataka",
     address: "42, 12th Main Road, Indiranagar, Bengaluru 560038",
     priceMin: 45000,
     priceMax: 85000,
@@ -49,8 +51,7 @@ export const facilities: Facility[] = [
     verified: true,
     lastVerified: "March 2026",
     featured: true,
-    description:
-      "A leafy, low-density home with private rooms overlooking a courtyard garden.",
+    description: "A leafy, low-density home with private rooms overlooking a courtyard garden.",
     longDescription:
       "Willowbrook Gardens is a boutique 32-resident home built around a central courtyard garden. Our team of geriatric-trained nurses, physiotherapists and activity coordinators has been together for over five years. Meals are cooked fresh on-site with a rotating South Indian and Continental menu.",
     images: [
@@ -118,6 +119,7 @@ export const facilities: Facility[] = [
     name: "Silverpine Residences",
     neighborhood: "Whitefield",
     city: "Bengaluru",
+    state: "Karnataka",
     address: "18, Palm Meadows Road, Whitefield, Bengaluru 560066",
     priceMin: 60000,
     priceMax: 110000,
@@ -126,8 +128,7 @@ export const facilities: Facility[] = [
     verified: true,
     lastVerified: "February 2026",
     featured: true,
-    description:
-      "Modern assisted living with a specialised memory care unit and on-site clinic.",
+    description: "Modern assisted living with a specialised memory care unit and on-site clinic.",
     longDescription:
       "Silverpine is a purpose-built 64-suite residence with a dedicated 16-bed memory care wing. Every suite is wheelchair-accessible with fall-detection sensors. Our clinical partner is a leading city hospital.",
     images: [
@@ -197,6 +198,7 @@ export const facilities: Facility[] = [
     name: "Banyan House",
     neighborhood: "Jayanagar",
     city: "Bengaluru",
+    state: "Karnataka",
     address: "9, 4th Block, Jayanagar, Bengaluru 560011",
     priceMin: 32000,
     priceMax: 55000,
@@ -268,6 +270,7 @@ export const facilities: Facility[] = [
     name: "Meadowlark Manor",
     neighborhood: "HSR Layout",
     city: "Bengaluru",
+    state: "Karnataka",
     address: "27, Sector 6, HSR Layout, Bengaluru 560102",
     priceMin: 55000,
     priceMax: 95000,
@@ -288,7 +291,7 @@ export const facilities: Facility[] = [
     careTypes: ["Independent living", "Assisted living"],
     amenities: [
       "Rooftop garden",
-          "Fitness centre",
+      "Fitness centre",
       "Library",
       "Guest suites",
       "Weekend outings",
@@ -340,6 +343,7 @@ export const facilities: Facility[] = [
     name: "Ashraya Nivas",
     neighborhood: "Malleshwaram",
     city: "Bengaluru",
+    state: "Karnataka",
     address: "63, 8th Cross, Malleshwaram, Bengaluru 560003",
     priceMin: 22000,
     priceMax: 40000,
@@ -411,6 +415,7 @@ export const facilities: Facility[] = [
     name: "Cypress Court",
     neighborhood: "Koramangala",
     city: "Bengaluru",
+    state: "Karnataka",
     address: "5, 80 Feet Road, Koramangala 4th Block, Bengaluru 560034",
     priceMin: 70000,
     priceMax: 140000,
@@ -486,6 +491,488 @@ export const facilities: Facility[] = [
   },
 ];
 
+// ============================================================
+// Pan-India expansion — additional sample facilities by state
+// ============================================================
+
+export const INDIAN_STATES = [
+  "Karnataka",
+  "Maharashtra",
+  "Tamil Nadu",
+  "Delhi/NCR",
+  "West Bengal",
+  "Kerala",
+  "Gujarat",
+  "Telangana",
+  "Punjab",
+  "Uttar Pradesh",
+] as const;
+
+const POOL = [
+  "1568092775055-078e77df6ac8",
+  "1560448204-e02f11c3d0e2",
+  "1584622650111-993a426fbf0a",
+  "1519974719765-e6559eac2575",
+  "1580489944761-15a19d654956",
+  "1522708323590-d24dbb6b0267",
+  "1586023492125-27b2c045efd7",
+  "1502672260266-1c1ef2d93688",
+  "1600585154340-be6161a56a0c",
+  "1522156373667-4c7234bbd804",
+  "1600585154526-990dced4db0d",
+];
+
+type ExtraSpec = {
+  id: string;
+  name: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+  pin: string;
+  priceMin: number;
+  priceMax: number;
+  rating: number;
+  reviewCount: number;
+  careTypes: string[];
+  languages: string[];
+  tier: FacilityTier;
+  cuisine: string[];
+  dietary: string[];
+  hospital: string;
+  blurb: string;
+  featured?: boolean;
+};
+
+const EXTRA_SPECS: ExtraSpec[] = [
+  {
+    id: "seaview-seniors-mumbai",
+    name: "Seaview Seniors Residency",
+    neighborhood: "Andheri West",
+    city: "Mumbai",
+    state: "Maharashtra",
+    pin: "400053",
+    priceMin: 65000,
+    priceMax: 120000,
+    rating: 4.6,
+    reviewCount: 91,
+    careTypes: ["Assisted living", "Independent living"],
+    languages: ["English", "Hindi", "Marathi", "Gujarati"],
+    tier: "Premium/Medical care",
+    cuisine: ["Maharashtrian", "North Indian", "Jain"],
+    dietary: ["Jain", "Vegetarian (general)", "Non-Vegetarian available"],
+    hospital: "Kokilaben Dhirubhai Ambani Hospital — 10 min",
+    blurb:
+      "A bright sea-facing residence in Andheri with balconies, a physio gym and a busy cultural calendar.",
+    featured: true,
+  },
+  {
+    id: "sahyadri-nivas-pune",
+    name: "Sahyadri Nivas",
+    neighborhood: "Kothrud",
+    city: "Pune",
+    state: "Maharashtra",
+    pin: "411038",
+    priceMin: 30000,
+    priceMax: 58000,
+    rating: 4.4,
+    reviewCount: 63,
+    careTypes: ["Assisted living", "Independent living"],
+    languages: ["Marathi", "Hindi", "English"],
+    tier: "Budget/Private",
+    cuisine: ["Maharashtrian", "Home-style vegetarian"],
+    dietary: ["Vegetarian (general)", "Brahmin"],
+    hospital: "Deenanath Mangeshkar Hospital — 12 min",
+    blurb:
+      "A calm, tree-lined 24-resident home in Kothrud known for its home-style Maharashtrian kitchen.",
+  },
+  {
+    id: "marina-manor-chennai",
+    name: "Marina Manor",
+    neighborhood: "Adyar",
+    city: "Chennai",
+    state: "Tamil Nadu",
+    pin: "600020",
+    priceMin: 42000,
+    priceMax: 78000,
+    rating: 4.7,
+    reviewCount: 104,
+    careTypes: ["Assisted living", "Memory/dementia care"],
+    languages: ["Tamil", "English", "Telugu"],
+    tier: "Mid-range assisted living",
+    cuisine: ["South Indian", "Chettinad", "Diabetic-friendly"],
+    dietary: ["Brahmin", "Vegetarian (general)", "Non-Vegetarian available"],
+    hospital: "Apollo Greams Road — 18 min",
+    blurb: "A well-run Adyar home with a dedicated memory wing and daily Carnatic music sessions.",
+    featured: true,
+  },
+  {
+    id: "kongu-care-coimbatore",
+    name: "Kongu Care Home",
+    neighborhood: "RS Puram",
+    city: "Coimbatore",
+    state: "Tamil Nadu",
+    pin: "641002",
+    priceMin: 20000,
+    priceMax: 38000,
+    rating: 4.2,
+    reviewCount: 47,
+    careTypes: ["Assisted living", "Independent living"],
+    languages: ["Tamil", "English"],
+    tier: "NGO/Free care",
+    cuisine: ["South Indian vegetarian"],
+    dietary: ["Vegetarian (general)", "Brahmin"],
+    hospital: "PSG Hospitals — 15 min",
+    blurb: "A trust-run, no-frills home in RS Puram offering dignified care at near-zero cost.",
+  },
+  {
+    id: "arya-vihar-delhi",
+    name: "Arya Vihar Senior Living",
+    neighborhood: "Vasant Kunj",
+    city: "New Delhi",
+    state: "Delhi/NCR",
+    pin: "110070",
+    priceMin: 55000,
+    priceMax: 105000,
+    rating: 4.5,
+    reviewCount: 88,
+    careTypes: ["Assisted living", "Nursing care"],
+    languages: ["Hindi", "English", "Punjabi"],
+    tier: "Premium/Medical care",
+    cuisine: ["North Indian", "Continental", "Low-sodium"],
+    dietary: ["Vegetarian (general)", "Non-Vegetarian available", "Jain"],
+    hospital: "Fortis Vasant Kunj — 7 min",
+    blurb: "A purpose-built Delhi residence with in-house diagnostics and a winter-garden atrium.",
+  },
+  {
+    id: "aravali-elders-gurugram",
+    name: "Aravali Elders Home",
+    neighborhood: "Sector 56",
+    city: "Gurugram",
+    state: "Delhi/NCR",
+    pin: "122011",
+    priceMin: 38000,
+    priceMax: 70000,
+    rating: 4.3,
+    reviewCount: 55,
+    careTypes: ["Assisted living", "Independent living"],
+    languages: ["Hindi", "English"],
+    tier: "Mid-range assisted living",
+    cuisine: ["North Indian", "Jain options"],
+    dietary: ["Jain", "Vegetarian (general)"],
+    hospital: "Medanta Medicity — 20 min",
+    blurb: "Apartment-style independent living beside the Aravali greens, with on-call nursing.",
+  },
+  {
+    id: "tagore-house-kolkata",
+    name: "Tagore House",
+    neighborhood: "Salt Lake",
+    city: "Kolkata",
+    state: "West Bengal",
+    pin: "700091",
+    priceMin: 26000,
+    priceMax: 52000,
+    rating: 4.4,
+    reviewCount: 72,
+    careTypes: ["Assisted living", "Independent living"],
+    languages: ["Bengali", "Hindi", "English"],
+    tier: "Budget/Private",
+    cuisine: ["Bengali", "Home-style"],
+    dietary: ["Vegetarian (general)", "Non-Vegetarian available"],
+    hospital: "AMRI Salt Lake — 9 min",
+    blurb:
+      "A literary, adda-loving home in Salt Lake with evening recitations and Bengali home cooking.",
+  },
+  {
+    id: "ballygunge-care-kolkata",
+    name: "Ballygunge Care Residency",
+    neighborhood: "Ballygunge",
+    city: "Kolkata",
+    state: "West Bengal",
+    pin: "700019",
+    priceMin: 48000,
+    priceMax: 88000,
+    rating: 4.6,
+    reviewCount: 66,
+    careTypes: ["Nursing care", "Memory/dementia care", "Assisted living"],
+    languages: ["Bengali", "English", "Hindi"],
+    tier: "Premium/Medical care",
+    cuisine: ["Bengali", "Continental", "Renal diet"],
+    dietary: ["Non-Vegetarian available", "Christian", "Vegetarian (general)"],
+    hospital: "Belle Vue Clinic — 8 min",
+    blurb: "A heritage-building residence in Ballygunge with 24/7 nursing and palliative support.",
+  },
+  {
+    id: "backwater-haven-kochi",
+    name: "Backwater Haven",
+    neighborhood: "Kakkanad",
+    city: "Kochi",
+    state: "Kerala",
+    pin: "682030",
+    priceMin: 35000,
+    priceMax: 66000,
+    rating: 4.7,
+    reviewCount: 79,
+    careTypes: ["Assisted living", "Independent living"],
+    languages: ["Malayalam", "English", "Tamil"],
+    tier: "Mid-range assisted living",
+    cuisine: ["Kerala", "South Indian", "Diabetic-friendly"],
+    dietary: ["Christian", "Vegetarian (general)", "Non-Vegetarian available"],
+    hospital: "Rajagiri Hospital — 10 min",
+    blurb:
+      "A waterside Kochi home with ayurvedic therapy, big verandahs and NRI family video calls.",
+    featured: true,
+  },
+  {
+    id: "kowdiar-grace-tvm",
+    name: "Kowdiar Grace Home",
+    neighborhood: "Kowdiar",
+    city: "Thiruvananthapuram",
+    state: "Kerala",
+    pin: "695003",
+    priceMin: 22000,
+    priceMax: 44000,
+    rating: 4.3,
+    reviewCount: 41,
+    careTypes: ["Assisted living", "Independent living"],
+    languages: ["Malayalam", "English"],
+    tier: "NGO/Free care",
+    cuisine: ["Kerala vegetarian"],
+    dietary: ["Christian", "Vegetarian (general)"],
+    hospital: "KIMS Thiruvananthapuram — 12 min",
+    blurb: "A church-supported home in Kowdiar with a chapel, garden and gentle daily rhythm.",
+  },
+  {
+    id: "sabarmati-seniors-ahmedabad",
+    name: "Sabarmati Seniors",
+    neighborhood: "Satellite",
+    city: "Ahmedabad",
+    state: "Gujarat",
+    pin: "380015",
+    priceMin: 28000,
+    priceMax: 56000,
+    rating: 4.4,
+    reviewCount: 58,
+    careTypes: ["Assisted living", "Independent living"],
+    languages: ["Gujarati", "Hindi", "English"],
+    tier: "Budget/Private",
+    cuisine: ["Gujarati", "Jain", "Satvik"],
+    dietary: ["Jain", "Vegetarian (general)", "Brahmin"],
+    hospital: "Sterling Hospital — 11 min",
+    blurb:
+      "A fully vegetarian, Jain-friendly home in Satellite with satsang evenings and a walking track.",
+  },
+  {
+    id: "vesu-vatsalya-surat",
+    name: "Vesu Vatsalya Home",
+    neighborhood: "Vesu",
+    city: "Surat",
+    state: "Gujarat",
+    pin: "395007",
+    priceMin: 24000,
+    priceMax: 46000,
+    rating: 4.1,
+    reviewCount: 36,
+    careTypes: ["Assisted living"],
+    languages: ["Gujarati", "Hindi"],
+    tier: "Budget/Private",
+    cuisine: ["Gujarati", "Jain"],
+    dietary: ["Jain", "Vegetarian (general)"],
+    hospital: "Kiran Multi Super Speciality — 14 min",
+    blurb: "A small family-run home in Vesu with 18 residents and a strictly satvik kitchen.",
+  },
+  {
+    id: "charminar-comforts-hyd",
+    name: "Charminar Comforts",
+    neighborhood: "Banjara Hills",
+    city: "Hyderabad",
+    state: "Telangana",
+    pin: "500034",
+    priceMin: 46000,
+    priceMax: 90000,
+    rating: 4.6,
+    reviewCount: 83,
+    careTypes: ["Assisted living", "Nursing care"],
+    languages: ["Telugu", "Urdu", "Hindi", "English"],
+    tier: "Premium/Medical care",
+    cuisine: ["Hyderabadi", "North Indian", "Halal"],
+    dietary: ["Muslim", "Non-Vegetarian available", "Vegetarian (general)"],
+    hospital: "Apollo Jubilee Hills — 8 min",
+    blurb: "A Banjara Hills residence with halal kitchen, 24/7 nursing and a landscaped courtyard.",
+  },
+  {
+    id: "gachibowli-grove-hyd",
+    name: "Gachibowli Grove",
+    neighborhood: "Gachibowli",
+    city: "Hyderabad",
+    state: "Telangana",
+    pin: "500032",
+    priceMin: 33000,
+    priceMax: 62000,
+    rating: 4.3,
+    reviewCount: 49,
+    careTypes: ["Independent living", "Assisted living"],
+    languages: ["Telugu", "English", "Hindi"],
+    tier: "Mid-range assisted living",
+    cuisine: ["South Indian", "North Indian"],
+    dietary: ["Vegetarian (general)", "Non-Vegetarian available"],
+    hospital: "Continental Hospitals — 9 min",
+    blurb:
+      "Studio apartments for active seniors near the IT corridor, with shuttle outings twice a week.",
+  },
+  {
+    id: "sarabha-sadan-ludhiana",
+    name: "Sarabha Sadan",
+    neighborhood: "Sarabha Nagar",
+    city: "Ludhiana",
+    state: "Punjab",
+    pin: "141001",
+    priceMin: 25000,
+    priceMax: 48000,
+    rating: 4.2,
+    reviewCount: 39,
+    careTypes: ["Assisted living", "Independent living"],
+    languages: ["Punjabi", "Hindi", "English"],
+    tier: "Budget/Private",
+    cuisine: ["Punjabi", "Home-style vegetarian"],
+    dietary: ["Vegetarian (general)", "Non-Vegetarian available"],
+    hospital: "DMC&H Ludhiana — 13 min",
+    blurb: "A warm Punjabi home with langar-style shared meals and a large sunny lawn.",
+  },
+  {
+    id: "ranjit-retreat-amritsar",
+    name: "Ranjit Retreat",
+    neighborhood: "Ranjit Avenue",
+    city: "Amritsar",
+    state: "Punjab",
+    pin: "143001",
+    priceMin: 18000,
+    priceMax: 36000,
+    rating: 4.0,
+    reviewCount: 28,
+    careTypes: ["Assisted living"],
+    languages: ["Punjabi", "Hindi"],
+    tier: "NGO/Free care",
+    cuisine: ["Punjabi vegetarian"],
+    dietary: ["Vegetarian (general)"],
+    hospital: "Fortis Escorts Amritsar — 16 min",
+    blurb: "A gurdwara-supported home near Ranjit Avenue offering free and subsidised places.",
+  },
+  {
+    id: "gomti-gardens-lucknow",
+    name: "Gomti Gardens",
+    neighborhood: "Gomti Nagar",
+    city: "Lucknow",
+    state: "Uttar Pradesh",
+    pin: "226010",
+    priceMin: 27000,
+    priceMax: 54000,
+    rating: 4.4,
+    reviewCount: 52,
+    careTypes: ["Assisted living", "Memory/dementia care"],
+    languages: ["Hindi", "Urdu", "English"],
+    tier: "Mid-range assisted living",
+    cuisine: ["Awadhi", "North Indian", "Halal"],
+    dietary: ["Muslim", "Vegetarian (general)", "Non-Vegetarian available"],
+    hospital: "Medanta Lucknow — 10 min",
+    blurb: "A gracious Gomti Nagar home with a memory-care annexe and famous Awadhi kitchen.",
+  },
+  {
+    id: "noida-nirvana-up",
+    name: "Noida Nirvana Care",
+    neighborhood: "Sector 62",
+    city: "Noida",
+    state: "Uttar Pradesh",
+    pin: "201309",
+    priceMin: 40000,
+    priceMax: 76000,
+    rating: 4.5,
+    reviewCount: 61,
+    careTypes: ["Nursing care", "Assisted living"],
+    languages: ["Hindi", "English"],
+    tier: "Premium/Medical care",
+    cuisine: ["North Indian", "Diabetic-friendly", "Low-sodium"],
+    dietary: ["Vegetarian (general)", "Non-Vegetarian available"],
+    hospital: "Jaypee Hospital — 15 min",
+    blurb:
+      "A clinical-grade Noida residence built for post-hospital recovery and long-term nursing.",
+  },
+];
+
+function buildExtra(sp: ExtraSpec, idx: number): Facility {
+  const pick = (n: number) => img(POOL[(idx * 3 + n) % POOL.length]);
+  const memory = sp.careTypes.some((c) => /memory/i.test(c));
+  const nursing = sp.careTypes.some((c) => /nursing/i.test(c));
+  return {
+    id: sp.id,
+    name: sp.name,
+    neighborhood: sp.neighborhood,
+    city: sp.city,
+    state: sp.state,
+    address: `${sp.neighborhood}, ${sp.city}, ${sp.state} ${sp.pin}`,
+    priceMin: sp.priceMin,
+    priceMax: sp.priceMax,
+    rating: sp.rating,
+    reviewCount: sp.reviewCount,
+    verified: true,
+    lastVerified: "March 2026",
+    featured: sp.featured,
+    description: sp.blurb,
+    longDescription: `${sp.blurb} ${sp.name} has been serving families in ${sp.city} for over a decade, with trained caregivers, a resident doctor tie-up at ${sp.hospital.split(" — ")[0]}, and meals cooked fresh on-site. Families are welcome any day of the week.`,
+    images: [pick(0), pick(1), pick(2), pick(3), pick(4)],
+    careTypes: sp.careTypes,
+    amenities: [
+      "Outdoor space",
+      "24/7 nursing",
+      "Housekeeping daily",
+      "Library",
+      ...(memory ? ["Memory care wing"] : []),
+      ...(nursing ? ["In-house clinic"] : ["Cultural programs"]),
+    ],
+    medicalCapabilities: [
+      "On-site nursing",
+      "Medication management",
+      "Emergency response",
+      ...(memory ? ["Dementia care wing"] : []),
+      ...(nursing ? ["Post-operative care", "Physical therapy"] : ["Weekly doctor visits"]),
+    ],
+    staffRatio: nursing ? "1 : 3 (day) · 1 : 6 (night)" : "1 : 5 (day) · 1 : 10 (night)",
+    licensing: [
+      `${sp.state} Elder Care Registration (Reg. ${sp.state.slice(0, 2).toUpperCase()}/ECR/2021/${1000 + idx})`,
+    ],
+    languages: sp.languages,
+    residentInterests: ["Music", "Reading", "Gardening", "Board games"],
+    schedule: [
+      { day: "Mon", activities: ["Morning walk", "Physiotherapy", "Music circle"] },
+      { day: "Tue", activities: ["Chair yoga", "Art class", "Movie evening"] },
+      { day: "Wed", activities: ["Doctor's round", "Board games", "Devotional hour"] },
+      { day: "Thu", activities: ["Group walk", "Cooking demo", "Book club"] },
+      { day: "Fri", activities: ["Storytelling", "Physiotherapy", "Cultural evening"] },
+      { day: "Sat", activities: ["Family visiting hours", "Outing", "Antakshari"] },
+      { day: "Sun", activities: ["Prayer / quiet morning", "Special lunch", "Film screening"] },
+    ],
+    reviews: [
+      {
+        author: "Verified family",
+        rating: Math.min(5, Math.round(sp.rating)),
+        date: "Feb 2026",
+        verifiedStay: true,
+        text: `We moved my mother to ${sp.name} last year. The staff are patient, the rooms are clean, and communication with the family has been excellent.`,
+      },
+      {
+        author: "Verified family",
+        rating: 4,
+        date: "Dec 2025",
+        verifiedStay: true,
+        text: `Good value for ${sp.city}. Food is genuinely home-style and the nursing team responds quickly at night.`,
+      },
+    ],
+  };
+}
+
+const EXTRA_FACILITIES: Facility[] = EXTRA_SPECS.map(buildExtra);
+
+export const facilities: Facility[] = [...coreFacilities, ...EXTRA_FACILITIES];
+
 export const ALL_CARE_TYPES = [
   "Assisted living",
   "Memory/dementia care",
@@ -503,16 +990,31 @@ export const ALL_AMENITIES = [
   "Library",
 ];
 
-export const NEIGHBORHOODS = [
-  "Indiranagar",
-  "Whitefield",
-  "Jayanagar",
-  "HSR Layout",
-  "Malleshwaram",
-  "Koramangala",
-];
+export const NEIGHBORHOODS = Array.from(new Set(facilities.map((f) => f.neighborhood))).sort();
 
-export const LANGUAGES = ["English", "Hindi", "Kannada", "Tamil", "Telugu", "Malayalam", "Bengali"];
+export const STATES = Array.from(new Set(facilities.map((f) => f.state))).sort();
+
+export const CITIES = Array.from(new Set(facilities.map((f) => f.city))).sort();
+
+export function citiesInState(state: string) {
+  return Array.from(
+    new Set(facilities.filter((f) => !state || f.state === state).map((f) => f.city)),
+  ).sort();
+}
+
+export const LANGUAGES = [
+  "English",
+  "Hindi",
+  "Kannada",
+  "Tamil",
+  "Telugu",
+  "Malayalam",
+  "Bengali",
+  "Marathi",
+  "Gujarati",
+  "Punjabi",
+  "Urdu",
+];
 
 export function formatINR(n: number) {
   return `₹${n.toLocaleString("en-IN")}`;
@@ -535,12 +1037,31 @@ export const FACILITY_TIERS = [
 export type FacilityTier = (typeof FACILITY_TIERS)[number];
 
 export const STANDARDIZED_CARE_TYPES: { name: string; definition: string }[] = [
-  { name: "Assisted Living", definition: "Help with daily activities (bathing, dressing, meals) while maintaining independence." },
-  { name: "Nursing Care", definition: "24/7 medical nursing for chronic conditions and post-hospital recovery." },
-  { name: "Dementia Care", definition: "Specialised memory care with secure environment and trained staff." },
-  { name: "Palliative Care", definition: "Comfort-focused care for terminal illness, emphasising quality of life." },
-  { name: "Respite / Short-stay", definition: "Temporary stays (days to weeks) to support family caregivers." },
-  { name: "Independent Living", definition: "Community living with light housekeeping and social programmes." },
+  {
+    name: "Assisted Living",
+    definition:
+      "Help with daily activities (bathing, dressing, meals) while maintaining independence.",
+  },
+  {
+    name: "Nursing Care",
+    definition: "24/7 medical nursing for chronic conditions and post-hospital recovery.",
+  },
+  {
+    name: "Dementia Care",
+    definition: "Specialised memory care with secure environment and trained staff.",
+  },
+  {
+    name: "Palliative Care",
+    definition: "Comfort-focused care for terminal illness, emphasising quality of life.",
+  },
+  {
+    name: "Respite / Short-stay",
+    definition: "Temporary stays (days to weeks) to support family caregivers.",
+  },
+  {
+    name: "Independent Living",
+    definition: "Community living with light housekeeping and social programmes.",
+  },
 ];
 
 export const CONDITION_CARE_OPTIONS = [
@@ -602,7 +1123,11 @@ export const FACILITY_ENRICHMENT: Record<string, FacilityEnrichment> = {
       ],
       deposit: "₹50,000 refundable",
     },
-    conditionCare: ["Post-surgery recovery", "Chronic illness (diabetes, hypertension)", "Dementia/Alzheimer's"],
+    conditionCare: [
+      "Post-surgery recovery",
+      "Chronic illness (diabetes, hypertension)",
+      "Dementia/Alzheimer's",
+    ],
     staff: {
       credentials: "GNM & B.Sc. Nursing; 2 geriatric-trained doctors",
       ratio: "1 : 4 (day) · 1 : 8 (night)",
@@ -644,7 +1169,10 @@ export const FACILITY_ENRICHMENT: Record<string, FacilityEnrichment> = {
     distanceToHospital: "1.6 km to Fortis",
     distanceToAirport: "45 km to KIA",
     cuisine: ["South Indian", "North Indian", "Low-sodium", "Renal diet"],
-    emergencyPlan: { ...commonEmergency, partnerHospital: "Fortis Whitefield (partner, priority admission)" },
+    emergencyPlan: {
+      ...commonEmergency,
+      partnerHospital: "Fortis Whitefield (partner, priority admission)",
+    },
     priceHistory: [
       { month: "Sep 2025", price: 90000 },
       { month: "Dec 2025", price: 92000 },
@@ -724,9 +1252,7 @@ export const FACILITY_ENRICHMENT: Record<string, FacilityEnrichment> = {
     lastUpdated: "December 2025",
     itemizedCosts: {
       shared: 0,
-      extras: [
-        { name: "Voluntary contribution", cost: "As you're able" },
-      ],
+      extras: [{ name: "Voluntary contribution", cost: "As you're able" }],
       deposit: "None",
     },
     conditionCare: ["Chronic illness (diabetes, hypertension)"],
@@ -739,7 +1265,11 @@ export const FACILITY_ENRICHMENT: Record<string, FacilityEnrichment> = {
     distanceToHospital: "5.1 km to Victoria",
     distanceToAirport: "48 km to KIA",
     cuisine: ["South Indian vegetarian"],
-    emergencyPlan: { ...commonEmergency, partnerHospital: "Victoria Hospital (govt. tie-up)", ambulance: "108 ambulance response" },
+    emergencyPlan: {
+      ...commonEmergency,
+      partnerHospital: "Victoria Hospital (govt. tie-up)",
+      ambulance: "108 ambulance response",
+    },
     priceHistory: [
       { month: "Jan 2025", price: 0 },
       { month: "Jan 2026", price: 0 },
@@ -781,6 +1311,61 @@ export const FACILITY_ENRICHMENT: Record<string, FacilityEnrichment> = {
     distantFamilySupport: "Fortnightly video updates",
   },
 };
+
+// Auto-generate enrichment for the pan-India sample facilities
+for (const sp of EXTRA_SPECS) {
+  const f = EXTRA_FACILITIES.find((x) => x.id === sp.id)!;
+  const priv = Math.round(sp.priceMax * 0.8);
+  const shared = Math.round(sp.priceMin * 0.95);
+  FACILITY_ENRICHMENT[sp.id] = {
+    tier: sp.tier,
+    yearFounded: 2008 + (sp.reviewCount % 12),
+    lastUpdated: "March 2026",
+    itemizedCosts: {
+      private: sp.tier === "NGO/Free care" ? undefined : priv,
+      shared: sp.tier === "NGO/Free care" ? 0 : shared,
+      extras: [
+        { name: "Physiotherapy sessions", cost: "₹450 / session" },
+        { name: "Medicines (billed at cost)", cost: "Actuals, monthly statement" },
+        { name: "Electricity / AC surcharge", cost: "₹1,200 / month" },
+      ],
+      deposit:
+        sp.tier === "NGO/Free care"
+          ? "None"
+          : `₹${(Math.round(sp.priceMin / 10000) * 10000).toLocaleString("en-IN")} refundable`,
+    },
+    conditionCare: f.careTypes.some((c) => /memory/i.test(c))
+      ? ["Dementia/Alzheimer's", "Chronic illness (diabetes, hypertension)"]
+      : f.careTypes.some((c) => /nursing/i.test(c))
+        ? ["Post-surgery recovery", "Bedridden care", "Palliative care"]
+        : ["Chronic illness (diabetes, hypertension)"],
+    staff: {
+      credentials: "GNM nurses; visiting physician",
+      ratio: f.staffRatio,
+      avgExperience: `${5 + (sp.reviewCount % 7)} years`,
+    },
+    hospitalTieUp: sp.hospital,
+    distanceToHospital: `${(1 + (sp.reviewCount % 5)).toFixed(1)} km to ${sp.hospital.split(" — ")[0]}`,
+    distanceToAirport: `${18 + (sp.reviewCount % 30)} km to ${sp.city} airport`,
+    cuisine: sp.cuisine,
+    emergencyPlan: {
+      ...commonEmergency,
+      partnerHospital: `${sp.hospital.split(" — ")[0]} (partner, priority admission)`,
+    },
+    priceHistory: [
+      { month: "Sep 2025", price: Math.round(sp.priceMin * 0.92) },
+      { month: "Dec 2025", price: Math.round(sp.priceMin * 0.96) },
+      { month: "Mar 2026", price: sp.priceMin },
+    ],
+    trialStay: {
+      available: sp.tier !== "NGO/Free care",
+      nights: 3,
+      price: Math.round(sp.priceMin / 8),
+    },
+    petFriendly: sp.reviewCount % 2 === 0,
+    distantFamilySupport: "Weekly video check-ins for families living away",
+  };
+}
 
 export function getEnrichment(id: string): FacilityEnrichment | undefined {
   return FACILITY_ENRICHMENT[id];
@@ -979,12 +1564,21 @@ export type DietaryPreference = (typeof DIETARY_PREFERENCES)[number];
 
 export const FACILITY_DIETARY: Record<string, string[]> = {
   "willowbrook-gardens": ["Vegetarian (general)", "Jain", "Brahmin", "Non-Vegetarian available"],
-  "silverpine-residences": ["Vegetarian (general)", "Non-Vegetarian available", "Christian", "Muslim"],
+  "silverpine-residences": [
+    "Vegetarian (general)",
+    "Non-Vegetarian available",
+    "Christian",
+    "Muslim",
+  ],
   "banyan-house": ["Brahmin", "Vegetarian (general)", "Jain"],
   "meadowlark-manor": ["Vegetarian (general)", "Non-Vegetarian available", "Christian"],
   "tulsi-nivas": ["Brahmin", "Jain", "Vegetarian (general)"],
   "cypress-court": ["Vegetarian (general)", "Non-Vegetarian available", "Muslim", "Christian"],
 };
+
+for (const sp of EXTRA_SPECS) {
+  FACILITY_DIETARY[sp.id] = sp.dietary;
+}
 
 export function facilityDietary(id: string) {
   return FACILITY_DIETARY[id] ?? ["No specific preference"];
@@ -1023,6 +1617,7 @@ export type OwnerListing = {
   name: string;
   neighborhood: string;
   city: string;
+  state: string;
   careType: string;
   tier: FacilityTier;
   status: "Unclaimed" | "Already Registered";
@@ -1034,6 +1629,7 @@ export const UNCLAIMED_LISTINGS: OwnerListing[] = [
     name: "Shanti Nilaya Senior Home",
     neighborhood: "Basavanagudi",
     city: "Bengaluru",
+    state: "Karnataka",
     careType: "Assisted Living",
     tier: "Budget/Private",
     status: "Unclaimed",
@@ -1043,6 +1639,7 @@ export const UNCLAIMED_LISTINGS: OwnerListing[] = [
     name: "Sunshine Elders Care",
     neighborhood: "Rajajinagar",
     city: "Bengaluru",
+    state: "Karnataka",
     careType: "Assisted Living",
     tier: "NGO/Free care",
     status: "Unclaimed",
@@ -1052,6 +1649,7 @@ export const UNCLAIMED_LISTINGS: OwnerListing[] = [
     name: "Green Meadows Seniors Village",
     neighborhood: "Yelahanka",
     city: "Bengaluru",
+    state: "Karnataka",
     careType: "Independent Living",
     tier: "Mid-range assisted living",
     status: "Unclaimed",
@@ -1061,6 +1659,7 @@ export const UNCLAIMED_LISTINGS: OwnerListing[] = [
     name: "Aashray Palliative Home",
     neighborhood: "Banashankari",
     city: "Bengaluru",
+    state: "Karnataka",
     careType: "Palliative Care",
     tier: "NGO/Free care",
     status: "Unclaimed",
@@ -1073,6 +1672,7 @@ export const OWNER_LISTINGS: OwnerListing[] = [
     name: f.name,
     neighborhood: f.neighborhood,
     city: f.city,
+    state: f.state,
     careType: facilityBrowseCategories(f)[0] ?? f.careTypes[0],
     tier: FACILITY_ENRICHMENT[f.id]?.tier ?? "Mid-range assisted living",
     status: "Already Registered",
@@ -1152,21 +1752,61 @@ export type QueueItem = {
 };
 
 export const FOUNDER_QUEUE: QueueItem[] = [
-  { id: "Q-101", facility: "Nandi Serene Care", tier: "Budget/Private", submitted: "2 days ago", documents: "3 of 4 uploaded", kind: "registration" },
-  { id: "Q-102", facility: "Ashwini Elder Residency", tier: "Mid-range assisted living", submitted: "4 days ago", documents: "4 of 4 uploaded", kind: "registration" },
-  { id: "Q-103", facility: "Hope Haven Trust", tier: "NGO/Free care", submitted: "1 week ago", documents: "2 of 4 uploaded", kind: "registration" },
-  { id: "Q-201", facility: "Shanti Nilaya Senior Home", tier: "Budget/Private", submitted: "1 day ago", documents: "Ownership proof uploaded", kind: "claim", claimant: "Ramesh Gowda (Owner)" },
-  { id: "Q-202", facility: "Sunshine Elders Care", tier: "NGO/Free care", submitted: "3 days ago", documents: "Trust deed pending", kind: "claim", claimant: "Sr. Mary Joseph (Administrator)" },
+  {
+    id: "Q-101",
+    facility: "Nandi Serene Care",
+    tier: "Budget/Private",
+    submitted: "2 days ago",
+    documents: "3 of 4 uploaded",
+    kind: "registration",
+  },
+  {
+    id: "Q-102",
+    facility: "Ashwini Elder Residency",
+    tier: "Mid-range assisted living",
+    submitted: "4 days ago",
+    documents: "4 of 4 uploaded",
+    kind: "registration",
+  },
+  {
+    id: "Q-103",
+    facility: "Hope Haven Trust",
+    tier: "NGO/Free care",
+    submitted: "1 week ago",
+    documents: "2 of 4 uploaded",
+    kind: "registration",
+  },
+  {
+    id: "Q-201",
+    facility: "Shanti Nilaya Senior Home",
+    tier: "Budget/Private",
+    submitted: "1 day ago",
+    documents: "Ownership proof uploaded",
+    kind: "claim",
+    claimant: "Ramesh Gowda (Owner)",
+  },
+  {
+    id: "Q-202",
+    facility: "Sunshine Elders Care",
+    tier: "NGO/Free care",
+    submitted: "3 days ago",
+    documents: "Trust deed pending",
+    kind: "claim",
+    claimant: "Sr. Mary Joseph (Administrator)",
+  },
 ];
 
 export type PlatformFacilityRow = {
   id: string;
   name: string;
   neighborhood: string;
+  city: string;
+  state: string;
   tier: string;
   claimed: boolean;
   verified: boolean;
   active: boolean;
+  status: "Verified" | "Pending" | "Rejected";
   views: number;
   leads: number;
   shortlists: number;
@@ -1177,22 +1817,28 @@ export const FOUNDER_FACILITIES: PlatformFacilityRow[] = [
     id: f.id,
     name: f.name,
     neighborhood: f.neighborhood,
+    city: f.city,
+    state: f.state,
     tier: FACILITY_ENRICHMENT[f.id]?.tier ?? "Mid-range assisted living",
     claimed: true,
     verified: f.verified,
-    active: true,
-    views: 1284 - i * 137,
-    leads: 38 - i * 4,
-    shortlists: 92 - i * 9,
+    active: i % 9 !== 7,
+    status: "Verified",
+    views: 1284 - i * 41,
+    leads: 46 - i,
+    shortlists: 98 - i * 3,
   })),
   ...UNCLAIMED_LISTINGS.map<PlatformFacilityRow>((l, i) => ({
     id: l.id,
     name: l.name,
     neighborhood: l.neighborhood,
+    city: l.city,
+    state: l.state,
     tier: l.tier,
     claimed: false,
     verified: false,
     active: true,
+    status: "Pending",
     views: 320 - i * 45,
     leads: 6 - i,
     shortlists: 14 - i * 2,
@@ -1209,14 +1855,70 @@ export type PlatformUserRow = {
 };
 
 export const FOUNDER_USERS: PlatformUserRow[] = [
-  { id: "U-2041", name: "Priya Sharma", email: "priya.s@gmail.com", signupDate: "12 Mar 2026", enquiries: 4, shortlists: 7 },
-  { id: "U-2038", name: "Arun Menon", email: "arun.menon@outlook.com", signupDate: "09 Mar 2026", enquiries: 2, shortlists: 3 },
-  { id: "U-2030", name: "Fatima Sheikh", email: "fatima.sk@gmail.com", signupDate: "27 Feb 2026", enquiries: 6, shortlists: 11 },
-  { id: "U-2025", name: "Joseph Thomas", email: "j.thomas@yahoo.in", signupDate: "21 Feb 2026", enquiries: 1, shortlists: 2 },
-  { id: "U-2019", name: "Lakshmi Gowda", email: "lakshmi.g@gmail.com", signupDate: "14 Feb 2026", enquiries: 3, shortlists: 5 },
-  { id: "U-2011", name: "Vikram Shetty", email: "vikram.shetty@gmail.com", signupDate: "02 Feb 2026", enquiries: 5, shortlists: 9 },
-  { id: "U-2004", name: "Anitha Rao", email: "anitha.rao@rediffmail.com", signupDate: "19 Jan 2026", enquiries: 2, shortlists: 4 },
-  { id: "U-1998", name: "Ganesh Bhat", email: "ganesh.bhat@gmail.com", signupDate: "05 Jan 2026", enquiries: 0, shortlists: 1 },
+  {
+    id: "U-2041",
+    name: "Priya Sharma",
+    email: "priya.s@gmail.com",
+    signupDate: "12 Mar 2026",
+    enquiries: 4,
+    shortlists: 7,
+  },
+  {
+    id: "U-2038",
+    name: "Arun Menon",
+    email: "arun.menon@outlook.com",
+    signupDate: "09 Mar 2026",
+    enquiries: 2,
+    shortlists: 3,
+  },
+  {
+    id: "U-2030",
+    name: "Fatima Sheikh",
+    email: "fatima.sk@gmail.com",
+    signupDate: "27 Feb 2026",
+    enquiries: 6,
+    shortlists: 11,
+  },
+  {
+    id: "U-2025",
+    name: "Joseph Thomas",
+    email: "j.thomas@yahoo.in",
+    signupDate: "21 Feb 2026",
+    enquiries: 1,
+    shortlists: 2,
+  },
+  {
+    id: "U-2019",
+    name: "Lakshmi Gowda",
+    email: "lakshmi.g@gmail.com",
+    signupDate: "14 Feb 2026",
+    enquiries: 3,
+    shortlists: 5,
+  },
+  {
+    id: "U-2011",
+    name: "Vikram Shetty",
+    email: "vikram.shetty@gmail.com",
+    signupDate: "02 Feb 2026",
+    enquiries: 5,
+    shortlists: 9,
+  },
+  {
+    id: "U-2004",
+    name: "Anitha Rao",
+    email: "anitha.rao@rediffmail.com",
+    signupDate: "19 Jan 2026",
+    enquiries: 2,
+    shortlists: 4,
+  },
+  {
+    id: "U-1998",
+    name: "Ganesh Bhat",
+    email: "ganesh.bhat@gmail.com",
+    signupDate: "05 Jan 2026",
+    enquiries: 0,
+    shortlists: 1,
+  },
 ];
 
 export const FOUNDER_GROWTH = [
@@ -1233,4 +1935,112 @@ export const FOUNDER_PREFERENCE_TRENDS = [
   { label: "Most common budget range", value: "₹40,000–₹60,000", share: 39 },
   { label: "Top priority overall", value: "Healthcare quality", share: 34 },
   { label: "Most common dietary preference", value: "Vegetarian (general)", share: 46 },
+];
+
+// ============================================================
+// Founder: revenue (hypothetical), churn, notes
+// ============================================================
+
+export const REVENUE_ASSUMPTIONS = {
+  commissionPct: 8, // % of first month's fee, per placement
+  monthlySubscription: 2500, // ₹ per active listing per month
+  placementsPerMonth: 34,
+};
+
+export const FOUNDER_REVENUE_MONTHS = [
+  { month: "Oct", placements: 12 },
+  { month: "Nov", placements: 17 },
+  { month: "Dec", placements: 21 },
+  { month: "Jan", placements: 26 },
+  { month: "Feb", placements: 30 },
+  { month: "Mar", placements: 34 },
+];
+
+export type ChurnRow = {
+  id: string;
+  name: string;
+  state: string;
+  tier: string;
+  onboarded: string;
+  lastActive: string;
+  reason: "Stopped responding" | "Requested removal" | "Low lead conversion" | "Deactivated by ops";
+};
+
+export const FOUNDER_CHURN: ChurnRow[] = [
+  {
+    id: "C-01",
+    name: "Sunrise Elders Trust",
+    state: "Karnataka",
+    tier: "NGO/Free care",
+    onboarded: "Aug 2025",
+    lastActive: "Jan 2026",
+    reason: "Stopped responding",
+  },
+  {
+    id: "C-02",
+    name: "Pearl Harbour Seniors",
+    state: "Telangana",
+    tier: "Budget/Private",
+    onboarded: "Sep 2025",
+    lastActive: "Feb 2026",
+    reason: "Low lead conversion",
+  },
+  {
+    id: "C-03",
+    name: "Devi Nilayam",
+    state: "Tamil Nadu",
+    tier: "Budget/Private",
+    onboarded: "Jun 2025",
+    lastActive: "Dec 2025",
+    reason: "Requested removal",
+  },
+  {
+    id: "C-04",
+    name: "Yamuna Care Point",
+    state: "Delhi/NCR",
+    tier: "Mid-range assisted living",
+    onboarded: "Jul 2025",
+    lastActive: "Jan 2026",
+    reason: "Stopped responding",
+  },
+  {
+    id: "C-05",
+    name: "Konkan Rest Home",
+    state: "Maharashtra",
+    tier: "Budget/Private",
+    onboarded: "Oct 2025",
+    lastActive: "Feb 2026",
+    reason: "Deactivated by ops",
+  },
+  {
+    id: "C-06",
+    name: "Ganga Sadan",
+    state: "Uttar Pradesh",
+    tier: "NGO/Free care",
+    onboarded: "May 2025",
+    lastActive: "Nov 2025",
+    reason: "Low lead conversion",
+  },
+];
+
+export const FOUNDER_ONBOARDED_TOTAL = 62;
+
+export type FounderNote = { id: string; at: string; text: string };
+
+export const FOUNDER_SEED_NOTES: FounderNote[] = [
+  {
+    id: "N-3",
+    at: "28 Jul 2026, 10:12",
+    text: "Called Athulya Senior Care — interested in onboarding, wants tier pricing sheet.",
+  },
+  {
+    id: "N-2",
+    at: "24 Jul 2026, 16:40",
+    text: "Kerala cluster converting well; consider a Kochi field verifier on retainer.",
+  },
+  {
+    id: "N-1",
+    at: "19 Jul 2026, 09:05",
+    text: "Two Punjab NGOs asked for free listings permanently — decide policy before Q4.",
+  },
 ];

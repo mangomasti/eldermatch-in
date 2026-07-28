@@ -87,15 +87,17 @@ function ProfilePage() {
         {/* Header */}
         <div className="flex flex-wrap items-center gap-5">
           <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-primary/10 text-xl font-semibold text-primary ring-1 ring-border">
-            {profile.basic.name
-              ? profile.basic.name
-                  .trim()
-                  .split(/\s+/)
-                  .map((p) => p[0])
-                  .slice(0, 2)
-                  .join("")
-                  .toUpperCase()
-              : <User className="h-6 w-6" />}
+            {profile.basic.name ? (
+              profile.basic.name
+                .trim()
+                .split(/\s+/)
+                .map((p) => p[0])
+                .slice(0, 2)
+                .join("")
+                .toUpperCase()
+            ) : (
+              <User className="h-6 w-6" />
+            )}
           </span>
           <div className="min-w-0">
             <h1 className="font-serif text-3xl md:text-4xl">
@@ -210,7 +212,8 @@ function ProfilePage() {
                       save({
                         recipient: {
                           ...profile.recipient,
-                          livingSituation: e.target.value as typeof profile.recipient.livingSituation,
+                          livingSituation: e.target
+                            .value as typeof profile.recipient.livingSituation,
                         },
                       });
                       notify();
@@ -231,7 +234,6 @@ function ProfilePage() {
                   <span>We'll prioritise homes with immediate availability in your matches.</span>
                 </div>
               )}
-
             </div>
           </Card>
 
@@ -267,6 +269,20 @@ function ProfilePage() {
               </div>
             ) : (
               <div className="grid gap-4">
+                <PrefRow label="Searching for">
+                  {prefs.searchFor ? (
+                    <span className="text-sm">{prefs.searchFor}</span>
+                  ) : (
+                    <Muted>Not set</Muted>
+                  )}
+                </PrefRow>
+                <PrefRow label="Timeline">
+                  {prefs.timeline ? (
+                    <span className="text-sm">{prefs.timeline}</span>
+                  ) : (
+                    <Muted>Not set</Muted>
+                  )}
+                </PrefRow>
                 <PrefRow label="Care needs">
                   {prefs.careNeeds.length ? (
                     <ChipRow items={prefs.careNeeds} />
@@ -280,29 +296,28 @@ function ProfilePage() {
                   </span>
                 </PrefRow>
                 <PrefRow label="Preferred location">
-                  {prefs.location ? (
-                    <span className="text-sm">{prefs.location}</span>
+                  {prefs.location || prefs.state ? (
+                    <span className="text-sm">
+                      {[prefs.location, prefs.state].filter(Boolean).join(", ")}
+                    </span>
                   ) : (
-                    <Muted>Any area</Muted>
+                    <Muted>Anywhere in India</Muted>
                   )}
                 </PrefRow>
-                <PrefRow label="Priorities">
-                  {prefs.priorities.length ? (
-                    <div className="flex flex-wrap gap-1.5">
-                      {prefs.priorities.map((p, i) => (
-                        <span
-                          key={p}
-                          className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary"
-                        >
-                          <span className="grid h-4 w-4 place-items-center rounded-full bg-primary text-[10px] text-primary-foreground">
-                            {i + 1}
-                          </span>
-                          {p}
-                        </span>
-                      ))}
-                    </div>
+                <PrefRow label="Matters most">
+                  {prefs.priority ? (
+                    <span className="inline-flex rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+                      {prefs.priority}
+                    </span>
                   ) : (
                     <Muted>Not set</Muted>
+                  )}
+                </PrefRow>
+                <PrefRow label="Community / dietary">
+                  {prefs.dietary?.length ? (
+                    <ChipRow items={prefs.dietary} />
+                  ) : (
+                    <Muted>No preference</Muted>
                   )}
                 </PrefRow>
                 <PrefRow label="Language">
@@ -312,17 +327,9 @@ function ProfilePage() {
                     <Muted>No preference</Muted>
                   )}
                 </PrefRow>
-                {prefs.condition && <PrefRow label="Condition"><span className="text-sm">{prefs.condition}</span></PrefRow>}
-                {prefs.mobility && <PrefRow label="Mobility"><span className="text-sm">{prefs.mobility}</span></PrefRow>}
-                {prefs.environment && <PrefRow label="Environment"><span className="text-sm">{prefs.environment}</span></PrefRow>}
-                {prefs.timeline && <PrefRow label="Timeline"><span className="text-sm">{prefs.timeline}</span></PrefRow>}
-                {prefs.roomPreference && <PrefRow label="Room"><span className="text-sm">{prefs.roomPreference}</span></PrefRow>}
-                {prefs.pets && <PrefRow label="Pets"><span className="text-sm">{prefs.pets}</span></PrefRow>}
-                {prefs.distantFamily && <PrefRow label="Distant family"><span className="text-sm">{prefs.distantFamily}</span></PrefRow>}
               </div>
             )}
           </Card>
-
 
           {/* D) Shortlisted */}
           <Card
@@ -437,7 +444,10 @@ function ChipRow({ items }: { items: string[] }) {
   return (
     <div className="flex flex-wrap gap-1.5">
       {items.map((i) => (
-        <span key={i} className="rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground">
+        <span
+          key={i}
+          className="rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground"
+        >
           {i}
         </span>
       ))}

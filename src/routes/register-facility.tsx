@@ -7,6 +7,7 @@ import {
   FACILITY_TIERS,
   CONDITION_CARE_OPTIONS,
   DIETARY_PREFERENCES,
+  INDIAN_STATES,
 } from "@/lib/mock-data";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 import { writeFacilitySession } from "@/lib/facility-session";
@@ -52,14 +53,20 @@ function RegisterFacility() {
           <span className="grid h-11 w-11 place-items-center rounded-2xl bg-primary text-primary-foreground">
             <Building2 className="h-5 w-5" />
           </span>
-          <span className="text-xs font-medium uppercase tracking-wide text-primary">For facilities</span>
+          <span className="text-xs font-medium uppercase tracking-wide text-primary">
+            For facilities
+          </span>
         </div>
         <h1 className="mt-4 font-serif text-4xl md:text-5xl">List your facility on ElderMatch</h1>
         <p className="mt-3 max-w-xl text-muted-foreground">
-          Free to list. We verify every facility on-site before it goes live — families trust us because of it.
+          Free to list. We verify every facility on-site before it goes live — families trust us
+          because of it.
         </p>
 
-        <form onSubmit={submit} className="mt-10 space-y-6 rounded-3xl bg-card p-6 shadow-[var(--shadow-card)] md:p-8">
+        <form
+          onSubmit={submit}
+          className="mt-10 space-y-6 rounded-3xl bg-card p-6 shadow-[var(--shadow-card)] md:p-8"
+        >
           <Field label="Facility name">
             <input
               required
@@ -92,8 +99,26 @@ function RegisterFacility() {
             </div>
           </Field>
 
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="State">
+              <select required className={inputCls} defaultValue="">
+                <option value="" disabled>
+                  Select a state
+                </option>
+                {INDIAN_STATES.map((st) => (
+                  <option key={st} value={st}>
+                    {st}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="City">
+              <input required className={inputCls} placeholder="e.g. Pune" />
+            </Field>
+          </div>
+
           <Field label="Full address">
-            <input required className={inputCls} placeholder="Street, area, city, PIN" />
+            <input required className={inputCls} placeholder="Street, area, neighbourhood, PIN" />
           </Field>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -114,7 +139,10 @@ function RegisterFacility() {
             </Field>
           </div>
 
-          <Field label="Care types offered" hint="Pick from our standardised list so families compare like-for-like.">
+          <Field
+            label="Care types offered"
+            hint="Pick from our standardised list so families compare like-for-like."
+          >
             <div className="grid gap-2 sm:grid-cols-2">
               {STANDARDIZED_CARE_TYPES.map((c) => {
                 const active = types.includes(c.name);
@@ -143,7 +171,10 @@ function RegisterFacility() {
             </div>
           </Field>
 
-          <Field label="Specialised condition care" hint="Optional. Helps you appear for the right condition-based searches.">
+          <Field
+            label="Specialised condition care"
+            hint="Optional. Helps you appear for the right condition-based searches."
+          >
             <div className="grid gap-2 sm:grid-cols-2">
               {CONDITION_CARE_OPTIONS.map((c) => {
                 const active = conditions.includes(c);
@@ -158,7 +189,9 @@ function RegisterFacility() {
                       type="checkbox"
                       checked={active}
                       onChange={() =>
-                        setConditions(active ? conditions.filter((x) => x !== c) : [...conditions, c])
+                        setConditions(
+                          active ? conditions.filter((x) => x !== c) : [...conditions, c],
+                        )
                       }
                       className="h-4 w-4 accent-[color:var(--primary)]"
                     />
@@ -195,7 +228,10 @@ function RegisterFacility() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Staff credentials">
-              <input className={inputCls} placeholder="e.g. GNM & B.Sc. nurses, geriatrician on-call" />
+              <input
+                className={inputCls}
+                placeholder="e.g. GNM & B.Sc. nurses, geriatrician on-call"
+              />
             </Field>
             <Field label="Average staff experience">
               <input className={inputCls} placeholder="e.g. 8 years" />
@@ -211,7 +247,10 @@ function RegisterFacility() {
             </Field>
           </div>
 
-          <Field label="Community / dietary preference" hint="Select all that your kitchen can reliably serve.">
+          <Field
+            label="Community / dietary preference"
+            hint="Select all that your kitchen can reliably serve."
+          >
             <div className="grid gap-2 sm:grid-cols-2">
               {DIETARY_PREFERENCES.map((d) => {
                 const active = dietary.includes(d);
@@ -238,19 +277,39 @@ function RegisterFacility() {
           </Field>
 
           <Field label="Cuisine offered">
-            <input className={inputCls} placeholder="e.g. South Indian, North Indian, Diabetic-friendly" />
+            <input
+              className={inputCls}
+              placeholder="e.g. South Indian, North Indian, Diabetic-friendly"
+            />
           </Field>
 
-          <Field label="Emergency response plan" hint="How you handle medical emergencies. Shown publicly.">
-            <textarea rows={3} className={inputCls} placeholder="On-call doctor SLA, ambulance arrangement, partner hospital, family notification protocol…" />
+          <Field
+            label="Emergency response plan"
+            hint="How you handle medical emergencies. Shown publicly."
+          >
+            <textarea
+              rows={3}
+              className={inputCls}
+              placeholder="On-call doctor SLA, ambulance arrangement, partner hospital, family notification protocol…"
+            />
           </Field>
 
           <Field label="Brief description">
-            <textarea rows={4} className={inputCls} placeholder="Tell families about your home — size, ethos, what makes it special." />
+            <textarea
+              rows={4}
+              className={inputCls}
+              placeholder="Tell families about your home — size, ethos, what makes it special."
+            />
           </Field>
 
-          <UploadBox label="Upload photos" hint="Add 5–10 recent, unretouched photos. JPG/PNG up to 10MB each." />
-          <UploadBox label="Upload licensing & accreditation documents" hint="PDF preferred. Include state registration and any NABH / ISO certificates." />
+          <UploadBox
+            label="Upload photos"
+            hint="Add 5–10 recent, unretouched photos. JPG/PNG up to 10MB each."
+          />
+          <UploadBox
+            label="Upload licensing & accreditation documents"
+            hint="PDF preferred. Include state registration and any NABH / ISO certificates."
+          />
 
           <div className="pt-2">
             <button
@@ -260,11 +319,14 @@ function RegisterFacility() {
               Submit & open my dashboard
             </button>
             <p className="mt-3 text-center text-xs text-muted-foreground">
-              By submitting, you agree to allow an ElderMatch verifier to visit on-site.
-              You'll be taken to a preview of your facility dashboard right after.
+              By submitting, you agree to allow an ElderMatch verifier to visit on-site. You'll be
+              taken to a preview of your facility dashboard right after.
             </p>
             <p className="mt-2 text-center text-xs">
-              Already listed? <Link to="/dashboard" className="text-primary hover:underline">Go to dashboard</Link>
+              Already listed?{" "}
+              <Link to="/dashboard" className="text-primary hover:underline">
+                Go to dashboard
+              </Link>
             </p>
           </div>
         </form>
@@ -277,7 +339,15 @@ function RegisterFacility() {
 const inputCls =
   "w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-sm outline-none focus:border-primary";
 
-function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+function Field({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-sm font-medium text-foreground/85">{label}</span>
