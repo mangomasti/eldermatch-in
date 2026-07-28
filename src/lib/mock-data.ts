@@ -1379,10 +1379,13 @@ export type PlatformFacilityRow = {
   id: string;
   name: string;
   neighborhood: string;
+  city: string;
+  state: string;
   tier: string;
   claimed: boolean;
   verified: boolean;
   active: boolean;
+  status: "Verified" | "Pending" | "Rejected";
   views: number;
   leads: number;
   shortlists: number;
@@ -1393,22 +1396,28 @@ export const FOUNDER_FACILITIES: PlatformFacilityRow[] = [
     id: f.id,
     name: f.name,
     neighborhood: f.neighborhood,
+    city: f.city,
+    state: f.state,
     tier: FACILITY_ENRICHMENT[f.id]?.tier ?? "Mid-range assisted living",
     claimed: true,
     verified: f.verified,
-    active: true,
-    views: 1284 - i * 137,
-    leads: 38 - i * 4,
-    shortlists: 92 - i * 9,
+    active: i % 9 !== 7,
+    status: "Verified",
+    views: 1284 - i * 41,
+    leads: 46 - i,
+    shortlists: 98 - i * 3,
   })),
   ...UNCLAIMED_LISTINGS.map<PlatformFacilityRow>((l, i) => ({
     id: l.id,
     name: l.name,
     neighborhood: l.neighborhood,
+    city: l.city,
+    state: l.state,
     tier: l.tier,
     claimed: false,
     verified: false,
     active: true,
+    status: "Pending",
     views: 320 - i * 45,
     leads: 6 - i,
     shortlists: 14 - i * 2,
@@ -1449,4 +1458,52 @@ export const FOUNDER_PREFERENCE_TRENDS = [
   { label: "Most common budget range", value: "₹40,000–₹60,000", share: 39 },
   { label: "Top priority overall", value: "Healthcare quality", share: 34 },
   { label: "Most common dietary preference", value: "Vegetarian (general)", share: 46 },
+];
+
+// ============================================================
+// Founder: revenue (hypothetical), churn, notes
+// ============================================================
+
+export const REVENUE_ASSUMPTIONS = {
+  commissionPct: 8, // % of first month's fee, per placement
+  monthlySubscription: 2500, // ₹ per active listing per month
+  placementsPerMonth: 34,
+};
+
+export const FOUNDER_REVENUE_MONTHS = [
+  { month: "Oct", placements: 12 },
+  { month: "Nov", placements: 17 },
+  { month: "Dec", placements: 21 },
+  { month: "Jan", placements: 26 },
+  { month: "Feb", placements: 30 },
+  { month: "Mar", placements: 34 },
+];
+
+export type ChurnRow = {
+  id: string;
+  name: string;
+  state: string;
+  tier: string;
+  onboarded: string;
+  lastActive: string;
+  reason: "Stopped responding" | "Requested removal" | "Low lead conversion" | "Deactivated by ops";
+};
+
+export const FOUNDER_CHURN: ChurnRow[] = [
+  { id: "C-01", name: "Sunrise Elders Trust", state: "Karnataka", tier: "NGO/Free care", onboarded: "Aug 2025", lastActive: "Jan 2026", reason: "Stopped responding" },
+  { id: "C-02", name: "Pearl Harbour Seniors", state: "Telangana", tier: "Budget/Private", onboarded: "Sep 2025", lastActive: "Feb 2026", reason: "Low lead conversion" },
+  { id: "C-03", name: "Devi Nilayam", state: "Tamil Nadu", tier: "Budget/Private", onboarded: "Jun 2025", lastActive: "Dec 2025", reason: "Requested removal" },
+  { id: "C-04", name: "Yamuna Care Point", state: "Delhi/NCR", tier: "Mid-range assisted living", onboarded: "Jul 2025", lastActive: "Jan 2026", reason: "Stopped responding" },
+  { id: "C-05", name: "Konkan Rest Home", state: "Maharashtra", tier: "Budget/Private", onboarded: "Oct 2025", lastActive: "Feb 2026", reason: "Deactivated by ops" },
+  { id: "C-06", name: "Ganga Sadan", state: "Uttar Pradesh", tier: "NGO/Free care", onboarded: "May 2025", lastActive: "Nov 2025", reason: "Low lead conversion" },
+];
+
+export const FOUNDER_ONBOARDED_TOTAL = 62;
+
+export type FounderNote = { id: string; at: string; text: string };
+
+export const FOUNDER_SEED_NOTES: FounderNote[] = [
+  { id: "N-3", at: "28 Jul 2026, 10:12", text: "Called Athulya Senior Care — interested in onboarding, wants tier pricing sheet." },
+  { id: "N-2", at: "24 Jul 2026, 16:40", text: "Kerala cluster converting well; consider a Kochi field verifier on retainer." },
+  { id: "N-1", at: "19 Jul 2026, 09:05", text: "Two Punjab NGOs asked for free listings permanently — decide policy before Q4." },
 ];
