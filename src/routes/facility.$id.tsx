@@ -153,6 +153,54 @@ function FacilityProfile() {
 
             <p className="mt-6 text-base leading-relaxed text-foreground/85">{f.longDescription}</p>
 
+            <Section title="A typical week">
+              <div className="overflow-x-auto">
+                <div className="grid min-w-[600px] grid-cols-5 gap-3">
+                  {f.schedule.map((d) => (
+                    <div key={d.day} className="rounded-2xl border border-border bg-card p-4">
+                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-primary">
+                        {d.day}
+                      </div>
+                      <ul className="space-y-1.5 text-sm text-foreground/85">
+                        {d.activities.map((a) => (
+                          <li key={a}>{a}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Section>
+
+            <Section title="Life at the home">
+              <div className="grid gap-6 sm:grid-cols-2">
+                <div>
+                  <div className="mb-2 flex items-center gap-2 text-sm font-semibold">
+                    <Sparkles className="h-4 w-4 text-primary" /> Residents enjoy
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {f.residentInterests.map((i) => (
+                      <span key={i} className="rounded-full bg-warm px-3 py-1 text-sm text-warm-foreground">
+                        {i}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <div className="mb-2 flex items-center gap-2 text-sm font-semibold">
+                    <Languages className="h-4 w-4 text-primary" /> Languages spoken
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {f.languages.map((l) => (
+                      <span key={l} className="rounded-full border border-border bg-card px-3 py-1 text-sm">
+                        {l}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Section>
+
             <Section title="What's included in the price">
               <div className="rounded-2xl border border-border bg-card p-5">
                 <div className="flex items-baseline gap-2">
@@ -213,6 +261,47 @@ function FacilityProfile() {
                   ))}
                 </div>
               )}
+            </Section>
+
+            <Section title={`Reviews · ${f.rating} average from ${f.reviewCount} stays`}>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Reviews are anonymous by default to protect resident privacy. Only families with a <span className="font-medium text-verified">Verified Stay</span> can post.
+              </p>
+              <div className="space-y-4">
+                {f.reviews.map((r, i) => (
+                  <article key={i} className="rounded-2xl border border-border bg-card p-5">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-3">
+                        <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/10 font-semibold text-primary">
+                          {String.fromCharCode(65 + i)}
+                        </span>
+                        <div>
+                          <div className="text-sm font-semibold">Verified family {String.fromCharCode(65 + i)}</div>
+                          <div className="text-xs text-muted-foreground">{r.date}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {r.verifiedStay && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-verified/10 px-2 py-0.5 text-xs font-medium text-verified">
+                            <BadgeCheck className="h-3 w-3" /> Verified stay
+                          </span>
+                        )}
+                        <div className="flex items-center gap-0.5">
+                          {Array.from({ length: 5 }).map((_, k) => (
+                            <Star
+                              key={k}
+                              className={`h-3.5 w-3.5 ${
+                                k < r.rating ? "fill-highlight text-highlight" : "text-muted"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <p className="mt-3 text-sm leading-relaxed text-foreground/85">{r.text}</p>
+                  </article>
+                ))}
+              </div>
             </Section>
 
             {e && e.conditionCare.length > 0 && (
@@ -315,95 +404,6 @@ function FacilityProfile() {
                   </li>
                 ))}
               </ul>
-            </Section>
-
-            <Section title="A typical week">
-              <div className="overflow-x-auto">
-                <div className="grid min-w-[600px] grid-cols-5 gap-3">
-                  {f.schedule.map((d) => (
-                    <div key={d.day} className="rounded-2xl border border-border bg-card p-4">
-                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-primary">
-                        {d.day}
-                      </div>
-                      <ul className="space-y-1.5 text-sm text-foreground/85">
-                        {d.activities.map((a) => (
-                          <li key={a}>{a}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Section>
-
-            <Section title="Life at the home">
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div>
-                  <div className="mb-2 flex items-center gap-2 text-sm font-semibold">
-                    <Sparkles className="h-4 w-4 text-primary" /> Residents enjoy
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {f.residentInterests.map((i) => (
-                      <span key={i} className="rounded-full bg-warm px-3 py-1 text-sm text-warm-foreground">
-                        {i}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <div className="mb-2 flex items-center gap-2 text-sm font-semibold">
-                    <Languages className="h-4 w-4 text-primary" /> Languages spoken
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {f.languages.map((l) => (
-                      <span key={l} className="rounded-full border border-border bg-card px-3 py-1 text-sm">
-                        {l}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Section>
-
-            <Section title={`Reviews · ${f.rating} average from ${f.reviewCount} stays`}>
-              <p className="mb-4 text-sm text-muted-foreground">
-                Reviews are anonymous by default to protect resident privacy. Only families with a <span className="font-medium text-verified">Verified Stay</span> can post.
-              </p>
-              <div className="space-y-4">
-                {f.reviews.map((r, i) => (
-                  <article key={i} className="rounded-2xl border border-border bg-card p-5">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex items-center gap-3">
-                        <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/10 font-semibold text-primary">
-                          {String.fromCharCode(65 + i)}
-                        </span>
-                        <div>
-                          <div className="text-sm font-semibold">Verified family {String.fromCharCode(65 + i)}</div>
-                          <div className="text-xs text-muted-foreground">{r.date}</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {r.verifiedStay && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-verified/10 px-2 py-0.5 text-xs font-medium text-verified">
-                            <BadgeCheck className="h-3 w-3" /> Verified stay
-                          </span>
-                        )}
-                        <div className="flex items-center gap-0.5">
-                          {Array.from({ length: 5 }).map((_, k) => (
-                            <Star
-                              key={k}
-                              className={`h-3.5 w-3.5 ${
-                                k < r.rating ? "fill-highlight text-highlight" : "text-muted"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    <p className="mt-3 text-sm leading-relaxed text-foreground/85">{r.text}</p>
-                  </article>
-                ))}
-              </div>
             </Section>
           </div>
 
