@@ -92,19 +92,42 @@ function FacilityProfile() {
           <span className="text-foreground">{f.name}</span>
         </nav>
 
-        {/* Gallery */}
-        <div className="mt-5 grid gap-2 overflow-hidden rounded-3xl md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2">
-          <div className="relative aspect-[4/3] md:col-start-1 md:row-span-2 md:aspect-auto">
-            <img src={f.images[0]} alt={f.name} className="absolute inset-0 h-full w-full object-cover" />
-            <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-background/95 px-3 py-1.5 text-xs font-medium text-verified shadow-sm">
-              <ShieldCheck className="h-3.5 w-3.5" /> Verified recent photos
-            </span>
-          </div>
-          {f.images.slice(1, 4).map((src, i) => (
-            <div key={i} className="relative hidden aspect-[4/3] md:block md:aspect-auto">
-              <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        {/* Gallery — swipeable on mobile, mosaic on desktop */}
+        <div className="mt-5">
+          {/* Mobile: horizontal snap carousel */}
+          <div className="md:hidden">
+            <div className="flex snap-x snap-mandatory gap-2 overflow-x-auto rounded-3xl pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {f.images.map((src, i) => (
+                <div key={i} className="relative aspect-[4/3] w-full shrink-0 snap-center overflow-hidden rounded-3xl">
+                  <img src={src} alt={`${f.name} photo ${i + 1}`} className="absolute inset-0 h-full w-full object-cover" />
+                  {i === 0 && (
+                    <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-background/95 px-3 py-1.5 text-xs font-medium text-verified shadow-sm">
+                      <ShieldCheck className="h-3.5 w-3.5" /> Verified recent photos
+                    </span>
+                  )}
+                  <span className="absolute bottom-3 right-3 rounded-full bg-foreground/70 px-2.5 py-1 text-xs font-medium text-background">
+                    {i + 1} / {f.images.length}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
+            <p className="mt-1 text-center text-xs text-muted-foreground">Swipe to see more photos</p>
+          </div>
+
+          {/* Desktop mosaic */}
+          <div className="hidden gap-2 overflow-hidden rounded-3xl md:grid md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2">
+            <div className="relative md:col-start-1 md:row-span-2">
+              <img src={f.images[0]} alt={f.name} className="absolute inset-0 h-full w-full object-cover" />
+              <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-background/95 px-3 py-1.5 text-xs font-medium text-verified shadow-sm">
+                <ShieldCheck className="h-3.5 w-3.5" /> Verified recent photos
+              </span>
+            </div>
+            {f.images.slice(1, 5).map((src, i) => (
+              <div key={i} className="relative min-h-[140px]">
+                <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover" />
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="mt-8 grid gap-10 md:grid-cols-[1fr_360px]">
