@@ -87,15 +87,17 @@ function ProfilePage() {
         {/* Header */}
         <div className="flex flex-wrap items-center gap-5">
           <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-primary/10 text-xl font-semibold text-primary ring-1 ring-border">
-            {profile.basic.name
-              ? profile.basic.name
-                  .trim()
-                  .split(/\s+/)
-                  .map((p) => p[0])
-                  .slice(0, 2)
-                  .join("")
-                  .toUpperCase()
-              : <User className="h-6 w-6" />}
+            {profile.basic.name ? (
+              profile.basic.name
+                .trim()
+                .split(/\s+/)
+                .map((p) => p[0])
+                .slice(0, 2)
+                .join("")
+                .toUpperCase()
+            ) : (
+              <User className="h-6 w-6" />
+            )}
           </span>
           <div className="min-w-0">
             <h1 className="font-serif text-3xl md:text-4xl">
@@ -210,7 +212,8 @@ function ProfilePage() {
                       save({
                         recipient: {
                           ...profile.recipient,
-                          livingSituation: e.target.value as typeof profile.recipient.livingSituation,
+                          livingSituation: e.target
+                            .value as typeof profile.recipient.livingSituation,
                         },
                       });
                       notify();
@@ -231,7 +234,6 @@ function ProfilePage() {
                   <span>We'll prioritise homes with immediate availability in your matches.</span>
                 </div>
               )}
-
             </div>
           </Card>
 
@@ -282,7 +284,11 @@ function ProfilePage() {
                   )}
                 </PrefRow>
                 <PrefRow label="Care needs">
-                  {prefs.careNeeds.length ? <ChipRow items={prefs.careNeeds} /> : <Muted>Any</Muted>}
+                  {prefs.careNeeds.length ? (
+                    <ChipRow items={prefs.careNeeds} />
+                  ) : (
+                    <Muted>Any</Muted>
+                  )}
                 </PrefRow>
                 <PrefRow label="Budget">
                   <span className="text-sm">
@@ -308,7 +314,11 @@ function ProfilePage() {
                   )}
                 </PrefRow>
                 <PrefRow label="Community / dietary">
-                  {prefs.dietary?.length ? <ChipRow items={prefs.dietary} /> : <Muted>No preference</Muted>}
+                  {prefs.dietary?.length ? (
+                    <ChipRow items={prefs.dietary} />
+                  ) : (
+                    <Muted>No preference</Muted>
+                  )}
                 </PrefRow>
                 <PrefRow label="Language">
                   {prefs.language ? (
@@ -318,10 +328,8 @@ function ProfilePage() {
                   )}
                 </PrefRow>
               </div>
-
             )}
           </Card>
-
 
           {/* D) Shortlisted */}
           <Card
@@ -436,7 +444,10 @@ function ChipRow({ items }: { items: string[] }) {
   return (
     <div className="flex flex-wrap gap-1.5">
       {items.map((i) => (
-        <span key={i} className="rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground">
+        <span
+          key={i}
+          className="rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground"
+        >
           {i}
         </span>
       ))}

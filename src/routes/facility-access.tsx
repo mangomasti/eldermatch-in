@@ -50,8 +50,8 @@ function FacilityAccess() {
           Is your facility already on ElderMatch?
         </h1>
         <p className="mt-3 text-muted-foreground">
-          Many homes are already listed from our on-ground research. Search first — you may just need
-          to claim yours.
+          Many homes are already listed from our on-ground research. Search first — you may just
+          need to claim yours.
         </p>
 
         <form
@@ -120,14 +120,18 @@ function FacilityAccess() {
                     </div>
                     {l.status === "Already Registered" ? (
                       <button
-                        onClick={() => navigate({ to: "/facility-login", search: { facility: l.id } })}
+                        onClick={() =>
+                          navigate({ to: "/facility-login", search: { facility: l.id } })
+                        }
                         className="shrink-0 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
                       >
                         This is my facility — Log in
                       </button>
                     ) : (
                       <button
-                        onClick={() => navigate({ to: "/facility-claim/$id", params: { id: l.id } })}
+                        onClick={() =>
+                          navigate({ to: "/facility-claim/$id", params: { id: l.id } })
+                        }
                         className="shrink-0 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background hover:opacity-90"
                       >
                         Claim this listing
@@ -157,7 +161,8 @@ function FacilityAccess() {
             <div>
               <div className="font-serif text-xl">My facility isn't listed</div>
               <p className="mt-1 text-sm text-muted-foreground">
-                Create a new listing from scratch. Free, and verified by our team before it goes live.
+                Create a new listing from scratch. Free, and verified by our team before it goes
+                live.
               </p>
               <Link
                 to="/register-facility"

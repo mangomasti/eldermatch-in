@@ -59,7 +59,10 @@ function SearchPage() {
     return facilities.filter((f) => {
       if (stateFilter && f.state !== stateFilter) return false;
       if (city && f.city !== city) return false;
-      if (neighborhood && !`${f.neighborhood} ${f.city}`.toLowerCase().includes(neighborhood.toLowerCase()))
+      if (
+        neighborhood &&
+        !`${f.neighborhood} ${f.city}`.toLowerCase().includes(neighborhood.toLowerCase())
+      )
         return false;
       if (f.priceMin > budget) return false;
       if (careTypes.length) {
@@ -75,7 +78,17 @@ function SearchPage() {
       if (verifiedOnly && !f.verified) return false;
       return true;
     });
-  }, [stateFilter, city, neighborhood, budget, careTypes, amenities, dietary, minRating, verifiedOnly]);
+  }, [
+    stateFilter,
+    city,
+    neighborhood,
+    budget,
+    careTypes,
+    amenities,
+    dietary,
+    minRating,
+    verifiedOnly,
+  ]);
 
   const recommendedIds = useMemo(() => {
     if (!prefs) return new Set<string>();
@@ -86,7 +99,15 @@ function SearchPage() {
         if (prefs.state && f.state === prefs.state) score += 2;
         if (prefs.location && (f.city === prefs.location || f.neighborhood === prefs.location))
           score += 3;
-        if (prefs.careNeeds.some((n) => f.careTypes.some((c) => n.toLowerCase().includes(c.toLowerCase().split("/")[0]) || c.toLowerCase().includes(n.toLowerCase().split("/")[0]))))
+        if (
+          prefs.careNeeds.some((n) =>
+            f.careTypes.some(
+              (c) =>
+                n.toLowerCase().includes(c.toLowerCase().split("/")[0]) ||
+                c.toLowerCase().includes(n.toLowerCase().split("/")[0]),
+            ),
+          )
+        )
           score += 2;
         if (f.priceMin <= prefs.budget) score += 1;
         if (prefs.language && f.languages.includes(prefs.language)) score += 1;
@@ -259,7 +280,10 @@ function SearchPage() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="font-serif text-3xl md:text-4xl">
-              Care homes {neighborhood || city || stateFilter ? `in ${neighborhood || city || stateFilter}` : "across India"}
+              Care homes{" "}
+              {neighborhood || city || stateFilter
+                ? `in ${neighborhood || city || stateFilter}`
+                : "across India"}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
               {results.length} home{results.length === 1 ? "" : "s"} match your search
@@ -299,11 +323,7 @@ function SearchPage() {
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 {results.map((f) => (
-                  <FacilityCard
-                    key={f.id}
-                    facility={f}
-                    recommended={recommendedIds.has(f.id)}
-                  />
+                  <FacilityCard key={f.id} facility={f} recommended={recommendedIds.has(f.id)} />
                 ))}
               </div>
             )}

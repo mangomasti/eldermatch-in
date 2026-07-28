@@ -64,7 +64,6 @@ export const PRIORITY_OPTIONS = [
   "Food/language/community fit",
 ] as const;
 
-
 export const RELATIONSHIPS = [
   "Myself",
   "My parent",

@@ -22,13 +22,10 @@ export function FloatingProfileCta() {
   )
     return null;
 
-
   const hasProfile = prefs != null;
   const label = hasProfile ? "Update Your Preferences" : "Build Your Profile";
   const isFacilityRoute = pathname.startsWith("/facility/");
-  const positionCls = isFacilityRoute
-    ? "top-[30%] md:top-[28%]"
-    : "top-1/2 -translate-y-1/2";
+  const positionCls = isFacilityRoute ? "top-[30%] md:top-[28%]" : "top-1/2 -translate-y-1/2";
 
   return (
     <button

@@ -35,7 +35,12 @@ export const Route = createFileRoute("/facility/$id")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Facility not found — ElderMatch" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [
+          { title: "Facility not found — ElderMatch" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     }
     const f = loaderData.facility;
     return {
@@ -85,9 +90,13 @@ function FacilityProfile() {
 
       <div className="mx-auto max-w-6xl px-5 pt-8 md:px-8">
         <nav className="text-sm text-muted-foreground">
-          <Link to="/home" className="hover:text-foreground">Home</Link>
+          <Link to="/home" className="hover:text-foreground">
+            Home
+          </Link>
           <span className="px-2">/</span>
-          <Link to="/search" className="hover:text-foreground">Homes</Link>
+          <Link to="/search" className="hover:text-foreground">
+            Homes
+          </Link>
           <span className="px-2">/</span>
           <span className="text-foreground">{f.name}</span>
         </nav>
@@ -98,8 +107,15 @@ function FacilityProfile() {
           <div className="md:hidden">
             <div className="flex snap-x snap-mandatory gap-2 overflow-x-auto rounded-3xl pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {f.images.map((src, i) => (
-                <div key={i} className="relative aspect-[4/3] w-full shrink-0 snap-center overflow-hidden rounded-3xl">
-                  <img src={src} alt={`${f.name} photo ${i + 1}`} className="absolute inset-0 h-full w-full object-cover" />
+                <div
+                  key={i}
+                  className="relative aspect-[4/3] w-full shrink-0 snap-center overflow-hidden rounded-3xl"
+                >
+                  <img
+                    src={src}
+                    alt={`${f.name} photo ${i + 1}`}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
                   {i === 0 && (
                     <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-background/95 px-3 py-1.5 text-xs font-medium text-verified shadow-sm">
                       <ShieldCheck className="h-3.5 w-3.5" /> Verified recent photos
@@ -111,13 +127,19 @@ function FacilityProfile() {
                 </div>
               ))}
             </div>
-            <p className="mt-1 text-center text-xs text-muted-foreground">Swipe to see more photos</p>
+            <p className="mt-1 text-center text-xs text-muted-foreground">
+              Swipe to see more photos
+            </p>
           </div>
 
           {/* Desktop mosaic */}
           <div className="hidden gap-2 overflow-hidden rounded-3xl md:grid md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2">
             <div className="relative md:col-start-1 md:row-span-2">
-              <img src={f.images[0]} alt={f.name} className="absolute inset-0 h-full w-full object-cover" />
+              <img
+                src={f.images[0]}
+                alt={f.name}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
               <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-background/95 px-3 py-1.5 text-xs font-medium text-verified shadow-sm">
                 <ShieldCheck className="h-3.5 w-3.5" /> Verified recent photos
               </span>
@@ -139,7 +161,8 @@ function FacilityProfile() {
                   <h1 className="font-serif text-3xl md:text-4xl">{f.name}</h1>
                   {f.verified && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-verified/10 px-3 py-1 text-xs font-semibold text-verified">
-                      <BadgeCheck className="h-3.5 w-3.5" /> Verified · Last verified {f.lastVerified}
+                      <BadgeCheck className="h-3.5 w-3.5" /> Verified · Last verified{" "}
+                      {f.lastVerified}
                     </span>
                   )}
                   {e && (
@@ -154,7 +177,8 @@ function FacilityProfile() {
                   </span>
                   <span className="inline-flex items-center gap-1">
                     <Star className="h-4 w-4 fill-highlight text-highlight" />
-                    <span className="font-semibold text-foreground">{f.rating}</span> ({f.reviewCount} reviews)
+                    <span className="font-semibold text-foreground">{f.rating}</span> (
+                    {f.reviewCount} reviews)
                   </span>
                 </div>
               </div>
@@ -203,7 +227,10 @@ function FacilityProfile() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {f.residentInterests.map((i) => (
-                      <span key={i} className="rounded-full bg-warm px-3 py-1 text-sm text-warm-foreground">
+                      <span
+                        key={i}
+                        className="rounded-full bg-warm px-3 py-1 text-sm text-warm-foreground"
+                      >
                         {i}
                       </span>
                     ))}
@@ -215,7 +242,10 @@ function FacilityProfile() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {f.languages.map((l) => (
-                      <span key={l} className="rounded-full border border-border bg-card px-3 py-1 text-sm">
+                      <span
+                        key={l}
+                        className="rounded-full border border-border bg-card px-3 py-1 text-sm"
+                      >
                         {l}
                       </span>
                     ))}
@@ -238,7 +268,9 @@ function FacilityProfile() {
                           <tr>
                             <td className="py-2 text-muted-foreground">Private room (base)</td>
                             <td className="py-2 text-right font-medium">
-                              {e.itemizedCosts.private === 0 ? "Free" : `${formatINR(e.itemizedCosts.private)} /mo`}
+                              {e.itemizedCosts.private === 0
+                                ? "Free"
+                                : `${formatINR(e.itemizedCosts.private)} /mo`}
                             </td>
                           </tr>
                         )}
@@ -246,7 +278,9 @@ function FacilityProfile() {
                           <tr>
                             <td className="py-2 text-muted-foreground">Shared room (base)</td>
                             <td className="py-2 text-right font-medium">
-                              {e.itemizedCosts.shared === 0 ? "Free" : `${formatINR(e.itemizedCosts.shared)} /mo`}
+                              {e.itemizedCosts.shared === 0
+                                ? "Free"
+                                : `${formatINR(e.itemizedCosts.shared)} /mo`}
                             </td>
                           </tr>
                         )}
@@ -262,11 +296,15 @@ function FacilityProfile() {
                         </tr>
                       </tbody>
                     </table>
-                    <p className="text-xs text-muted-foreground">Base includes room, meals, housekeeping, standard nursing and activity programme.</p>
+                    <p className="text-xs text-muted-foreground">
+                      Base includes room, meals, housekeeping, standard nursing and activity
+                      programme.
+                    </p>
                   </div>
                 ) : (
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Base cost includes room, boarding, housekeeping and standard care. Extras billed separately.
+                    Base cost includes room, boarding, housekeeping and standard care. Extras billed
+                    separately.
                   </p>
                 )}
               </div>
@@ -279,7 +317,10 @@ function FacilityProfile() {
                   </div>
                   {e.priceHistory.map((p) => (
                     <span key={p.month} className="text-muted-foreground">
-                      {p.month}: <span className="text-foreground">{p.price === 0 ? "Free" : formatINR(p.price)}</span>
+                      {p.month}:{" "}
+                      <span className="text-foreground">
+                        {p.price === 0 ? "Free" : formatINR(p.price)}
+                      </span>
                     </span>
                   ))}
                 </div>
@@ -288,7 +329,8 @@ function FacilityProfile() {
 
             <Section title={`Reviews · ${f.rating} average from ${f.reviewCount} stays`}>
               <p className="mb-4 text-sm text-muted-foreground">
-                Reviews are anonymous by default to protect resident privacy. Only families with a <span className="font-medium text-verified">Verified Stay</span> can post.
+                Reviews are anonymous by default to protect resident privacy. Only families with a{" "}
+                <span className="font-medium text-verified">Verified Stay</span> can post.
               </p>
               <div className="space-y-4">
                 {f.reviews.map((r, i) => (
@@ -299,7 +341,9 @@ function FacilityProfile() {
                           {String.fromCharCode(65 + i)}
                         </span>
                         <div>
-                          <div className="text-sm font-semibold">Verified family {String.fromCharCode(65 + i)}</div>
+                          <div className="text-sm font-semibold">
+                            Verified family {String.fromCharCode(65 + i)}
+                          </div>
                           <div className="text-xs text-muted-foreground">{r.date}</div>
                         </div>
                       </div>
@@ -331,7 +375,10 @@ function FacilityProfile() {
               <Section title="Specialised condition care">
                 <div className="flex flex-wrap gap-2">
                   {e.conditionCare.map((c) => (
-                    <span key={c} className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary">
+                    <span
+                      key={c}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary"
+                    >
                       <Stethoscope className="h-3.5 w-3.5" /> {c}
                     </span>
                   ))}
@@ -342,7 +389,10 @@ function FacilityProfile() {
             <Section title="Amenities">
               <div className="flex flex-wrap gap-2">
                 {f.amenities.map((a) => (
-                  <span key={a} className="rounded-full bg-secondary px-3 py-1.5 text-sm text-secondary-foreground">
+                  <span
+                    key={a}
+                    className="rounded-full bg-secondary px-3 py-1.5 text-sm text-secondary-foreground"
+                  >
                     {a}
                   </span>
                 ))}
@@ -357,7 +407,10 @@ function FacilityProfile() {
             <Section title="Medical capabilities & staff">
               <div className="grid gap-3 sm:grid-cols-2">
                 {f.medicalCapabilities.map((m) => (
-                  <div key={m} className="flex items-center gap-2.5 rounded-xl border border-border bg-card p-3.5">
+                  <div
+                    key={m}
+                    className="flex items-center gap-2.5 rounded-xl border border-border bg-card p-3.5"
+                  >
                     <Stethoscope className="h-4 w-4 shrink-0 text-primary" />
                     <span className="text-sm">{m}</span>
                   </div>
@@ -365,15 +418,28 @@ function FacilityProfile() {
               </div>
               {e ? (
                 <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                  <Stat icon={<Users className="h-4 w-4" />} label="Staff ratio" value={e.staff.ratio} />
-                  <Stat icon={<BadgeCheck className="h-4 w-4" />} label="Credentials" value={e.staff.credentials} />
-                  <Stat icon={<Sparkles className="h-4 w-4" />} label="Avg. experience" value={e.staff.avgExperience} />
+                  <Stat
+                    icon={<Users className="h-4 w-4" />}
+                    label="Staff ratio"
+                    value={e.staff.ratio}
+                  />
+                  <Stat
+                    icon={<BadgeCheck className="h-4 w-4" />}
+                    label="Credentials"
+                    value={e.staff.credentials}
+                  />
+                  <Stat
+                    icon={<Sparkles className="h-4 w-4" />}
+                    label="Avg. experience"
+                    value={e.staff.avgExperience}
+                  />
                 </div>
               ) : (
                 <div className="mt-4 flex items-center gap-3 rounded-xl bg-warm/40 p-4">
                   <Users className="h-5 w-5 text-primary" />
                   <div className="text-sm">
-                    <span className="font-medium">Staff-to-resident ratio: </span>{f.staffRatio}
+                    <span className="font-medium">Staff-to-resident ratio: </span>
+                    {f.staffRatio}
                   </div>
                 </div>
               )}
@@ -382,9 +448,21 @@ function FacilityProfile() {
             {e && (
               <Section title="Location & connections">
                 <div className="grid gap-3 sm:grid-cols-3">
-                  <Stat icon={<Hospital className="h-4 w-4" />} label="Nearest hospital" value={e.distanceToHospital} />
-                  <Stat icon={<Plane className="h-4 w-4" />} label="Nearest airport" value={e.distanceToAirport} />
-                  <Stat icon={<Utensils className="h-4 w-4" />} label="Cuisine" value={e.cuisine.join(", ")} />
+                  <Stat
+                    icon={<Hospital className="h-4 w-4" />}
+                    label="Nearest hospital"
+                    value={e.distanceToHospital}
+                  />
+                  <Stat
+                    icon={<Plane className="h-4 w-4" />}
+                    label="Nearest airport"
+                    value={e.distanceToAirport}
+                  />
+                  <Stat
+                    icon={<Utensils className="h-4 w-4" />}
+                    label="Cuisine"
+                    value={e.cuisine.join(", ")}
+                  />
                   <Stat
                     icon={<Utensils className="h-4 w-4" />}
                     label="Community / dietary preference"
@@ -409,10 +487,22 @@ function FacilityProfile() {
                     <Siren className="h-4 w-4 text-highlight" /> What happens in a medical emergency
                   </div>
                   <ul className="space-y-2 text-sm">
-                    <li className="flex items-start gap-2"><Stethoscope className="mt-0.5 h-4 w-4 text-primary" />{e.emergencyPlan.onCallDoctor}</li>
-                    <li className="flex items-start gap-2"><Siren className="mt-0.5 h-4 w-4 text-primary" />{e.emergencyPlan.ambulance}</li>
-                    <li className="flex items-start gap-2"><Hospital className="mt-0.5 h-4 w-4 text-primary" />{e.emergencyPlan.partnerHospital}</li>
-                    <li className="flex items-start gap-2"><Users className="mt-0.5 h-4 w-4 text-primary" />{e.emergencyPlan.protocol}</li>
+                    <li className="flex items-start gap-2">
+                      <Stethoscope className="mt-0.5 h-4 w-4 text-primary" />
+                      {e.emergencyPlan.onCallDoctor}
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Siren className="mt-0.5 h-4 w-4 text-primary" />
+                      {e.emergencyPlan.ambulance}
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Hospital className="mt-0.5 h-4 w-4 text-primary" />
+                      {e.emergencyPlan.partnerHospital}
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Users className="mt-0.5 h-4 w-4 text-primary" />
+                      {e.emergencyPlan.protocol}
+                    </li>
                   </ul>
                 </div>
               </Section>
@@ -467,9 +557,7 @@ function FacilityProfile() {
               </button>
               <div className="mt-5 flex items-start gap-2 rounded-xl bg-warm/40 p-3 text-xs text-warm-foreground">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-verified" />
-                <span>
-                  ElderMatch never charges families to enquire or tour a facility.
-                </span>
+                <span>ElderMatch never charges families to enquire or tour a facility.</span>
               </div>
             </div>
           </aside>
@@ -572,7 +660,12 @@ function ContactModal({ facilityName, onClose }: { facilityName: string; onClose
                   key={m}
                   className="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-input bg-background py-2 text-sm hover:border-primary/40"
                 >
-                  <input type="radio" name="contact" defaultChecked={m === "Call"} className="accent-[color:var(--primary)]" />
+                  <input
+                    type="radio"
+                    name="contact"
+                    defaultChecked={m === "Call"}
+                    className="accent-[color:var(--primary)]"
+                  />
                   {m}
                 </label>
               ))}

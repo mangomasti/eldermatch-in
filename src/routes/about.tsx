@@ -26,32 +26,27 @@ const STEPS = [
   {
     icon: ClipboardCheck,
     title: "Licence & accreditation check",
-    body:
-      "Before a facility goes live, our compliance team cross-checks its state nursing-home registration and any additional accreditations (NABH, ISO, JCI) directly with the issuing bodies. If anything is expired or unverifiable, the listing does not go live.",
+    body: "Before a facility goes live, our compliance team cross-checks its state nursing-home registration and any additional accreditations (NABH, ISO, JCI) directly with the issuing bodies. If anything is expired or unverifiable, the listing does not go live.",
   },
   {
     icon: Users,
     title: "On-site audit",
-    body:
-      "A trained ElderMatch auditor visits every facility unannounced. We inspect rooms, kitchens, medication protocols, staff-to-resident ratios, and emergency preparedness. We speak to residents and staff without management present.",
+    body: "A trained ElderMatch auditor visits every facility unannounced. We inspect rooms, kitchens, medication protocols, staff-to-resident ratios, and emergency preparedness. We speak to residents and staff without management present.",
   },
   {
     icon: Camera,
     title: "Real photo & video capture",
-    body:
-      "Photos on ElderMatch are captured by our team during the on-site visit. No filters, no staging. Facilities can add their own images, but every image is manually reviewed for authenticity before it's published.",
+    body: "Photos on ElderMatch are captured by our team during the on-site visit. No filters, no staging. Facilities can add their own images, but every image is manually reviewed for authenticity before it's published.",
   },
   {
     icon: MessageCircle,
     title: "Verified-stay reviews",
-    body:
-      "Only families with a confirmed stay — booked or enquired through ElderMatch — can leave a review. Every review is moderated for authenticity. Facilities cannot remove reviews they don't like.",
+    body: "Only families with a confirmed stay — booked or enquired through ElderMatch — can leave a review. Every review is moderated for authenticity. Facilities cannot remove reviews they don't like.",
   },
   {
     icon: RefreshCw,
     title: "Quarterly re-verification",
-    body:
-      "Every listed facility is re-verified on a rolling 90-day cycle. Any change in ownership, staffing ratios, or licence status must be reported and updated on the listing.",
+    body: "Every listed facility is re-verified on a rolling 90-day cycle. Any change in ownership, staffing ratios, or licence status must be reported and updated on the listing.",
   },
 ];
 
@@ -68,7 +63,9 @@ function About() {
           Verification is the point.
         </h1>
         <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
-          ElderMatch exists because choosing a care home shouldn't feel like a gamble. Every home on this platform has been visited, audited, and continuously re-checked by our team. Here's exactly what that means.
+          ElderMatch exists because choosing a care home shouldn't feel like a gamble. Every home on
+          this platform has been visited, audited, and continuously re-checked by our team. Here's
+          exactly what that means.
         </p>
 
         <div className="mt-14 space-y-5">
@@ -102,7 +99,9 @@ function About() {
             </li>
             <li className="flex gap-3">
               <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-highlight" />
-              <span>We don't let facilities pay for higher rankings or to bury negative reviews.</span>
+              <span>
+                We don't let facilities pay for higher rankings or to bury negative reviews.
+              </span>
             </li>
             <li className="flex gap-3">
               <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-highlight" />
@@ -114,7 +113,8 @@ function About() {
         <div className="mt-14 rounded-3xl bg-primary p-8 text-primary-foreground md:p-12">
           <h3 className="font-serif text-3xl">Have a concern about a listing?</h3>
           <p className="mt-3 max-w-xl text-primary-foreground/85">
-            If a family or resident reports a serious concern, we investigate within 48 hours and suspend the listing until it's resolved.
+            If a family or resident reports a serious concern, we investigate within 48 hours and
+            suspend the listing until it's resolved.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link

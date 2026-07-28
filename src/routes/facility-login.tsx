@@ -14,7 +14,8 @@ export const Route = createFileRoute("/facility-login")({
       { title: "Facility login — ElderMatch" },
       {
         name: "description",
-        content: "Log in to your ElderMatch facility dashboard to manage leads, reviews and your listing.",
+        content:
+          "Log in to your ElderMatch facility dashboard to manage leads, reviews and your listing.",
       },
       { property: "og:title", content: "Facility login — ElderMatch" },
       { property: "og:description", content: "Access your ElderMatch facility dashboard." },
@@ -52,7 +53,10 @@ function FacilityLogin() {
           {listing ? `Signing in to ${listing.name}.` : "Sign in to manage your listing."}
         </p>
 
-        <form onSubmit={submit} className="mt-8 space-y-4 rounded-3xl bg-card p-6 shadow-[var(--shadow-card)]">
+        <form
+          onSubmit={submit}
+          className="mt-8 space-y-4 rounded-3xl bg-card p-6 shadow-[var(--shadow-card)]"
+        >
           <label className="block">
             <span className="mb-1.5 block text-sm font-medium">Facility name or email</span>
             <input

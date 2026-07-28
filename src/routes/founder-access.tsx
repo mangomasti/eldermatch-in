@@ -150,7 +150,9 @@ function FounderAccess() {
         <div className="fixed inset-0 z-50 flex lg:hidden">
           <div className="absolute inset-0 bg-slate-900/40" onClick={() => setNavOpen(false)} />
           <div className="relative h-full w-64 bg-white shadow-xl">
-            <div className="border-b border-slate-200 px-4 py-4 text-sm font-bold">ElderMatch Ops</div>
+            <div className="border-b border-slate-200 px-4 py-4 text-sm font-bold">
+              ElderMatch Ops
+            </div>
             {nav}
           </div>
         </div>
@@ -340,12 +342,20 @@ function QueueTab({
                 <td className="py-2 text-slate-500">{i.submitted}</td>
                 <td className="py-2 text-right">
                   {i.decision ? (
-                    <span className="rounded bg-slate-100 px-2 py-1 text-xs font-medium">{i.decision}</span>
+                    <span className="rounded bg-slate-100 px-2 py-1 text-xs font-medium">
+                      {i.decision}
+                    </span>
                   ) : (
                     <div className="flex justify-end gap-1">
-                      <SmallBtn tone="green" onClick={() => decide(i.id, "Approved")}>Approve</SmallBtn>
-                      <SmallBtn tone="red" onClick={() => decide(i.id, "Rejected")}>Reject</SmallBtn>
-                      <SmallBtn onClick={() => decide(i.id, "Info requested")}>Request info</SmallBtn>
+                      <SmallBtn tone="green" onClick={() => decide(i.id, "Approved")}>
+                        Approve
+                      </SmallBtn>
+                      <SmallBtn tone="red" onClick={() => decide(i.id, "Rejected")}>
+                        Reject
+                      </SmallBtn>
+                      <SmallBtn onClick={() => decide(i.id, "Info requested")}>
+                        Request info
+                      </SmallBtn>
                     </div>
                   )}
                 </td>
@@ -410,7 +420,9 @@ function FacilitiesTab({
         >
           <option value="">All tiers</option>
           {FACILITY_TIERS.map((t) => (
-            <option key={t} value={t}>{t}</option>
+            <option key={t} value={t}>
+              {t}
+            </option>
           ))}
         </select>
         <select
@@ -420,7 +432,9 @@ function FacilitiesTab({
         >
           <option value="">All states</option>
           {INDIAN_STATES.map((st) => (
-            <option key={st} value={st}>{st}</option>
+            <option key={st} value={st}>
+              {st}
+            </option>
           ))}
         </select>
       </div>
@@ -443,9 +457,13 @@ function FacilitiesTab({
             {filtered.map((r) => (
               <tr key={r.id} className="border-b border-slate-100">
                 <td className="py-2 font-medium">
-                  <button className="hover:underline" onClick={() => setSelected(r.id)}>{r.name}</button>
+                  <button className="hover:underline" onClick={() => setSelected(r.id)}>
+                    {r.name}
+                  </button>
                 </td>
-                <td className="py-2 text-slate-600">{r.city}, {r.state}</td>
+                <td className="py-2 text-slate-600">
+                  {r.city}, {r.state}
+                </td>
                 <td className="py-2 text-slate-600">{r.tier}</td>
                 <td className="py-2">{r.claimed ? "Claimed" : "Unclaimed"}</td>
                 <td className="py-2">
@@ -516,7 +534,9 @@ function FacilitiesTab({
                 className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
               >
                 {FACILITY_TIERS.map((t) => (
-                  <option key={t} value={t}>{t}</option>
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
                 ))}
               </select>
             </Labeled>
@@ -538,7 +558,9 @@ function FacilitiesTab({
             </Labeled>
           </div>
           <div className="mt-3 flex gap-2">
-            <SmallBtn tone="green" onClick={() => toast.success("Changes saved (mock).")}>Save changes</SmallBtn>
+            <SmallBtn tone="green" onClick={() => toast.success("Changes saved (mock).")}>
+              Save changes
+            </SmallBtn>
             <SmallBtn onClick={() => setSelected(null)}>Close</SmallBtn>
           </div>
         </Panel>
@@ -606,9 +628,21 @@ function AnalyticsTab({ rows }: { rows: PlatformFacilityRow[] }) {
       <H1>Platform Analytics</H1>
 
       <div className="grid gap-3 md:grid-cols-3">
-        <BarPanel title="New facilities / month" rows={FOUNDER_GROWTH.map((g) => ({ label: g.month, v: g.facilities }))} max={maxFac} />
-        <BarPanel title="New users / month" rows={FOUNDER_GROWTH.map((g) => ({ label: g.month, v: g.users }))} max={maxUsers} />
-        <BarPanel title="Enquiries / month" rows={FOUNDER_GROWTH.map((g) => ({ label: g.month, v: g.enquiries }))} max={maxEnq} />
+        <BarPanel
+          title="New facilities / month"
+          rows={FOUNDER_GROWTH.map((g) => ({ label: g.month, v: g.facilities }))}
+          max={maxFac}
+        />
+        <BarPanel
+          title="New users / month"
+          rows={FOUNDER_GROWTH.map((g) => ({ label: g.month, v: g.users }))}
+          max={maxUsers}
+        />
+        <BarPanel
+          title="Enquiries / month"
+          rows={FOUNDER_GROWTH.map((g) => ({ label: g.month, v: g.enquiries }))}
+          max={maxEnq}
+        />
       </div>
 
       <Panel title="Top performing facilities">
@@ -835,7 +869,13 @@ function NotesTab({
     setNotes((prev) => [
       {
         id: `N-${Date.now()}`,
-        at: now.toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }),
+        at: now.toLocaleString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
         text,
       },
       ...prev,
@@ -860,7 +900,9 @@ function NotesTab({
           className="w-full rounded border border-slate-300 p-3 text-sm outline-none focus:border-slate-500"
         />
         <div className="mt-2 flex gap-2">
-          <SmallBtn tone="green" onClick={add}>Save note</SmallBtn>
+          <SmallBtn tone="green" onClick={add}>
+            Save note
+          </SmallBtn>
           <SmallBtn onClick={() => setDraft("")}>Clear</SmallBtn>
         </div>
       </Panel>
@@ -966,7 +1008,10 @@ function BarPanel({
         {rows.map((r) => (
           <div key={r.label} className="flex flex-1 flex-col items-center gap-1">
             <span className="text-[10px] text-slate-500">{r.v}</span>
-            <div className="w-full rounded-t bg-slate-700" style={{ height: `${(r.v / max) * 90}px` }} />
+            <div
+              className="w-full rounded-t bg-slate-700"
+              style={{ height: `${(r.v / max) * 90}px` }}
+            />
             <span className="text-[10px] text-slate-500">{r.label}</span>
           </div>
         ))}

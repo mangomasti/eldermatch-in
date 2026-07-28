@@ -79,7 +79,15 @@ function Analytics() {
   );
 }
 
-function Card({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function Card({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="rounded-3xl border border-border bg-card p-6">
       <div className="flex items-center gap-2 text-sm font-semibold">

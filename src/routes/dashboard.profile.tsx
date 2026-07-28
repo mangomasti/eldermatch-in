@@ -2,7 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Camera, Save, ExternalLink } from "lucide-react";
-import { MOCK_DASHBOARD, getFacility, getEnrichment, STANDARDIZED_CARE_TYPES } from "@/lib/mock-data";
+import {
+  MOCK_DASHBOARD,
+  getFacility,
+  getEnrichment,
+  STANDARDIZED_CARE_TYPES,
+} from "@/lib/mock-data";
 
 export const Route = createFileRoute("/dashboard/profile")({
   component: ManageProfile,
@@ -29,7 +34,9 @@ function ManageProfile() {
       <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="font-serif text-3xl">Manage profile</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Everything shown on your public listing.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Everything shown on your public listing.
+          </p>
         </div>
         <Link
           to="/facility/$id"
@@ -40,13 +47,24 @@ function ManageProfile() {
         </Link>
       </div>
 
-      <form onSubmit={save} className="space-y-5 rounded-3xl border border-border bg-card p-6 md:p-8">
+      <form
+        onSubmit={save}
+        className="space-y-5 rounded-3xl border border-border bg-card p-6 md:p-8"
+      >
         <Card title="Basics">
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Facility name"><input defaultValue={f.name} className={inputCls} /></Field>
-            <Field label="Tier"><input defaultValue={e?.tier ?? ""} className={inputCls} /></Field>
-            <Field label="Neighbourhood"><input defaultValue={f.neighborhood} className={inputCls} /></Field>
-            <Field label="City"><input defaultValue={f.city} className={inputCls} /></Field>
+            <Field label="Facility name">
+              <input defaultValue={f.name} className={inputCls} />
+            </Field>
+            <Field label="Tier">
+              <input defaultValue={e?.tier ?? ""} className={inputCls} />
+            </Field>
+            <Field label="Neighbourhood">
+              <input defaultValue={f.neighborhood} className={inputCls} />
+            </Field>
+            <Field label="City">
+              <input defaultValue={f.city} className={inputCls} />
+            </Field>
             <Field label="Full address" wide>
               <input defaultValue={f.address} className={inputCls} />
             </Field>
@@ -76,10 +94,15 @@ function ManageProfile() {
         <Card title="Care types offered">
           <div className="grid gap-2 sm:grid-cols-2">
             {STANDARDIZED_CARE_TYPES.map((c) => (
-              <label key={c.name} className="flex items-start gap-2 rounded-xl border border-input px-3 py-2 text-sm">
+              <label
+                key={c.name}
+                className="flex items-start gap-2 rounded-xl border border-input px-3 py-2 text-sm"
+              >
                 <input
                   type="checkbox"
-                  defaultChecked={f.careTypes.some((t) => t.toLowerCase().includes(c.name.split(" ")[0].toLowerCase()))}
+                  defaultChecked={f.careTypes.some((t) =>
+                    t.toLowerCase().includes(c.name.split(" ")[0].toLowerCase()),
+                  )}
                   className="mt-1 h-4 w-4 accent-[color:var(--primary)]"
                 />
                 <span>
@@ -93,18 +116,40 @@ function ManageProfile() {
 
         <Card title="Pricing">
           <div className="grid gap-4 sm:grid-cols-3">
-            <Field label="Private room (₹/mo)"><input type="number" defaultValue={e?.itemizedCosts.private ?? f.priceMin} className={inputCls} /></Field>
-            <Field label="Shared room (₹/mo)"><input type="number" defaultValue={e?.itemizedCosts.shared ?? ""} className={inputCls} /></Field>
-            <Field label="Refundable deposit"><input defaultValue={e?.itemizedCosts.deposit ?? ""} className={inputCls} /></Field>
+            <Field label="Private room (₹/mo)">
+              <input
+                type="number"
+                defaultValue={e?.itemizedCosts.private ?? f.priceMin}
+                className={inputCls}
+              />
+            </Field>
+            <Field label="Shared room (₹/mo)">
+              <input
+                type="number"
+                defaultValue={e?.itemizedCosts.shared ?? ""}
+                className={inputCls}
+              />
+            </Field>
+            <Field label="Refundable deposit">
+              <input defaultValue={e?.itemizedCosts.deposit ?? ""} className={inputCls} />
+            </Field>
           </div>
         </Card>
 
         <Card title="Operations">
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Staff ratio"><input defaultValue={e?.staff.ratio ?? f.staffRatio} className={inputCls} /></Field>
-            <Field label="Hospital tie-up"><input defaultValue={e?.hospitalTieUp ?? ""} className={inputCls} /></Field>
-            <Field label="Distance to hospital"><input defaultValue={e?.distanceToHospital ?? ""} className={inputCls} /></Field>
-            <Field label="Distance to airport"><input defaultValue={e?.distanceToAirport ?? ""} className={inputCls} /></Field>
+            <Field label="Staff ratio">
+              <input defaultValue={e?.staff.ratio ?? f.staffRatio} className={inputCls} />
+            </Field>
+            <Field label="Hospital tie-up">
+              <input defaultValue={e?.hospitalTieUp ?? ""} className={inputCls} />
+            </Field>
+            <Field label="Distance to hospital">
+              <input defaultValue={e?.distanceToHospital ?? ""} className={inputCls} />
+            </Field>
+            <Field label="Distance to airport">
+              <input defaultValue={e?.distanceToAirport ?? ""} className={inputCls} />
+            </Field>
           </div>
         </Card>
 
@@ -134,7 +179,15 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
   );
 }
 
-function Field({ label, wide, children }: { label: string; wide?: boolean; children: React.ReactNode }) {
+function Field({
+  label,
+  wide,
+  children,
+}: {
+  label: string;
+  wide?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <label className={`block ${wide ? "sm:col-span-2" : ""}`}>
       <span className="mb-1.5 block text-xs font-medium text-foreground/85">{label}</span>

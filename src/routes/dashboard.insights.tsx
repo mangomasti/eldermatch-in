@@ -15,7 +15,8 @@ function Insights() {
       <div>
         <h1 className="font-serif text-3xl">Insights</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Aggregate trends from families who viewed your profile. No individual user data is ever shown.
+          Aggregate trends from families who viewed your profile. No individual user data is ever
+          shown.
         </p>
       </div>
 
@@ -75,7 +76,9 @@ function Insights() {
               <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-border">
                 <div className="h-full bg-primary" style={{ width: `${t.share}%` }} />
               </div>
-              <div className="mt-1 text-xs text-muted-foreground">{t.share}% of profile visitors</div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                {t.share}% of profile visitors
+              </div>
             </div>
           ))}
         </div>
@@ -87,8 +90,8 @@ function Insights() {
       </div>
 
       <p className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Users className="h-3.5 w-3.5" /> All figures are anonymised and aggregated across visitors to
-        your profile. Individual family details are never shared.
+        <Users className="h-3.5 w-3.5" /> All figures are anonymised and aggregated across visitors
+        to your profile. Individual family details are never shared.
       </p>
     </div>
   );

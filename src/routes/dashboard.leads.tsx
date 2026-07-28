@@ -81,7 +81,9 @@ function Leads() {
                     className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium"
                   >
                     {STATUSES.map((s) => (
-                      <option key={s} value={s}>{s}</option>
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
                     ))}
                   </select>
                 </div>

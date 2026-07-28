@@ -246,7 +246,13 @@ export function QuestionnaireForm({
   );
 }
 
-function FieldLabel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function FieldLabel({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div className={`mb-2.5 text-sm font-semibold text-foreground ${className}`}>{children}</div>
   );
