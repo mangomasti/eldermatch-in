@@ -117,7 +117,10 @@ function FacilityProfile() {
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                   {i === 0 && (
-                    <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-background/95 px-3 py-1.5 text-xs font-medium text-verified shadow-sm">
+                    <span className="absolute bottom-4 left-4 z-10 rounded-full bg-background/90 px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-sm">
+                Photos pending — official images coming soon
+              </span>
+              <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-background/95 px-3 py-1.5 text-xs font-medium text-verified shadow-sm">
                       <ShieldCheck className="h-3.5 w-3.5" /> Verified recent photos
                     </span>
                   )}
