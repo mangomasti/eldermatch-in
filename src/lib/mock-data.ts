@@ -435,7 +435,7 @@ export const FACILITY_ENRICHMENT: Record<string, FacilityEnrichment> = {
 };
 
 // Auto-generate enrichment for the pan-India sample facilities
-for (const sp of EXTRA_SPECS) {
+for (const sp of REAL_FACILITY_SPECS) {
   const f = EXTRA_FACILITIES.find((x) => x.id === sp.id)!;
   const priv = Math.round(sp.priceMax * 0.8);
   const shared = Math.round(sp.priceMin * 0.95);
