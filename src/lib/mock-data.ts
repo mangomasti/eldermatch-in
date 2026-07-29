@@ -30,7 +30,12 @@ export type Facility = {
     text: string;
   }[];
   featured?: boolean;
+  photosPending?: boolean;
+  phone?: string;
+  email?: string;
+  website?: string;
 };
+
 
 // Unsplash placeholder images (senior living, warm interiors, gardens)
 const img = (id: string, w = 1200) =>
