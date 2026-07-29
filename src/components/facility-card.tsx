@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Star, ShieldCheck, MapPin, Heart } from "lucide-react";
-import { formatINR, type Facility } from "@/lib/mock-data";
+import { formatINR, PHOTOS_PENDING_LABEL, type Facility } from "@/lib/mock-data";
 import { useShortlist } from "@/lib/prefs";
 
 export function FacilityCard({
@@ -31,6 +31,11 @@ export function FacilityCard({
             Recommended for you
           </span>
         )}
+        {facility.photosPending && (
+          <span className="absolute bottom-3 left-3 rounded-full bg-background/90 px-2.5 py-1 text-[11px] font-medium text-muted-foreground shadow-sm">
+            {PHOTOS_PENDING_LABEL}
+          </span>
+        )}
         {facility.verified && (
           <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-background/95 px-2.5 py-1 text-xs font-medium text-verified shadow-sm">
             <ShieldCheck className="h-3.5 w-3.5" /> Verified
@@ -59,9 +64,15 @@ export function FacilityCard({
             {facility.name}
           </Link>
           <div className="flex shrink-0 items-center gap-1 text-sm">
-            <Star className="h-4 w-4 fill-highlight text-highlight" />
-            <span className="font-semibold">{facility.rating}</span>
-            <span className="text-muted-foreground">({facility.reviewCount})</span>
+            {facility.rating > 0 ? (
+              <>
+                <Star className="h-4 w-4 fill-highlight text-highlight" />
+                <span className="font-semibold">{facility.rating}</span>
+                <span className="text-muted-foreground">({facility.reviewCount})</span>
+              </>
+            ) : (
+              <span className="text-xs text-muted-foreground">Unverified</span>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -80,8 +91,16 @@ export function FacilityCard({
         </div>
         <div className="mt-3 flex items-baseline justify-between border-t border-border/60 pt-3">
           <div className="text-sm">
-            <span className="font-semibold text-foreground">{formatINR(facility.priceMin)}</span>
-            <span className="text-muted-foreground"> – {formatINR(facility.priceMax)}/mo</span>
+            {facility.priceMin > 0 ? (
+              <>
+                <span className="font-semibold text-foreground">
+                  {formatINR(facility.priceMin)}
+                </span>
+                <span className="text-muted-foreground"> – {formatINR(facility.priceMax)}/mo</span>
+              </>
+            ) : (
+              <span className="text-muted-foreground">Pricing N/A</span>
+            )}
           </div>
           <Link
             to="/facility/$id"
