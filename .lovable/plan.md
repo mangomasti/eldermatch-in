@@ -1,71 +1,63 @@
-## Overview
+# Assessment of the uploaded research file + import plan
 
-Three coordinated additions to ElderMatch: a mock Facility Admin Dashboard, an expanded Preference Questionnaire, and richer Facility registration + public profile fields (with anonymized reviews).
+## Verdict
 
----
+The file is good, usable input. It covers all 40 listings currently on the site, uses the same IDs as our data layer (e.g. `athulya-kasavanahalli-bengaluru`), is organised by state, and is explicit about sourcing (official vs. secondary vs. N/A). Nothing appears fabricated, which is exactly what we need given every listing is currently marked Unverified.
 
-## Part 1 — Facility Admin Dashboard
+Main caution: depth is very uneven. Roughly a third of listings (Athulya branches especially) only carry company-wide boilerplate, and several entries are flagged as non-residential addresses.
 
-**New routes** (layout + tabs):
-- `src/routes/dashboard.tsx` — sidebar layout with `<Outlet />`, shell chrome
-- `src/routes/dashboard.index.tsx` — Overview
-- `src/routes/dashboard.profile.tsx` — Manage Profile
-- `src/routes/dashboard.verification.tsx` — Verification checklist
-- `src/routes/dashboard.leads.tsx` — Enquiries with status dropdown
-- `src/routes/dashboard.reviews.tsx` — Anonymous reviews + respond
-- `src/routes/dashboard.analytics.tsx` — Mock bar chart + percentile stat
+## What the file DOES include
 
-**Access:**
-- After submitting `register-facility.tsx`, redirect to `/dashboard` (replace success screen's primary CTA / navigate on submit)
-- Add "Facility Login" link in `SiteFooter`
+Fields it can meaningfully fill on our listings:
 
-**Mock data:** extend `src/lib/mock-data.ts` with `MOCK_DASHBOARD` (facility identity, stats, leads, reviews, verification state, weekly views array).
+- Identity: name, neighborhood, city, state, address (partial postal for many), phone, email, website
+- Source attribution per facility (official / named secondary / N/A)
+- Tier and tier label (NGO/free, budget, mid-range, premium medical, real-estate senior living)
+- Care types + browse category (Assisted Living / Independent Living / Palliative Care)
+- Condition-specific care (dementia, post-surgery, palliative, paralysis, bedridden, chronic illness)
+- Medical capabilities and licensing / registration notes (RERA, trust reg. numbers, IGBC, "JCI/NABH-inspired")
+- Staff credentials in prose (doctors, nurses, physios, nutritionists) — brand level, not branch level
+- Amenities, and for some: cuisine/dining, distant-family support (video conferencing)
+- Some emergency data: on-call doctor, ambulance, panic alarms, occasional hospital tie-up
+- Some distances (airport/hospital) for a handful of listings
+- Short description + long description text ready to drop in
+- Year founded / brand history for most
+- Pricing for 5 facilities only: Kadji, Antara (ACB monthly), Serene Urbana, Ashiana Shubham, Athashri
+- Useful flags: 6 secondary-source-only listings; corporate offices / day-care chapters wrongly listed as homes (Vedaanta Cunningham Road, Bellandur, HSR; HelpAge Qutab; Dignity Byculla and Anna Nagar)
 
-**Design:** dense card grid, muted sidebar, same tokens. Profile views & Leads generated are the largest hero stats.
+## What the file does NOT include
 
----
+Fields our pages render that would stay empty or N/A:
 
-## Part 2 — Expanded Questionnaire
+- priceMin / priceMax for ~35 of 40 facilities, and priceNote for most
+- Itemized cost breakdown (private / double / shared room, extras, what's included vs. billed separately)
+- Deposit amounts (only one secondary figure, for Athulya)
+- Price history timeline — absent for all 40
+- Staff ratio and average staff experience — absent for all 40
+- "A Typical Week" schedule — absent for all 40
+- "Life at the Home" resident interests / narrative tags — absent for all 40
+- Trial stay availability, nights, price — absent for all 40
+- Reviews, ratings, review counts — none (we would keep showing "Unverified")
+- Photos — none usable; we keep stock placeholders and the "Photos pending" label
+- Per-branch phone and email for most multi-branch brands (only company-wide numbers)
+- Community / dietary preference (Jain, Brahmin, Muslim, Christian, Veg, Non-veg) — almost entirely missing
+- Languages spoken — missing for nearly all
+- Pet-friendly — missing for all
+- Full postal addresses and geo coordinates for many
+- Hospital tie-up and distances for the majority
+- lastVerified / verified — N/A by design
 
-Edit `src/components/questionnaire-form.tsx` to add 7 new steps (all skippable): condition, mobility, environment, timeline, room preference, pets, distant family.
+## Proposed next step (once you approve)
 
-Extend `Preferences` in `src/lib/prefs.ts` with new fields + defaults.
+1. Rewrite `src/lib/facility-specs.ts` from the file, per facility: fill every field the document supports verbatim, leave the rest as `"N/A"` / empty arrays. No inference.
+2. Add a `source` and `sourceType` (`official` | `secondary`) field per listing; surface a small "Details from secondary sources — pending facility confirmation" note on profiles where `sourceType` is secondary.
+3. Add a `listingKind` field (`residential` vs `office/day-care`) and label the flagged Vedaanta / HelpAge / Dignity entries so families aren't misdirected; optionally hide them from search results.
+4. Replace generated boilerplate `longDescription` with the document's per-facility description and long description text.
+5. Keep unverified status, "Pricing N/A", photos-pending label and empty reviews exactly as they are.
+6. Add a completeness indicator (internal only, founder console): % of fields filled per listing, so you can prioritise the phone-call pass for pricing, staff ratio and trial stay.
 
-Remove `urgency` from `Profile.recipient` in `prefs.ts` and from `src/routes/profile.tsx` recipient card; timeline lives in Preferences now.
+### Technical notes
 
-Update `src/routes/profile.tsx` Care Preferences card to display the new fields.
-
-Add lightweight "Recommended for you" tag on `src/routes/search.tsx` facility cards when preferences match (illustrative — e.g. show tag if condition/mobility aligns with facility's care capabilities).
-
----
-
-## Part 3 — Registration + Public Profile
-
-**Registration (`src/routes/register-facility.tsx`):** add fields — tier dropdown, standardized care checkboxes with tooltip definitions, itemized costs (single/double/shared + extras + deposit), condition-specific multi-select, staff experience, hospital tie-up, distances (airport/hospital), cuisine, emergency plan (on-call doctor / ambulance / partner hospital). On submit → `navigate({ to: "/dashboard" })`.
-
-**Mock data (`src/lib/mock-data.ts`):** extend each facility with tier, itemized costs, condition capabilities, staff experience, hospital tie-up, distances, cuisine, emergency plan, priceHistory, lastVerified, lastUpdated. Strip reviewer names → replace with `verifiedStay: true`.
-
-**Public profile (`src/routes/facility.$id.tsx`):**
-- Tier badge near top; last verified / last updated prominent
-- Itemized cost table (included vs. billed separately)
-- Condition-specific care tags
-- Hospital tie-up section
-- Staff credential callout
-- Distances shown with location
-- Cuisine field
-- Emergency Preparedness section
-- Price history mini-timeline
-- "Request a Trial Stay" button beside contact CTA
-- Reviews render anonymously with "Verified Stay" badge
-
----
-
-## Technical notes
-
-- All new routes use `createFileRoute` with `head()` metadata.
-- Dashboard sidebar uses existing shadcn sidebar primitives.
-- Analytics chart: simple CSS bar chart (no chart lib needed).
-- Tooltips for care-type definitions: shadcn `Tooltip`.
-- No backend — leads/reviews/stats are hardcoded mock state; edits are local component state with toast confirmations.
-- Preferences additions are backward-compatible via optional fields + defaults.
-
+- Data lands in `src/lib/facility-specs.ts`; `buildReal()` in `src/lib/mock-data.ts` gets extended to carry the new fields through to `Facility` and the enrichment map.
+- Profile page (`src/routes/facility.$id.tsx`) already renders most of these sections; empty ones should be hidden rather than showing "N/A" blocks everywhere — I'd render "Not provided by the facility yet" only in the pricing and staff sections.
+- No backend changes; still fully frontend mock data.
