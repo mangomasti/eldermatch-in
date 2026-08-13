@@ -446,25 +446,26 @@ for (const sp of REAL_FACILITY_SPECS) {
     itemizedCosts: {
       private: sp.priceMax || undefined,
       shared: sp.priceMin || undefined,
-      extras: [{ name: "Pricing details", cost: sp.priceNote }],
+      extras: [{ name: "Pricing details", cost: sp.priceNote }, ...sp.itemizedCosts],
       deposit: sp.deposit,
     },
     conditionCare: sp.conditionCare,
-    staff: { credentials: "N/A", ratio: sp.staffRatio, avgExperience: "N/A" },
+    staff: { credentials: sp.staffCredentials, ratio: sp.staffRatio, avgExperience: "N/A" },
     hospitalTieUp: sp.hospitalTieUp,
     distanceToHospital: sp.distanceToHospital,
     distanceToAirport: sp.distanceToAirport,
     cuisine: sp.cuisine,
     emergencyPlan: {
-      onCallDoctor: "N/A",
+      onCallDoctor: sp.emergencyPlan,
       ambulance: "N/A",
       partnerHospital: sp.hospitalTieUp,
       protocol: "N/A",
     },
     priceHistory: [],
-    trialStay: { available: false, nights: 0 },
-    petFriendly: false,
-    distantFamilySupport: "N/A",
+    trialStay: { available: sp.trialStay !== "N/A", nights: 0 },
+    petFriendly: sp.petFriendly !== "N/A",
+    distantFamilySupport: sp.distantFamilySupport,
+
   };
 }
 
