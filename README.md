@@ -137,7 +137,7 @@ GENERAL NOTES:
 
 This project was built with [Lovable](https://lovable.dev).
 
-**Live app**: https://eldermatch-in.lovable.app
+**Live app**: https://eldermatchindia.vercel.app/search
 
 ## Build with Lovable
 
